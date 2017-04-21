@@ -1,6 +1,6 @@
 # NGX Cookie Service
 
-An Angular (2+) service for cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library.
+An Angular (4+) service for cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library.
 
 # Installation
 

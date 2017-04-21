@@ -11,7 +11,8 @@ console.log('Preparing ngx-cookie-service for `npm publish`...');
 async.waterfall([
   deleteDistFolder,
   makeNewDistFolder,
-  compileTypeScriptAndCreateDefinitionFile
+  compileTypeScriptAndCreateDefinitionFile,
+  copyPackageJson
 ], function( err, result ) {
   if ( err ) {
     throw new Error( err );
@@ -54,5 +55,22 @@ function compileTypeScriptAndCreateDefinitionFile( next ) {
       console.log('Successfully compiled cookie service...');
       next( null );
     }
+  });
+}
+
+function copyPackageJson( next ) {
+  const packageJsonPath = path.join( __dirname, '../package.json' );
+  const distLibPackageJsonPath = path.join( __dirname, '../dist-lib/package.json' );
+  const source = fs.createReadStream( packageJsonPath );
+  const dest = fs.createWriteStream( distLibPackageJsonPath );
+
+  source.pipe( dest );
+  source.on('error', function( err ) {
+    console.log('Failed to copy package.json...');
+    next( err );
+  });
+  source.on('end', function() {
+    console.log('Successfully copied package.json...');
+    next( null );
   });
 }

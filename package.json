@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service",
-  "description": "an angular (2+) cookie service",
-  "version": "1.0.0",
+  "description": "an angular (4+) cookie service",
+  "version": "1.0.4",
   "license": "MIT",
   "author": "7leads GmbH <info@7leads.org>",
   "contributors": [
@@ -23,8 +23,7 @@
     "test": "npm run prepublish && ng test",
     "lint": "npm run prepublish && ng lint",
     "e2e": "npm run prepublish && ng e2e",
-    "prepublish": "node ./scripts/prepublish.js",
-    "postpublish": "node ./scripts/postpublish.js"
+    "publish:dist": "node ./scripts/prepublish.js && cd dist-lib && npm publish"
   },
   "repository": {
     "type": "git",
@@ -34,20 +33,20 @@
     "url": "https://github.com/7leads/ngx-cookie-service/issues",
     "email": "info@7leads.org"
   },
-  "dependencies": {
-    "@angular/common": "^4.0.0",
-    "@angular/compiler": "^4.0.0",
+  "peerDependencies": {
     "@angular/core": "^4.0.0",
-    "@angular/forms": "^4.0.0",
-    "@angular/http": "^4.0.0",
     "@angular/platform-browser": "^4.0.0",
-    "@angular/platform-browser-dynamic": "^4.0.0",
-    "@angular/router": "^4.0.0",
-    "core-js": "^2.4.1",
-    "rxjs": "^5.1.0",
-    "zone.js": "^0.8.4"
+    "@angular/platform-browser-dynamic": "^4.0.0"
   },
   "devDependencies": {
+    "core-js": "^2.4.1",
+    "rxjs": "^5.1.0",
+    "zone.js": "^0.8.4",
+    "@angular/router": "^4.0.0",
+    "@angular/common": "^4.0.0",
+    "@angular/compiler": "^4.0.0",
+    "@angular/forms": "^4.0.0",
+    "@angular/http": "^4.0.0",
     "@angular/cli": "1.0.0",
     "@angular/compiler-cli": "^4.0.0",
     "@types/jasmine": "2.5.38",
