@@ -12,6 +12,7 @@
     "typeRoots": [
       "node_modules/@types"
     ],
+    "module": "es2015",
     "lib": [
       "es2016",
       "dom"
