@@ -12,7 +12,9 @@ async.waterfall([
   deleteDistFolder,
   makeNewDistFolder,
   compileTypeScriptAndCreateDefinitionFile,
-  copyPackageJson
+  copyPackageJson,
+  copyNpmReadme,
+  copyNpmIgnore
 ], function( err, result ) {
   if ( err ) {
     throw new Error( err );
@@ -71,6 +73,40 @@ function copyPackageJson( next ) {
   });
   source.on('end', function() {
     console.log('Successfully copied package.json...');
+    next( null );
+  });
+}
+
+function copyNpmReadme( next ) {
+  const packageJsonPath = path.join( __dirname, '../README_NPM.md' );
+  const distLibPackageJsonPath = path.join( __dirname, '../dist-lib/README.md' );
+  const source = fs.createReadStream( packageJsonPath );
+  const dest = fs.createWriteStream( distLibPackageJsonPath );
+
+  source.pipe( dest );
+  source.on('error', function( err ) {
+    console.log('Failed to copy README_NPM.md...');
+    next( err );
+  });
+  source.on('end', function() {
+    console.log('Successfully copied README_NPM.md as README.md...');
+    next( null );
+  });
+}
+
+function copyNpmIgnore( next ) {
+  const packageJsonPath = path.join( __dirname, '../.npmignore' );
+  const distLibPackageJsonPath = path.join( __dirname, '../dist-lib/.npmignore' );
+  const source = fs.createReadStream( packageJsonPath );
+  const dest = fs.createWriteStream( distLibPackageJsonPath );
+
+  source.pipe( dest );
+  source.on('error', function( err ) {
+    console.log('Failed to copy .npmignore...');
+    next( err );
+  });
+  source.on('end', function() {
+    console.log('Successfully copied .npmignore...');
     next( null );
   });
 }

@@ -9,6 +9,7 @@
 !package.json
 !protractor.conf.js
 !README.md
+!README_NPM.md
 !tslint.json
 !tsconfig.json
 !scripts
