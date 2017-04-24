@@ -1,6 +1,6 @@
 {
   "name": "ngx-cookie-service",
-  "description": "an angular (4+) cookie service",
+  "description": "an (aot ready) angular (4+) cookie service",
   "version": "1.0.7",
   "license": "MIT",
   "author": "7leads GmbH <info@7leads.org>",
