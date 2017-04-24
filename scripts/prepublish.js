@@ -48,7 +48,7 @@ function makeNewDistFolder( next ) {
 
 function compileTypeScriptAndCreateDefinitionFile( next ) {
   const cookieServicePath = path.join( __dirname, '../lib' );
-  exec( 'tsc --declaration -p ' + cookieServicePath, function( err ) {
+  exec( 'node_modules/.bin/ngc -p ' + cookieServicePath, function( err ) {
     if ( err ) {
       console.log('Failed to compile cookie service...');
       next( err );

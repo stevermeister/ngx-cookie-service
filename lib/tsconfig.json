@@ -1,10 +1,14 @@
 {
   "compileOnSave": false,
+  "angularCompilerOptions": {
+    "genDir": "../dist-lib",
+    "outDir": "../dist-lib"
+  },
   "compilerOptions": {
     "outDir": "../dist-lib",
     "baseUrl": "./",
     "sourceMap": true,
-    "declaration": false,
+    "declaration": true,
     "moduleResolution": "node",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,

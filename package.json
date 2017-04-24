@@ -1,9 +1,24 @@
 {
   "name": "ngx-cookie-service",
   "description": "an angular (4+) cookie service",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "license": "MIT",
   "author": "7leads GmbH <info@7leads.org>",
+  "keywords": [
+    "angular",
+    "angular2",
+    "angular4",
+    "cookie",
+    "aot",
+    "ngx",
+    "ng2",
+    "ng",
+    "service",
+    "angular-service",
+    "cookie-service",
+    "cookie",
+    "cookies"
+  ],
   "contributors": [
     {
       "name": "Christopher Parotat",
@@ -39,20 +54,22 @@
     "@angular/platform-browser-dynamic": "^4.0.0"
   },
   "devDependencies": {
-    "core-js": "^2.4.1",
-    "rxjs": "^5.1.0",
-    "zone.js": "^0.8.4",
-    "@angular/router": "^4.0.0",
+    "@angular/cli": "1.0.0",
+    "@angular/core": "^4.0.0",
+    "@angular/platform-browser": "^4.0.0",
+    "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/common": "^4.0.0",
     "@angular/compiler": "^4.0.0",
+    "@angular/compiler-cli": "^4.0.0",
     "@angular/forms": "^4.0.0",
     "@angular/http": "^4.0.0",
-    "@angular/cli": "1.0.0",
-    "@angular/compiler-cli": "^4.0.0",
+    "@angular/platform-server": "^4.0.0",
+    "@angular/router": "^4.0.0",
     "@types/jasmine": "2.5.38",
     "@types/node": "~6.0.60",
     "async": "^2.3.0",
     "codelyzer": "~2.0.0",
+    "core-js": "^2.4.1",
     "jasmine-core": "~2.5.2",
     "jasmine-spec-reporter": "~3.2.0",
     "karma": "~1.4.1",
@@ -63,8 +80,10 @@
     "karma-jasmine-html-reporter": "^0.2.2",
     "protractor": "~5.1.0",
     "rimraf": "^2.6.1",
+    "rxjs": "^5.1.0",
     "ts-node": "~2.0.0",
     "tslint": "~4.5.0",
-    "typescript": "~2.2.0"
+    "typescript": "~2.2.0",
+    "zone.js": "^0.8.4"
   }
 }
