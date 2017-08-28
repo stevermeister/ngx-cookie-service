@@ -59,6 +59,15 @@ describe('AppComponent', () => {
     expect( cookieService.check('Foo') ).toBe( false );
   }));
 
+  it('should set and get cookies with weird names', inject([ CookieService ], ( cookieService: CookieService ) => {
+    cookieService.set( '*F.oo*', 'Bar' );
+    
+    const value = cookieService.get('*F.oo*');
+    // const value = cookieService.get('Foo');
+    
+    expect( value ).toEqual('Bar');
+  }));
+
   it('should get all cookies', inject([ CookieService ], ( cookieService: CookieService ) => {
     cookieService.set( 'Foo', 'Bar' );
     cookieService.set( 'Hello', 'World' );
