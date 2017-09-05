@@ -1,15 +1,17 @@
 {
   "name": "ngx-cookie-service",
   "description": "an (aot ready) angular (4+) cookie service",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "license": "MIT",
   "author": "7leads GmbH <info@7leads.org>",
   "keywords": [
     "angular",
     "angular2",
     "angular4",
+    "angular5",
     "angular-2",
     "angular-4",
+    "angular-5",
     "aot",
     "aot-compatible",
     "aot-compilation",
@@ -30,6 +32,10 @@
     {
       "name": "Stefan Bauer",
       "email": "bauer.stefan@live.de"
+    },
+    {
+      "name": "Kristian Thy",
+      "email": "thy@42.dk"
     }
   ],
   "main": "lib/index.ts",
@@ -41,6 +47,7 @@
     "test": "npm run prepublish && ng test",
     "lint": "npm run prepublish && ng lint",
     "e2e": "npm run prepublish && ng e2e",
+    "prepublish": "node scripts/prepublish.js",
     "publish:dist": "node ./scripts/prepublish.js && cd dist-lib && npm publish"
   },
   "repository": {

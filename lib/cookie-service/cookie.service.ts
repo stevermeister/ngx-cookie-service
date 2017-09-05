@@ -31,7 +31,7 @@ export class CookieService {
 
     name = encodeURIComponent( name );
 
-    const regExp: RegExp = new RegExp( '(?:^' + name + '|;\\s*' + name + ')=(.*?)(?:;|$)', 'g' );
+    const regExp: RegExp = this.getCookieRegExp( name );
     const exists: boolean = regExp.test( this.document.cookie );
 
     return exists;
@@ -45,7 +45,7 @@ export class CookieService {
     if ( this.documentIsAccessible && this.check( name ) ) {
       name = encodeURIComponent( name );
 
-      const regExp: RegExp = new RegExp('(?:^' + name + '|;\\s*' + name + ')=(.*?)(?:;|$)', 'g');
+      const regExp: RegExp = this.getCookieRegExp( name );
       const result: RegExpExecArray = regExp.exec( this.document.cookie );
 
       return decodeURIComponent( result[ 1 ] );
@@ -155,5 +155,15 @@ export class CookieService {
         this.delete( cookieName, path, domain );
       }
     }
+  }
+
+  /**
+   * @param name Cookie name
+   * @returns {RegExp}
+   */
+  private getCookieRegExp( name: string ): RegExp {
+    const escapedName: string = name.replace( /([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/ig, '\\$1' );
+
+    return new RegExp( '(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g' );
   }
 }

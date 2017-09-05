@@ -105,6 +105,14 @@ cookieService.deleteAll();
 
 This cookie service is brought to you by [7leads GmbH](http://www.7leads.org/). We built it for one of our apps, because the other cookie packages we found were either not designed "the Angular way" or caused trouble during AOT compilation.
 
+# Contributors
+
+Pull requests are welcome! Thanks to all contributors:
+
+* [paroe](https://github.com/paroe)
+* [CunningFatalist](https://github.com/CunningFatalist)
+* [kthy](https://github.com/kthy)
+
 # License
 
 [MIT](https://github.com/7leads/ngx-cookie-service/blob/master/LICENSE)

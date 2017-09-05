@@ -3,7 +3,7 @@ import { TestBed, async, inject } from '@angular/core/testing';
 import { AppComponent } from './app.component';
 import { CookieService } from '../../lib';
 
-describe('AppComponent', () => {
+describe('CookieService', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AppComponent ],
@@ -84,5 +84,24 @@ describe('AppComponent', () => {
 
     expect( cookies['Foo'] ).toBe( undefined );
     expect( cookies['Hello'] ).toBe( undefined );
+  }));
+
+  it('should handle special characters properly',  inject([ CookieService ], ( cookieService: CookieService ) => {
+    const cookieNames: Array<string> = [
+      '-H@llö_ Wörld-',
+      '$uper^TEST(123)',
+      'F()!!()/Bar',
+      '*F.)/o(o*',
+      '-O_o{1,2}',
+      'B?ar|Fo+o',
+      'Hello=World;',
+      '[Foo-_*.]Bar',
+    ];
+
+    for ( const name of cookieNames ) {
+      const testValue = 'Some value ' + (Math.round( Math.random() * 1000 ));
+      cookieService.set( name, testValue );
+      expect( cookieService.get( name ) ).toEqual( testValue );
+    }
   }));
 });
