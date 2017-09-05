@@ -47,8 +47,8 @@
     "test": "npm run prepublish && ng test",
     "lint": "npm run prepublish && ng lint",
     "e2e": "npm run prepublish && ng e2e",
-    "prepublish": "node scripts/prepublish.js",
-    "publish:dist": "node ./scripts/prepublish.js && cd dist-lib && npm publish"
+    "compile": "node scripts/compile.js",
+    "publish:dist": "npm run compile && cd dist-lib && npm publish"
   },
   "repository": {
     "type": "git",
