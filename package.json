@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service",
   "description": "an (aot ready) angular (4+) cookie service",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "license": "MIT",
   "author": "7leads GmbH <info@7leads.org>",
   "keywords": [
@@ -59,9 +59,9 @@
     "email": "info@7leads.org"
   },
   "peerDependencies": {
-    "@angular/core": "^4.0.0",
-    "@angular/platform-browser": "^4.0.0",
-    "@angular/platform-browser-dynamic": "^4.0.0"
+    "@angular/core": ">=4.0.0",
+    "@angular/platform-browser": ">=4.0.0",
+    "@angular/platform-browser-dynamic": ">=4.0.0"
   },
   "devDependencies": {
     "@angular/cli": "1.0.0",
