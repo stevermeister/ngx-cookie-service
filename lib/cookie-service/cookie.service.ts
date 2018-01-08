@@ -3,7 +3,7 @@
 // Package: https://github.com/BCJTI/ng2-cookies
 
 import { Injectable, Inject } from '@angular/core';
-import { DOCUMENT } from '@angular/platform-browser';
+import { DOCUMENT } from '@angular/common';
 
 @Injectable()
 export class CookieService {
