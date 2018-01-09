@@ -61,7 +61,7 @@ That's it!
 
 * Run `npm run test` to run the tests for the cookie service (located in the `demo-app` folder)
 * Have a look at and play around with the `demo-app` to get to know the cookie service with `npm run start` (open `http://localhost:4200/` in your favourite browser)
-* If you do not want to install this via [NPM](http://npmjs.com/), you can run `npm run prepublish` and use the `*.d.ts` and `*.js` files in the `dist-lib` folder
+* If you do not want to install this via [NPM](http://npmjs.com/), you can run `npm run compile` and use the `*.d.ts` and `*.js` files in the `dist-lib` folder
 
 # Methods
 
@@ -112,6 +112,7 @@ Pull requests are welcome! Thanks to all contributors:
 * [paroe](https://github.com/paroe)
 * [CunningFatalist](https://github.com/CunningFatalist)
 * [kthy](https://github.com/kthy)
+* [JaredClemence](https://github.com/JaredClemence)
 
 # License
 

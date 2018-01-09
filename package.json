@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service",
   "description": "an (aot ready) angular (4+) cookie service",
-  "version": "1.0.9",
+  "version": "1.0.10",
   "license": "MIT",
   "author": "7leads GmbH <info@7leads.org>",
   "keywords": [
@@ -36,17 +36,20 @@
     {
       "name": "Kristian Thy",
       "email": "thy@42.dk"
+    },
+    {
+      "name": "Jared Clemence"
     }
   ],
   "main": "lib/index.ts",
   "typings": "lib/index.ts",
   "scripts": {
     "ng": "ng",
-    "start": "npm run prepublish && ng serve",
-    "build": "npm run prepublish && ng build",
-    "test": "npm run prepublish && ng test",
-    "lint": "npm run prepublish && ng lint",
-    "e2e": "npm run prepublish && ng e2e",
+    "start": "npm run compile && ng serve",
+    "build": "npm run compile && ng build",
+    "test": "npm run compile && ng test",
+    "lint": "npm run compile && ng lint",
+    "e2e": "npm run compile && ng e2e",
     "compile": "node scripts/compile.js",
     "publish:dist": "npm run compile && cd dist-lib && npm publish"
   },
