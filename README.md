@@ -101,13 +101,61 @@ cookieService.delete('test');
 cookieService.deleteAll();
 ```
 
+# FAQ
+
+## General tips
+
+Checking out the following resources usually solves most of the problems people seem to have with this cookie service:
+
+* [article about cookies in general @MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies) (recommended read!)
+* [common localhost problems @StackOverflow](https://stackoverflow.com/questions/1134290/cookies-on-localhost-with-explicit-domain)
+* [problems with secure cookies @StackOverflow](https://stackoverflow.com/questions/8064318/how-to-read-a-secure-cookie-using-javascript)
+* [get cookies from different paths](https://github.com/7leads/ngx-cookie-service/issues/7#issuecomment-351321518)
+
+The following general steps are usually very helpful when debugging problems with this cookie service or cookies in general:
+
+* check out if there are any [open](https://github.com/7leads/ngx-cookie-service/issues) or [closed](https://github.com/7leads/ngx-cookie-service/issues?q=is%3Aissue+is%3Aclosed) issues that answer your question
+* check out the actual value(s) of `document.cookie`
+* does it work if you use `document.cookie` manually (i.e. in a console of your choice)?
+* set explicit paths for your cookies
+* [explain to your local rubber duck why your code should work and why it (probably) does not](https://en.wikipedia.org/wiki/Rubber_duck_debugging)
+
+# I am always getting a "token missing" or "no provider" error.
+
+Package managers are a well known source of frustration. If you have "token missing" or "no provider" errors, a simple re-installation of your node modules might suffice:
+
+```
+rm -rf node_modules
+yarn # or `npm install`
+```
+
+## I have a problem with framework X or library Y. What can I do?
+
+Please be aware that we cannot help you with problems that are out of scope. For example, we cannot debug a Symfony or Springboot application for you. In that case, you are better off asking the nice folks over at [StackOverflow](https://stackoverflow.com/) for help.
+
+## Do you support Angular Universal?
+
+There is an [issue](https://github.com/7leads/ngx-cookie-service/issues/1) for that. Check out [this comment](https://github.com/7leads/ngx-cookie-service/issues/1#issuecomment-361150174) for more information about future support.
+
+# Opening issues
+
+Please make sure to check out our FAQ before you open a new issue. Also, try to give us as much information as you can when you open an issue. Maybe you can even supply a test environment or test cases, if necessary?
+
+# Contributing
+
+We are happy to accept pull requests or test cases for things that do not work. Feel free to submit one of those.
+
+However, we will only accept pull requests that pass all tests and include some new ones (as long as it makes sense to add them, of course).
+
+* [Open a new pull request](https://github.com/7leads/ngx-cookie-service/compare)
+
 # Author
 
 This cookie service is brought to you by [7leads GmbH](http://www.7leads.org/). We built it for one of our apps, because the other cookie packages we found were either not designed "the Angular way" or caused trouble during AOT compilation.
 
 # Contributors
 
-Pull requests are welcome! Thanks to all contributors:
+Thanks to all contributors:
 
 * [paroe](https://github.com/paroe)
 * [CunningFatalist](https://github.com/CunningFatalist)
