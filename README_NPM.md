@@ -95,6 +95,10 @@ cookieService.delete('test');
 cookieService.deleteAll();
 ```
 
+# FAQ & Troubleshooting
+
+Are you having any trouble with your integration or cookies in general? Check out our [FAQ](https://github.com/7leads/ngx-cookie-service#faq), maybe it will save you some headache.
+
 # Author
 
 This cookie service is brought to you by [7leads GmbH](http://www.7leads.org/). We built it for one of our apps, because the other cookie packages we found were either not designed "the Angular way" or caused trouble during AOT compilation.
