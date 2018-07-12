@@ -55,6 +55,14 @@ export class CookieService {
   }
 
   /**
+   * @param name  Cookie name
+   * @return { any }
+   */
+  getJSON(name: string): any {
+    return JSON.parse(this.get(name));
+  }
+
+  /**
    * @returns {}
    */
   getAll(): {} {
@@ -124,6 +132,24 @@ export class CookieService {
     }
 
     this.document.cookie = cookieString;
+  }
+
+  /**
+   * @param name    Cookie name
+   * @param value   Cookie value
+   * @param expires Number of days until the cookies expires or an actual `Date`
+   * @param path    Cookie path
+   * @param domain  Cookie domain
+   * @param secure  Secure flag
+   */
+  setJSON(
+      name: string,
+      value: any,
+      expires?: number | Date,
+      path?: string,
+      domain?: string,
+      secure?: boolean): void {
+    return this.set(name, JSON.stringify(value), expires, path, domain, secure);
   }
 
   /**
