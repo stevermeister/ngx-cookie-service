@@ -77,6 +77,13 @@ const cookieExists: boolean = cookieService.check('test');
 const value: string = cookieService.get('test');
 ```
 
+## getJSON( name: string ): any;
+
+```typescript
+// return JSON.parse(this.get(name))
+const value: any = cookieService.getJSON('test');
+```
+
 ## getAll(): {};
 
 ```typescript
@@ -87,6 +94,12 @@ const allCookies: {} = cookieService.getAll();
 
 ```typescript
 cookieService.set( 'test', 'Hello World' );
+```
+
+## setJSON( name: string, value: any, expires?: number | Date, path?: string, domain?: string, secure?: boolean ): void;
+
+```typescript
+cookieService.setJSON( 'test', { value: 'value content' } );
 ```
 
 ## delete( name: string, path?: string, domain?: string ): void;
