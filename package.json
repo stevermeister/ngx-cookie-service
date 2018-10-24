@@ -41,8 +41,8 @@
       "name": "Jared Clemence"
     }
   ],
-  "main": "lib/index.ts",
-  "typings": "lib/index.ts",
+  "main": "index.js",
+  "typings": "index.d.ts",
   "scripts": {
     "ng": "ng",
     "start": "npm run compile && ng serve",
