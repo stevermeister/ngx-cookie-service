@@ -162,6 +162,7 @@ Thanks to all contributors:
 * [CunningFatalist](https://github.com/CunningFatalist)
 * [kthy](https://github.com/kthy)
 * [JaredClemence](https://github.com/JaredClemence)
+* [flakolefluk](https://github.com/flakolefluk)
 
 # License
 
