@@ -71,11 +71,15 @@ That's it!
 const cookieExists: boolean = cookieService.check('test');
 ```
 
+Checks if a cookie with the given`name` can be accessed or found.
+
 ## get( name: string ): string;
 
 ```typescript
 const value: string = cookieService.get('test');
 ```
+
+Gets the value of the cookie with the specified `name`.
 
 ## getAll(): {};
 
@@ -83,11 +87,17 @@ const value: string = cookieService.get('test');
 const allCookies: {} = cookieService.getAll();
 ```
 
+Returns a map of key-value pairs for cookies that can be accessed.
+
 ## set( name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean ): void;
 
 ```typescript
 cookieService.set( 'test', 'Hello World' );
 ```
+
+Sets a cookie with the specified `name` and `value`. It is good practice to specify a path. If you are unsure about the path value, use `'/'`. If no path or domain is explicitly defined, the current location is assumed.
+
+**Important:** For security reasons, it is not possible to define cookies for other domains. Browsers do not allow this. Read [this](https://stackoverflow.com/a/1063760) and [this](https://stackoverflow.com/a/17777005/1007003) StackOverflow answer for a more in-depth explanation.
 
 ## delete( name: string, path?: string, domain?: string ): void;
 
@@ -95,11 +105,17 @@ cookieService.set( 'test', 'Hello World' );
 cookieService.delete('test');
 ```
 
+Deletes a cookie with the specified `name`.  It is best practice to always define a path. If you are unsure about the path value, use `'/'`.
+
+**Important:** For security reasons, it is not possible to delete cookies for other domains. Browsers do not allow this. Read [this](https://stackoverflow.com/a/1063760) and [this](https://stackoverflow.com/a/17777005/1007003) StackOverflow answer for a more in-depth explanation.
+
 ## deleteAll( path?: string, domain?: string ): void;
 
 ```typescript
 cookieService.deleteAll();
 ```
+
+Deletes all cookies that can currently be accessed. It is best practice to always define a path. If you are unsure about the path value, use `'/'`.
 
 # FAQ
 
