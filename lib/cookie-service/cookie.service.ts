@@ -7,7 +7,7 @@ import { DOCUMENT } from '@angular/common';
 
 @Injectable()
 export class CookieService {
-  private documentIsAccessible: boolean;
+  private readonly documentIsAccessible: boolean;
 
   constructor(
     // The type `Document` may not be used here. Although a fix is on its way,
@@ -136,7 +136,7 @@ export class CookieService {
       return;
     }
 
-    this.set( name, '', -1, path, domain );
+    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain );
   }
 
   /**
