@@ -21,6 +21,28 @@ describe('CookieService', () => {
     expect( cookieService ).toBeTruthy();
   }));
 
+  it('should check for values and not for keys', inject([ CookieService ], ( cookieService: CookieService ) => {
+    cookieService.set( 'Bar', 'Foo' );
+
+    let value = cookieService.check('Foo');
+
+    expect( value ).toEqual( false );
+
+    value = cookieService.check('Bar');
+
+    expect( value ).toEqual( true );
+
+    cookieService.set( 'test123', 'value' );
+
+    value = cookieService.check( 'test1' );
+
+    expect( value ).toEqual( false );
+
+    value = cookieService.check( 'test123' );
+
+    expect( value ).toEqual( true );
+  }));
+
   it('should set and get single cookies', inject([ CookieService ], ( cookieService: CookieService ) => {
     cookieService.set( 'Foo', 'Bar' );
 
