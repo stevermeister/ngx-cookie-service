@@ -8,6 +8,7 @@
 !karma.conf.js
 !package.json
 !protractor.conf.js
+!CHANGELOG.md
 !README.md
 !README_NPM.md
 !tslint.json
