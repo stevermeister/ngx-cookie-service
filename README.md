@@ -152,7 +152,7 @@ Please be aware that we cannot help you with problems that are out of scope. For
 
 ## Do you support Angular Universal?
 
-There is an [issue](https://github.com/7leads/ngx-cookie-service/issues/1) for that. Check out [this comment](https://github.com/7leads/ngx-cookie-service/issues/1#issuecomment-361150174) for more information about future support.
+Yes we do :)
 
 # Opening issues
 
@@ -179,6 +179,7 @@ Thanks to all contributors:
 * [kthy](https://github.com/kthy)
 * [JaredClemence](https://github.com/JaredClemence)
 * [flakolefluk](https://github.com/flakolefluk)
+* [mattbanks](https://github.com/mattbanks)
 
 # License
 

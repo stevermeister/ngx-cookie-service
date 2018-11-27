@@ -1,3 +1,6 @@
+# 2.0.1
+- add support for Angular Universal
+
 # 2.0.0
 - `package.json`: change min. requirement from Angular 4 to 4.2
 - `package.json`: fix `main` and `typings` references
