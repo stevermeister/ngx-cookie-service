@@ -1,3 +1,6 @@
+# 2.0.2
+- fix publishing error
+
 # 2.0.1
 - improve platform identification
 
