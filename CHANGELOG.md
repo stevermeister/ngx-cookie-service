@@ -1,5 +1,5 @@
 # 2.0.1
-- add support for Angular Universal
+- improve platform identification
 
 # 2.0.0
 - `package.json`: change min. requirement from Angular 4 to 4.2
