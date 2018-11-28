@@ -179,6 +179,7 @@ Thanks to all contributors:
 * [kthy](https://github.com/kthy)
 * [JaredClemence](https://github.com/JaredClemence)
 * [flakolefluk](https://github.com/flakolefluk)
+* [mattbanks](https://github.com/mattbanks)
 
 # License
 
