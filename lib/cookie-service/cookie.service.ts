@@ -18,8 +18,7 @@ export class CookieService {
     // Get the PLATFORM_ID so we can check if we're in a browser
     @Inject( PLATFORM_ID ) private platformId: Object
   ) {
-      // Make sure we're in a browser and not on the server, in which case `document` is accessible
-      this.documentIsAccessible = (isPlatformBrowser(this.platformId));
+    this.documentIsAccessible = isPlatformBrowser( this.platformId );
   }
 
   /**
