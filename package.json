@@ -42,6 +42,9 @@
     },
     {
       "name": "flakolefluk"
+    },
+    {
+      "name": "mattbanks"
     }
   ],
   "main": "index.js",
