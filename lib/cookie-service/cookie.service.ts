@@ -87,7 +87,7 @@ export class CookieService {
    * @param path     Cookie path
    * @param domain   Cookie domain
    * @param secure   Secure flag
-   * @param sameSite OWASP samesite token `lax` or `strict`
+   * @param sameSite OWASP samesite token `Lax` or `Strict`
    */
   set(
     name: string,
@@ -126,7 +126,7 @@ export class CookieService {
       cookieString += 'secure;';
     }
 
-    if (sameSite) {
+    if ( sameSite ) {
       cookieString += 'sameSite=' + sameSite + ';';
     }
 
