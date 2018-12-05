@@ -23,7 +23,7 @@ async.waterfall([
 });
 
 function deleteDistFolder( next ) {
-  rimraf( path.join( __dirname, '..', 'dist-lib' ), function( err ) {
+  rimraf( path.join( __dirname, '../dist-lib' ), function( err ) {
     if ( err ) {
       console.log('Could not delete `dist-lib`...');
       next( err );
@@ -35,7 +35,7 @@ function deleteDistFolder( next ) {
 }
 
 function makeNewDistFolder( next ) {
-  fs.mkdir( path.join( __dirname, '..', 'dist-lib' ), function( err ) {
+  fs.mkdir( path.join( __dirname, '../dist-lib' ), function( err ) {
     if ( err ) {
       console.log('Could not create `dist-lib`...');
       next( err );
@@ -47,9 +47,8 @@ function makeNewDistFolder( next ) {
 }
 
 function compileTypeScriptAndCreateDefinitionFile( next ) {
-  const cookieServicePath = path.join( __dirname, '..', 'lib' );
-  const ngcPath = path.join( __dirname, '..', 'node_modules', '.bin', 'ngc' )
-  exec( ngcPath + ' -p ' + cookieServicePath, function( err ) {
+  const cookieServicePath = path.join( __dirname, '../lib' );
+  exec( 'node_modules/.bin/ngc -p ' + cookieServicePath, function( err ) {
     if ( err ) {
       console.log('Failed to compile cookie service...');
       next( err );
@@ -61,8 +60,8 @@ function compileTypeScriptAndCreateDefinitionFile( next ) {
 }
 
 function copyPackageJson( next ) {
-  const packageJsonPath = path.join( __dirname, '..', 'package.json' );
-  const distLibPackageJsonPath = path.join( __dirname, '..', 'dist-lib', 'package.json' );
+  const packageJsonPath = path.join( __dirname, '../package.json' );
+  const distLibPackageJsonPath = path.join( __dirname, '../dist-lib/package.json' );
   const source = fs.createReadStream( packageJsonPath );
   const dest = fs.createWriteStream( distLibPackageJsonPath );
 
@@ -78,8 +77,8 @@ function copyPackageJson( next ) {
 }
 
 function copyNpmReadme( next ) {
-  const packageJsonPath = path.join( __dirname, '..', 'README_NPM.md' );
-  const distLibPackageJsonPath = path.join( __dirname, '..', 'dist-lib', 'README.md' );
+  const packageJsonPath = path.join( __dirname, '../README_NPM.md' );
+  const distLibPackageJsonPath = path.join( __dirname, '../dist-lib/README.md' );
   const source = fs.createReadStream( packageJsonPath );
   const dest = fs.createWriteStream( distLibPackageJsonPath );
 
