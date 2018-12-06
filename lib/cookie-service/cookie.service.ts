@@ -81,12 +81,13 @@ export class CookieService {
   }
 
   /**
-   * @param name    Cookie name
-   * @param value   Cookie value
-   * @param expires Number of days until the cookies expires or an actual `Date`
-   * @param path    Cookie path
-   * @param domain  Cookie domain
-   * @param secure  Secure flag
+   * @param name     Cookie name
+   * @param value    Cookie value
+   * @param expires  Number of days until the cookies expires or an actual `Date`
+   * @param path     Cookie path
+   * @param domain   Cookie domain
+   * @param secure   Secure flag
+   * @param sameSite OWASP samesite token `Lax` or `Strict`
    */
   set(
     name: string,
@@ -94,7 +95,8 @@ export class CookieService {
     expires?: number | Date,
     path?: string,
     domain?: string,
-    secure?: boolean
+    secure?: boolean,
+    sameSite?: 'Lax' | 'Strict'
   ): void {
     if ( !this.documentIsAccessible ) {
       return;
@@ -122,6 +124,10 @@ export class CookieService {
 
     if ( secure ) {
       cookieString += 'secure;';
+    }
+
+    if ( sameSite ) {
+      cookieString += 'sameSite=' + sameSite + ';';
     }
 
     this.document.cookie = cookieString;

@@ -83,7 +83,7 @@ const allCookies: {} = cookieService.getAll();
 
 Returns a map of key-value pairs for cookies that can be accessed.
 
-## set( name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean ): void;
+## set( name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'Strict' ): void;
 
 ```typescript
 cookieService.set( 'test', 'Hello World' );
