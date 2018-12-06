@@ -1,3 +1,6 @@
+# 2.1.0
+- add `SameSite` support
+
 # 2.0.2
 - fix publishing error
 
