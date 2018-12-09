@@ -89,13 +89,15 @@ const allCookies: {} = cookieService.getAll();
 
 Returns a map of key-value pairs for cookies that can be accessed.
 
-## set( name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'Strict' ): void;
+## set( name: string, value: string, options?: CookieOptions ): void;
 
 ```typescript
 cookieService.set( 'test', 'Hello World' );
 ```
 
 Sets a cookie with the specified `name` and `value`. It is good practice to specify a path. If you are unsure about the path value, use `'/'`. If no path or domain is explicitly defined, the current location is assumed.
+
+For further details on [CookieOptions, please see the 'Interfaces' section below](#Interfaces)
 
 **Important:** For security reasons, it is not possible to define cookies for other domains. Browsers do not allow this. Read [this](https://stackoverflow.com/a/1063760) and [this](https://stackoverflow.com/a/17777005/1007003) StackOverflow answer for a more in-depth explanation.
 
@@ -116,6 +118,21 @@ cookieService.deleteAll();
 ```
 
 Deletes all cookies that can currently be accessed. It is best practice to always define a path. If you are unsure about the path value, use `'/'`.
+
+# Interfaces
+
+## CookieOptions
+
+```typescript
+const options: CookieOptions = {
+  // Expires in 7 days
+  expires: 7,
+  path: '/',
+  domain: '.my-test-site.com',
+  secure: true,
+  sameSite: 'Strict'
+};
+```
 
 # FAQ
 
