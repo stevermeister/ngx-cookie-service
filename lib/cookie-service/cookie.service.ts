@@ -4,6 +4,7 @@
 
 import { Injectable, Inject, PLATFORM_ID, InjectionToken } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { CookieOptions } from './cookie-options.model';
 
 @Injectable()
 export class CookieService {
@@ -83,20 +84,12 @@ export class CookieService {
   /**
    * @param name     Cookie name
    * @param value    Cookie value
-   * @param expires  Number of days until the cookies expires or an actual `Date`
-   * @param path     Cookie path
-   * @param domain   Cookie domain
-   * @param secure   Secure flag
-   * @param sameSite OWASP samesite token `Lax` or `Strict`
+   * @param options  Cookie options
    */
   set(
     name: string,
     value: string,
-    expires?: number | Date,
-    path?: string,
-    domain?: string,
-    secure?: boolean,
-    sameSite?: 'Lax' | 'Strict'
+    options?: CookieOptions
   ): void {
     if ( !this.documentIsAccessible ) {
       return;
@@ -104,30 +97,32 @@ export class CookieService {
 
     let cookieString: string = encodeURIComponent( name ) + '=' + encodeURIComponent( value ) + ';';
 
-    if ( expires ) {
-      if ( typeof expires === 'number' ) {
-        const dateExpires: Date = new Date( new Date().getTime() + expires * 1000 * 60 * 60 * 24 );
+    if ( options ) {
+      if ( options.expires ) {
+        if ( typeof options.expires === 'number' ) {
+          const dateExpires: Date = new Date( new Date().getTime() + options.expires * 1000 * 60 * 60 * 24 );
 
-        cookieString += 'expires=' + dateExpires.toUTCString() + ';';
-      } else {
-        cookieString += 'expires=' + expires.toUTCString() + ';';
+          cookieString += 'expires=' + dateExpires.toUTCString() + ';';
+        } else {
+          cookieString += 'expires=' + options.expires.toUTCString() + ';';
+        }
       }
-    }
 
-    if ( path ) {
-      cookieString += 'path=' + path + ';';
-    }
+      if ( options.path ) {
+        cookieString += 'path=' + options.path + ';';
+      }
 
-    if ( domain ) {
-      cookieString += 'domain=' + domain + ';';
-    }
+      if ( options.domain ) {
+        cookieString += 'domain=' + options.domain + ';';
+      }
 
-    if ( secure ) {
-      cookieString += 'secure;';
-    }
+      if ( options.secure ) {
+        cookieString += 'secure;';
+      }
 
-    if ( sameSite ) {
-      cookieString += 'sameSite=' + sameSite + ';';
+      if ( options.sameSite ) {
+        cookieString += 'sameSite=' + options.sameSite + ';';
+      }
     }
 
     this.document.cookie = cookieString;
@@ -143,7 +138,13 @@ export class CookieService {
       return;
     }
 
-    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain );
+    const options: CookieOptions = {
+      expires: new Date('Thu, 01 Jan 1970 00:00:01 GMT'),
+      path: path,
+      domain: domain
+    };
+
+    this.set( name, '', options );
   }
 
   /**
