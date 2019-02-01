@@ -1,3 +1,6 @@
+# 2.2.0
+- add `CookieModule`
+
 # 2.1.0
 - add `SameSite` support
 

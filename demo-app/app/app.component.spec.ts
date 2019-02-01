@@ -1,13 +1,13 @@
 import { TestBed, async, inject } from '@angular/core/testing';
 
 import { AppComponent } from './app.component';
-import { CookieService } from '../../lib';
+import { CookieService, CookieModule } from '../../lib';
 
 describe('CookieService', () => {
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       declarations: [ AppComponent ],
-      providers: [ CookieService ]
+      imports: [ CookieModule ]
     }).compileComponents();
   }));
 

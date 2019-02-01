@@ -12,7 +12,7 @@ npm install ngx-cookie-service --save
 yarn add ngx-cookie-service
 ```
 
-Add the cookie service to your `app.module.ts` as a provider:
+Add the cookie module to your `app.module.ts` as an import:
 
 ```typescript
 import { BrowserModule } from '@angular/platform-browser';
@@ -21,12 +21,11 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { CookieService } from 'ngx-cookie-service';
+import { CookieModule } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [ AppComponent ],
-  imports: [ BrowserModule, FormsModule, HttpModule ],
-  providers: [ CookieService ],
+  imports: [ BrowserModule, FormsModule, HttpModule, CookieModule ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
@@ -181,6 +180,7 @@ Thanks to all contributors:
 * [flakolefluk](https://github.com/flakolefluk)
 * [mattbanks](https://github.com/mattbanks)
 * [DBaker85](https://github.com/DBaker85)
+* [swseverance](https://github.com/swseverance)
 
 # License
 

@@ -12,7 +12,7 @@ npm install ngx-cookie-service --save
 yarn add ngx-cookie-service
 ```
 
-Add the cookie service to your `app.module.ts` as a provider:
+Add the cookie module to your `app.module.ts` as an import:
 
 ```typescript
 import { BrowserModule } from '@angular/platform-browser';
@@ -21,12 +21,11 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { CookieService } from 'ngx-cookie-service';
+import { CookieModule } from 'ngx-cookie-service';
 
 @NgModule({
   declarations: [ AppComponent ],
-  imports: [ BrowserModule, FormsModule, HttpModule ],
-  providers: [ CookieService ],
+  imports: [ BrowserModule, FormsModule, HttpModule, CookieModule ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule { }
@@ -120,6 +119,19 @@ Are you having any trouble with your integration or cookies in general? Check ou
 This cookie service is brought to you by [7leads GmbH](http://www.7leads.org/). We built it for one of our apps, because the other cookie packages we found were either not designed "the Angular way" or caused trouble during AOT compilation.
 
 Check out the [GitHub page](https://github.com/7leads/ngx-cookie-service) for more.
+
+# Contributors
+
+Thanks to all contributors:
+
+* [paroe](https://github.com/paroe)
+* [CunningFatalist](https://github.com/CunningFatalist)
+* [kthy](https://github.com/kthy)
+* [JaredClemence](https://github.com/JaredClemence)
+* [flakolefluk](https://github.com/flakolefluk)
+* [mattbanks](https://github.com/mattbanks)
+* [DBaker85](https://github.com/DBaker85)
+* [swseverance](https://github.com/swseverance)
 
 # License
 

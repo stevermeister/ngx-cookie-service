@@ -4,12 +4,11 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
-import { CookieService } from '../../lib';
+import { CookieModule } from '../../lib';
 
 @NgModule({
   declarations: [ AppComponent ],
-  imports: [ BrowserModule, FormsModule, HttpModule ],
-  providers: [ CookieService ],
+  imports: [ BrowserModule, FormsModule, HttpModule, CookieModule ],
   bootstrap: [ AppComponent ]
 })
 export class AppModule {}
