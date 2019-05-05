@@ -181,6 +181,7 @@ Thanks to all contributors:
 * [flakolefluk](https://github.com/flakolefluk)
 * [mattbanks](https://github.com/mattbanks)
 * [DBaker85](https://github.com/DBaker85)
+* [mattlewis92](https://github.com/mattlewis92)
 
 # License
 
