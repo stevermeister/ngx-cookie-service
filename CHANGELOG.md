@@ -1,3 +1,8 @@
+# 2.2.0 
+- use `ng-packagr` instead of our own outdated build script
+- use one single readme file for both NPM and GitHub
+- update `package.json` scripts
+
 # 2.1.0
 - add `SameSite` support
 
