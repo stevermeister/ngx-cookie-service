@@ -14,3 +14,4 @@
 !tslint.json
 !tsconfig.json
 !scripts
+!ng-package.json

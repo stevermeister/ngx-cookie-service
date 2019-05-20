@@ -48,10 +48,12 @@
     },
     {
       "name": "DBaker85"
+    },
+    {
+      "name": "Matt Lewis",
+      "email": "npm@mattlewis.me"
     }
   ],
-  "main": "index.js",
-  "typings": "index.d.ts",
   "scripts": {
     "ng": "ng",
     "start": "npm run compile && ng serve",
@@ -59,8 +61,8 @@
     "test": "npm run compile && ng test",
     "lint": "npm run compile && ng lint",
     "e2e": "npm run compile && ng e2e",
-    "compile": "node scripts/compile.js",
-    "publish:dist": "npm run compile && cd dist-lib && npm publish"
+    "compile": "ng-packagr -p ng-package.json",
+    "publish:dist": "npm run compile && npm publish dist-lib"
   },
   "repository": {
     "type": "git",
@@ -77,14 +79,14 @@
   },
   "devDependencies": {
     "@angular/cli": "1.0.0",
-    "@angular/core": "^4.0.0",
-    "@angular/platform-browser": "^4.0.0",
-    "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/common": "^4.0.0",
     "@angular/compiler": "^4.0.0",
     "@angular/compiler-cli": "^4.0.0",
+    "@angular/core": "^4.0.0",
     "@angular/forms": "^4.0.0",
     "@angular/http": "^4.0.0",
+    "@angular/platform-browser": "^4.0.0",
+    "@angular/platform-browser-dynamic": "^4.0.0",
     "@angular/platform-server": "^4.0.0",
     "@angular/router": "^4.0.0",
     "@types/jasmine": "2.5.38",
@@ -100,6 +102,7 @@
     "karma-coverage-istanbul-reporter": "^0.2.0",
     "karma-jasmine": "~1.1.0",
     "karma-jasmine-html-reporter": "^0.2.2",
+    "ng-packagr": "^1.7.0",
     "protractor": "~5.1.0",
     "rimraf": "^2.6.1",
     "rxjs": "^5.1.0",
