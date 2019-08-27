@@ -5,6 +5,21 @@
 import { Injectable, Inject, PLATFORM_ID, InjectionToken } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
+export enum CookiePeriodType{
+  HOUR,
+  DAY,
+  MONTH,
+  YEAR,
+}
+
+enum CookiePeriodValue{
+  HOUR = 60 * 60,
+  DAY = 60 * 60 * 24,
+  MONTH = 60 * 60 * 24 * 30,
+  YEAR = 60 * 60 * 24 * 365,
+
+}
+
 @Injectable()
 export class CookieService {
   private readonly documentIsAccessible: boolean;
@@ -96,7 +111,8 @@ export class CookieService {
     path?: string,
     domain?: string,
     secure?: boolean,
-    sameSite?: 'Lax' | 'Strict'
+    sameSite?: 'Lax' | 'Strict',
+    maxAge?: CookiePeriodType
   ): void {
     if ( !this.documentIsAccessible ) {
       return;
@@ -128,6 +144,11 @@ export class CookieService {
 
     if ( sameSite ) {
       cookieString += 'sameSite=' + sameSite + ';';
+    }
+
+    if( maxAge ){
+      const maxAgeValue = this.getMaxAgeInSeconds(maxAge);
+      cookieString += 'max-age=' + maxAgeValue + ';'
     }
 
     this.document.cookie = cookieString;
@@ -172,5 +193,35 @@ export class CookieService {
     const escapedName: string = name.replace( /([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/ig, '\\$1' );
 
     return new RegExp( '(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g' );
+  }
+
+
+/**
+ * @description Return a number of seconds according to the referred Cookie PeriodType
+ * @param {CookiePeriodType} maxAge
+ * @returns {number}
+ */
+private getMaxAgeInSeconds(maxAge: CookiePeriodType): number{
+    let maxAgeValue: number;
+
+    switch (maxAge) {
+      case CookiePeriodType.HOUR:
+        maxAgeValue = CookiePeriodValue.HOUR;
+        break;
+      case CookiePeriodType.DAY:
+        maxAgeValue = CookiePeriodValue.DAY;
+        break;
+      case CookiePeriodType.MONTH:
+        maxAgeValue = CookiePeriodValue.MONTH;
+        break;
+      case CookiePeriodType.YEAR:
+        maxAgeValue = CookiePeriodValue.YEAR;
+        break;
+      default:
+        maxAgeValue = null
+        break;
+    }
+
+    return maxAgeValue;
   }
 }
