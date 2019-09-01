@@ -6,18 +6,17 @@ import { Injectable, Inject, PLATFORM_ID, InjectionToken } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 export enum CookiePeriodType{
-  HOUR,
-  DAY,
-  MONTH,
-  YEAR,
+  ONE_HOUR,
+  ONE_DAY,
+  ONE_MONTH,
+  ONE_YEAR,
 }
 
 enum CookiePeriodValue{
-  HOUR = 60 * 60,
-  DAY = 60 * 60 * 24,
-  MONTH = 60 * 60 * 24 * 30,
-  YEAR = 60 * 60 * 24 * 365,
-
+  ONE_HOUR = 60 * 60,
+  ONE_DAY = 60 * 60 * 24,
+  ONE_MONTH = 60 * 60 * 24 * 30,
+  ONE_YEAR = 60 * 60 * 24 * 365,
 }
 
 @Injectable()
@@ -103,6 +102,7 @@ export class CookieService {
    * @param domain   Cookie domain
    * @param secure   Secure flag
    * @param sameSite OWASP samesite token `Lax` or `Strict`
+   * @param maxAge   A max value into CookiePeriodType format
    */
   set(
     name: string,
@@ -205,17 +205,17 @@ private getMaxAgeInSeconds(maxAge: CookiePeriodType): number{
     let maxAgeValue: number;
 
     switch (maxAge) {
-      case CookiePeriodType.HOUR:
-        maxAgeValue = CookiePeriodValue.HOUR;
+      case CookiePeriodType.ONE_HOUR:
+        maxAgeValue = CookiePeriodValue.ONE_HOUR;
         break;
-      case CookiePeriodType.DAY:
-        maxAgeValue = CookiePeriodValue.DAY;
+      case CookiePeriodType.ONE_DAY:
+        maxAgeValue = CookiePeriodValue.ONE_DAY;
         break;
-      case CookiePeriodType.MONTH:
-        maxAgeValue = CookiePeriodValue.MONTH;
+      case CookiePeriodType.ONE_MONTH:
+        maxAgeValue = CookiePeriodValue.ONE_MONTH;
         break;
-      case CookiePeriodType.YEAR:
-        maxAgeValue = CookiePeriodValue.YEAR;
+      case CookiePeriodType.ONE_YEAR:
+        maxAgeValue = CookiePeriodValue.ONE_YEAR;
         break;
       default:
         maxAgeValue = null
