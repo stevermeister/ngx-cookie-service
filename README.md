@@ -89,7 +89,7 @@ const allCookies: {} = cookieService.getAll();
 
 Returns a map of key-value pairs for cookies that can be accessed.
 
-## set( name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'Strict' ): void;
+## set( name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'Strict', maxAge?: CookiePeriodType): void;
 
 ```typescript
 cookieService.set( 'test', 'Hello World' );
@@ -98,6 +98,8 @@ cookieService.set( 'test', 'Hello World' );
 Sets a cookie with the specified `name` and `value`. It is good practice to specify a path. If you are unsure about the path value, use `'/'`. If no path or domain is explicitly defined, the current location is assumed.
 
 **Important:** For security reasons, it is not possible to define cookies for other domains. Browsers do not allow this. Read [this](https://stackoverflow.com/a/1063760) and [this](https://stackoverflow.com/a/17777005/1007003) StackOverflow answer for a more in-depth explanation.
+
+**Note: By setting the last opcional param you are able to have an specific period as a max age to your Cookie. For this, all you have to do is importing the `CookiePeriodType` enumeration which provides you a set of options like `ONE_HOUR, ONE_DAY, ONE_MONTH, ONE_YEAR`** 
 
 ## delete( name: string, path?: string, domain?: string ): void;
 
