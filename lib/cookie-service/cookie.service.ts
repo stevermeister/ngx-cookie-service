@@ -87,7 +87,7 @@ export class CookieService {
    * @param path     Cookie path
    * @param domain   Cookie domain
    * @param secure   Secure flag
-   * @param sameSite OWASP samesite token `Lax` or `Strict`
+   * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict` (Default: None)
    */
   set(
     name: string,
@@ -96,7 +96,7 @@ export class CookieService {
     path?: string,
     domain?: string,
     secure?: boolean,
-    sameSite?: 'Lax' | 'Strict'
+    sameSite: 'Lax' | 'None' | 'Strict' = 'None'
   ): void {
     if ( !this.documentIsAccessible ) {
       return;
@@ -126,9 +126,7 @@ export class CookieService {
       cookieString += 'secure;';
     }
 
-    if ( sameSite ) {
-      cookieString += 'sameSite=' + sameSite + ';';
-    }
+    cookieString += 'sameSite=' + sameSite + ';';
 
     this.document.cookie = cookieString;
   }
