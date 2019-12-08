@@ -48,8 +48,12 @@ export class CookieService {
 
       const regExp: RegExp = this.getCookieRegExp( name );
       const result: RegExpExecArray = regExp.exec( this.document.cookie );
-
-      return decodeURIComponent( result[ 1 ] );
+      try {
+        return decodeURIComponent( result[ 1 ] );
+      } catch (error) {
+        // the cookie probably is not uri encoded. return as is
+        return result[ 1 ];
+      }
     } else {
       return '';
     }
