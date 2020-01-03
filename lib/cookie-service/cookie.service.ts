@@ -87,7 +87,7 @@ export class CookieService {
    * @param path     Cookie path
    * @param domain   Cookie domain
    * @param secure   Secure flag
-   * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict` (Default: None)
+   * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `None`
    */
   set(
     name: string,

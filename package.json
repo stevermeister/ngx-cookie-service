@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service",
   "description": "an (aot ready) angular (4.2+) cookie service",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "license": "MIT",
   "author": "7leads GmbH <info@7leads.org>",
   "keywords": [
@@ -54,6 +54,9 @@
     {
       "name": "Matt Lewis",
       "email": "npm@mattlewis.me"
+    },
+    {
+      "name": "IceBreakerG"
     }
   ],
   "scripts": {
