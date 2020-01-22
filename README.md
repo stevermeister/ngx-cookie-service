@@ -2,11 +2,11 @@
 
 An (AOT ready) Angular (4.2+) service for cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library.
 
-# :warning: Announcement: New maintainer needed.
+# :cookie: Announcement: New maintainer
 
-We stopped working with Angular some time ago. At first we did not mind maintaining this package as a small side project, but we would finally like to move on to other projects.
+Many people were interested in taking over the maintenance of the `ngx-cookie-service` package, and we would like to shoot all of you a big thank you. 
 
-However, we feel that this package is still useful. Therefore, we would really like to hand it over to a new maintainer instead of just deprecating it. If you would like to take care of `ngx-cookie-service` in the future, feel free to shoot us an email: technik@7leads.org
+The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on. Thank you, and also thanks to everyone else for your patience.
 
 # Installation
 
