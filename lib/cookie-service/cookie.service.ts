@@ -136,12 +136,12 @@ export class CookieService {
    * @param path   Cookie path
    * @param domain Cookie domain
    */
-  delete( name: string, path?: string, domain?: string ): void {
+  delete( name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'None' ): void {
     if ( !this.documentIsAccessible ) {
       return;
     }
 
-    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain );
+    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain, secure, sameSite );
   }
 
   /**
