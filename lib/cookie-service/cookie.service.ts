@@ -108,40 +108,42 @@ export class CookieService {
       if ( typeof expires === 'number' ) {
         const dateExpires: Date = new Date( new Date().getTime() + expires * 1000 * 60 * 60 * 24 );
 
-        cookieString += 'expires=' + dateExpires.toUTCString() + ';';
+        cookieString += encodeURIComponent( 'expires=' + dateExpires.toUTCString() + ';' );
       } else {
-        cookieString += 'expires=' + expires.toUTCString() + ';';
+        cookieString += encodeURIComponent( 'expires=' + expires.toUTCString() + ';' );
       }
     }
 
     if ( path ) {
-      cookieString += 'path=' + path + ';';
+      cookieString += encodeURIComponent( 'path=' + path + ';' );
     }
 
     if ( domain ) {
-      cookieString += 'domain=' + domain + ';';
+      cookieString += encodeURIComponent( 'domain=' + domain + ';' );
     }
 
     if ( secure ) {
-      cookieString += 'secure;';
+      cookieString += encodeURIComponent( 'secure;' );
     }
 
-    cookieString += 'sameSite=' + sameSite + ';';
+    cookieString += encodeURIComponent( 'sameSite=' + sameSite + ';' );
 
     this.document.cookie = cookieString;
   }
 
   /**
-   * @param name   Cookie name
-   * @param path   Cookie path
-   * @param domain Cookie domain
+   * @param name     Cookie name
+   * @param path     Cookie path
+   * @param domain   Cookie domain
+   * @param secure   Secure flag
+   * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `None`
    */
-  delete( name: string, path?: string, domain?: string ): void {
+  delete( name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'None' ): void {
     if ( !this.documentIsAccessible ) {
       return;
     }
 
-    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain );
+    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain, secure, sameSite );
   }
 
   /**
