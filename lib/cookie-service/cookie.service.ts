@@ -4,6 +4,10 @@
 
 import { Injectable, Inject, PLATFORM_ID, InjectionToken } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import {CookieModel} from './cookie.model';
+import {COOKIE_CONFIG_TOKEN} from './cookie.config';
+
+const EXPIRE_TIME = 86400000;
 
 @Injectable()
 export class CookieService {
@@ -17,6 +21,8 @@ export class CookieService {
     @Inject( DOCUMENT ) private document: any,
     // Get the `PLATFORM_ID` so we can check if we're in a browser.
     @Inject( PLATFORM_ID ) private platformId: InjectionToken<Object>,
+    // Get the root cookie config to set in this service
+    @Inject( COOKIE_CONFIG_TOKEN ) private cookieConfig: CookieModel,
   ) {
     this.documentIsAccessible = isPlatformBrowser( this.platformId );
   }
@@ -81,23 +87,10 @@ export class CookieService {
   }
 
   /**
-   * @param name     Cookie name
-   * @param value    Cookie value
-   * @param expires  Number of days until the cookies expires or an actual `Date`
-   * @param path     Cookie path
-   * @param domain   Cookie domain
-   * @param secure   Secure flag
-   * @param sameSite OWASP samesite token `Lax` or `Strict`
+   * @param options
    */
-  set(
-    name: string,
-    value: string,
-    expires?: number | Date,
-    path?: string,
-    domain?: string,
-    secure?: boolean,
-    sameSite?: 'Lax' | 'Strict'
-  ): void {
+  set(options: CookieModel): void {
+    const { value, expires, path, domain, secure, sameSite } = options;
     if ( !this.documentIsAccessible ) {
       return;
     }
@@ -106,7 +99,7 @@ export class CookieService {
 
     if ( expires ) {
       if ( typeof expires === 'number' ) {
-        const dateExpires: Date = new Date( new Date().getTime() + expires * 1000 * 60 * 60 * 24 );
+        const dateExpires: Date = new Date( new Date().getTime() + expires * EXPIRE_TIME );
 
         cookieString += 'expires=' + dateExpires.toUTCString() + ';';
       } else {
@@ -114,19 +107,27 @@ export class CookieService {
       }
     }
 
-    if ( path ) {
+    if ( this.cookieConfig.path ) {
+      cookieString += 'path=' + this.cookieConfig.path + ';';
+    } else {
       cookieString += 'path=' + path + ';';
     }
 
-    if ( domain ) {
+    if ( this.cookieConfig.domain ) {
+      cookieString += 'domain=' + this.cookieConfig.domain + ';';
+    } else {
       cookieString += 'domain=' + domain + ';';
     }
 
-    if ( secure ) {
+    if ( this.cookieConfig.secure ) {
+      cookieString += 'secure;';
+    } else {
       cookieString += 'secure;';
     }
 
-    if ( sameSite ) {
+    if ( this.cookieConfig.sameSite ) {
+      cookieString += 'sameSite=' + this.cookieConfig.sameSite + ';';
+    } else {
       cookieString += 'sameSite=' + sameSite + ';';
     }
 
@@ -143,7 +144,15 @@ export class CookieService {
       return;
     }
 
-    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain );
+    const cookie = {
+      name,
+      value: '',
+      expires: this.cookieConfig.expires,
+      path: this.cookieConfig.path || path,
+      domain: this.cookieConfig.domain || domain,
+    };
+
+    this.set(cookie);
   }
 
   /**
@@ -159,7 +168,11 @@ export class CookieService {
 
     for ( const cookieName in cookies ) {
       if ( cookies.hasOwnProperty( cookieName ) ) {
-        this.delete( cookieName, path, domain );
+        if (path && domain) {
+          this.delete( cookieName, path, domain );
+        } else {
+          this.delete(cookieName, this.cookieConfig.path, this.cookieConfig.domain);
+        }
       }
     }
   }
