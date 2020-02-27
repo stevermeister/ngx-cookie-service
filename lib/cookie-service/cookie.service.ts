@@ -101,7 +101,7 @@ export class CookieService {
    * @param path     Cookie path
    * @param domain   Cookie domain
    * @param secure   Secure flag
-   * @param sameSite OWASP samesite token `Lax` or `Strict`
+   * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `None`
    * @param maxAge   A max value into CookiePeriodType format
    */
   set(
@@ -111,7 +111,7 @@ export class CookieService {
     path?: string,
     domain?: string,
     secure?: boolean,
-    sameSite?: 'Lax' | 'Strict',
+    sameSite: 'Lax' | 'None' | 'Strict' = 'None',
     maxAge?: CookiePeriodType
   ): void {
     if ( !this.documentIsAccessible ) {
@@ -142,9 +142,7 @@ export class CookieService {
       cookieString += 'secure;';
     }
 
-    if ( sameSite ) {
-      cookieString += 'sameSite=' + sameSite + ';';
-    }
+    cookieString += 'sameSite=' + sameSite + ';';
 
     if( maxAge ){
       const maxAgeValue = this.getMaxAgeInSeconds(maxAge);
@@ -164,7 +162,7 @@ export class CookieService {
       return;
     }
 
-    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain );
+    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain, undefined, 'Lax' );
   }
 
   /**

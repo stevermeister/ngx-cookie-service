@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service",
   "description": "an (aot ready) angular (4.2+) cookie service",
-  "version": "2.2.0",
+  "version": "2.4.0",
   "license": "MIT",
   "author": "7leads GmbH <info@7leads.org>",
   "keywords": [
@@ -14,6 +14,7 @@
     "angular-5",
     "angular-6",
     "angular-7",
+    "angular-8",
     "aot",
     "aot-compatible",
     "aot-compilation",
@@ -27,6 +28,10 @@
     "cookies"
   ],
   "contributors": [
+    {
+      "name": "Stepan Suvorov",
+      "email": "stepan@studytube.nl"
+    },
     {
       "name": "Christopher Parotat",
       "email": "c.parotat@7leads.org"
@@ -54,6 +59,9 @@
     {
       "name": "Matt Lewis",
       "email": "npm@mattlewis.me"
+    },
+    {
+      "name": "IceBreakerG"
     }
   ],
   "scripts": {
@@ -68,11 +76,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/7leads/ngx-cookie-service.git"
+    "url": "https://github.com/stevermeister/ngx-cookie-service.git"
   },
   "bugs": {
-    "url": "https://github.com/7leads/ngx-cookie-service/issues",
-    "email": "info@7leads.org"
+    "url": "https://github.com/stevermeister/ngx-cookie-service/issues",
+    "email": "stepan@studytube.nl"
   },
   "peerDependencies": {
     "@angular/core": ">=4.2.0",

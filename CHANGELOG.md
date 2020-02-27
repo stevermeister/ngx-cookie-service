@@ -1,3 +1,6 @@
+# 2.3.0
+- `sameSite` now defaults to `None`
+ 
 # 2.2.0 
 - use `ng-packagr` instead of our own outdated build script
 - use one single readme file for both NPM and GitHub
