@@ -1,6 +1,6 @@
-import { TestBed, async, inject } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 
-import { CookieService } from './ngx-cookie-service.service';
+import { CookieService } from './cookie.service';
 
 describe('NgxCookieServiceService', () => {
   let cookieService: CookieService;
