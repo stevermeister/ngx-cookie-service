@@ -1,0 +1,76 @@
+{
+  "name": "ngx-cookie-service",
+  "description": "an (aot ready) angular (4.2+) cookie service",
+  "version": "3.0.0",
+  "license": "MIT",
+  "author": "Stepan Suvorov <stevermeister@gmail.com>",
+  "keywords": [
+    "angular",
+    "angular2",
+    "angular4",
+    "angular5",
+    "angular-2",
+    "angular-4",
+    "angular-5",
+    "angular-6",
+    "angular-7",
+    "angular-8",
+    "aot",
+    "aot-compatible",
+    "aot-compilation",
+    "ngx",
+    "ng2",
+    "ng",
+    "service",
+    "angular-service",
+    "cookie-service",
+    "cookie",
+    "cookies"
+  ],
+  "contributors": [
+    {
+      "name": "Christopher Parotat",
+      "email": "c.parotat@7leads.org"
+    },
+    {
+      "name": "Stefan Bauer",
+      "email": "bauer.stefan@live.de"
+    },
+    {
+      "name": "Kristian Thy",
+      "email": "thy@42.dk"
+    },
+    {
+      "name": "Jared Clemence"
+    },
+    {
+      "name": "flakolefluk"
+    },
+    {
+      "name": "mattbanks"
+    },
+    {
+      "name": "DBaker85"
+    },
+    {
+      "name": "Matt Lewis",
+      "email": "npm@mattlewis.me"
+    },
+    {
+      "name": "IceBreakerG"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stevermeister/ngx-cookie-service.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stevermeister/ngx-cookie-service/issues",
+    "email": "stepan@studytube.nl"
+  },
+  "peerDependencies": {
+    "@angular/common": "^9.0.5",
+    "@angular/core": "^9.0.5",
+    "tslib": "^1.10.0"
+  }
+}
