@@ -1,12 +1,10 @@
 # NGX Cookie Service
 
-An (AOT ready) Angular (4.2+) service for cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library.
+Angular 9 IVY Ready service for cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library.
 
-# :cookie: Announcement: New maintainer
+For versions <9, please use 2.3.0 version of library.
 
-Many people were interested in taking over the maintenance of the `ngx-cookie-service` package, and we would like to shoot all of you a big thank you. 
-
-The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on. Thank you, and also thanks to everyone else for your patience.
+The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
 
 # Installation
 
@@ -21,53 +19,26 @@ yarn add ngx-cookie-service
 Add the cookie service to your `app.module.ts` as a provider:
 
 ```typescript
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-import { HttpModule } from '@angular/http';
-
-import { AppComponent } from './app.component';
 import { CookieService } from 'ngx-cookie-service';
 
 @NgModule({
-  declarations: [ AppComponent ],
-  imports: [ BrowserModule, FormsModule, HttpModule ],
+  ...
   providers: [ CookieService ],
-  bootstrap: [ AppComponent ]
+  ...
 })
 export class AppModule { }
 ```
 
-Then, import and inject it into a component:
+Then, import and inject it into a constructor:
 
 ```typescript
-import { Component, OnInit } from '@angular/core';
-import { CookieService } from 'ngx-cookie-service';
-
-@Component({
-  selector: 'demo-root',
-  templateUrl: './app.component.html',
-  styleUrls: [ './app.component.scss' ]
-})
-export class AppComponent implements OnInit {
-  cookieValue = 'UNKNOWN';
-
-  constructor( private cookieService: CookieService ) { }
-
-  ngOnInit(): void {
-    this.cookieService.set( 'Test', 'Hello World' );
-    this.cookieValue = this.cookieService.get('Test');
-  }
+constructor( private cookieService: CookieService ) { 
+  this.cookieService.set( 'Test', 'Hello World' );
+  this.cookieValue = this.cookieService.get('Test');
 }
 ```
 
 That's it!
-
-# What to do now?
-
-* Run `npm run test` to run the tests for the cookie service (located in the `demo-app` folder)
-* Have a look at and play around with the `demo-app` to get to know the cookie service with `npm run start` (open `http://localhost:4200/` in your favourite browser)
-* If you do not want to install this via [NPM](http://npmjs.com/), you can run `npm run compile` and use the `*.d.ts` and `*.js` files in the `dist-lib` folder
 
 # Methods
 
@@ -137,7 +108,7 @@ Checking out the following resources usually solves most of the problems people 
 
 The following general steps are usually very helpful when debugging problems with this cookie service or cookies in general:
 
-* check out if there are any [open](https://github.com/7leads/ngx-cookie-service/issues) or [closed](https://github.com/7leads/ngx-cookie-service/issues?q=is%3Aissue+is%3Aclosed) issues that answer your question
+* check out if there are any [open](https://github.com/stevermeister/ngx-cookie-service/issues) or [closed](https://github.com/stevermeister/ngx-cookie-service/issues?q=is%3Aissue+is%3Aclosed) issues that answer your question
 * check out the actual value(s) of `document.cookie`
 * does it work if you use `document.cookie` manually (i.e. in a console of your choice)?
 * set explicit paths for your cookies
@@ -170,7 +141,7 @@ We are happy to accept pull requests or test cases for things that do not work. 
 
 However, we will only accept pull requests that pass all tests and include some new ones (as long as it makes sense to add them, of course).
 
-* [Open a new pull request](https://github.com/7leads/ngx-cookie-service/compare)
+* [Open a new pull request](https://github.com/stevermeister/ngx-cookie-service/compare)
 
 # Author
 
@@ -192,4 +163,4 @@ Thanks to all contributors:
 
 # License
 
-[MIT](https://github.com/7leads/ngx-cookie-service/blob/master/LICENSE)
+[MIT](https://github.com/stevermeister/ngx-cookie-service/blob/master/LICENSE)
