@@ -139,19 +139,19 @@ export class CookieService {
    * @param path   Cookie path
    * @param domain Cookie domain
    */
-  delete( name: string, path?: string, domain?: string ): void {
+  delete( name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'None' ): void {
     if ( !this.documentIsAccessible ) {
       return;
     }
 
-    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain, undefined, 'Lax' );
+    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain, secure, sameSite );
   }
 
   /**
    * @param path   Cookie path
    * @param domain Cookie domain
    */
-  deleteAll( path?: string, domain?: string ): void {
+  deleteAll( path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'None' ): void {
     if ( !this.documentIsAccessible ) {
       return;
     }
@@ -160,7 +160,7 @@ export class CookieService {
 
     for ( const cookieName in cookies ) {
       if ( cookies.hasOwnProperty( cookieName ) ) {
-        this.delete( cookieName, path, domain );
+        this.delete( cookieName, path, domain, secure, sameSite );
       }
     }
   }
