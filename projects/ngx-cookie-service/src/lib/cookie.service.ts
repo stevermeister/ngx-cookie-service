@@ -5,7 +5,9 @@
 import { Injectable, Inject, PLATFORM_ID, InjectionToken } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
-@Injectable()
+@Injectable({
+  providedIn: 'root'
+})
 export class CookieService {
   private readonly documentIsAccessible: boolean;
 
@@ -16,14 +18,14 @@ export class CookieService {
     // Fix: https://github.com/angular/angular/pull/14894
     @Inject( DOCUMENT ) private document: any,
     // Get the `PLATFORM_ID` so we can check if we're in a browser.
-    @Inject( PLATFORM_ID ) private platformId: InjectionToken<Object>,
+    @Inject( PLATFORM_ID ) private platformId: InjectionToken<object>,
   ) {
     this.documentIsAccessible = isPlatformBrowser( this.platformId );
   }
 
   /**
    * @param name Cookie name
-   * @returns {boolean}
+   * @returns boolean - whether cookie with specified name exists
    */
   check( name: string ): boolean {
     if ( !this.documentIsAccessible ) {
@@ -40,7 +42,7 @@ export class CookieService {
 
   /**
    * @param name Cookie name
-   * @returns {any}
+   * @returns property value
    */
   get( name: string ): string {
     if ( this.documentIsAccessible && this.check( name ) ) {
@@ -48,6 +50,7 @@ export class CookieService {
 
       const regExp: RegExp = this.getCookieRegExp( name );
       const result: RegExpExecArray = regExp.exec( this.document.cookie );
+
       try {
         return decodeURIComponent( result[ 1 ] );
       } catch (error) {
@@ -60,25 +63,21 @@ export class CookieService {
   }
 
   /**
-   * @returns {}
+   * @returns all the cookies in json
    */
-  getAll(): {} {
+  getAll(): {[key: string]: string} {
     if ( !this.documentIsAccessible ) {
       return {};
     }
 
-    const cookies: {} = {};
+    const cookies: {[key: string]: string}  = {};
     const document: any = this.document;
 
     if ( document.cookie && document.cookie !== '' ) {
-      const split: Array<string> = document.cookie.split(';');
-
-      for ( let i = 0; i < split.length; i += 1 ) {
-        const currentCookie: Array<string> = split[ i ].split('=');
-
-        currentCookie[ 0 ] = currentCookie[ 0 ].replace( /^ /, '' );
-        cookies[ decodeURIComponent( currentCookie[ 0 ] ) ] = decodeURIComponent( currentCookie[ 1 ] );
-      }
+      document.cookie.split(';').forEach(currentCookie => {
+        const [cookieName, cookieValue] = currentCookie.split('=');
+        cookies[decodeURIComponent(cookieName.replace( /^ /, '' ))] = decodeURIComponent(cookieValue);
+      });
     }
 
     return cookies;
@@ -140,19 +139,19 @@ export class CookieService {
    * @param path   Cookie path
    * @param domain Cookie domain
    */
-  delete( name: string, path?: string, domain?: string ): void {
+  delete( name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'None' ): void {
     if ( !this.documentIsAccessible ) {
       return;
     }
 
-    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain, undefined, 'Lax' );
+    this.set( name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain, secure, sameSite );
   }
 
   /**
    * @param path   Cookie path
    * @param domain Cookie domain
    */
-  deleteAll( path?: string, domain?: string ): void {
+  deleteAll( path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'None' ): void {
     if ( !this.documentIsAccessible ) {
       return;
     }
@@ -161,14 +160,14 @@ export class CookieService {
 
     for ( const cookieName in cookies ) {
       if ( cookies.hasOwnProperty( cookieName ) ) {
-        this.delete( cookieName, path, domain );
+        this.delete( cookieName, path, domain, secure, sameSite );
       }
     }
   }
 
   /**
    * @param name Cookie name
-   * @returns {RegExp}
+   * @returns property RegExp
    */
   private getCookieRegExp( name: string ): RegExp {
     const escapedName: string = name.replace( /([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/ig, '\\$1' );

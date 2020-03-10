@@ -1,124 +1,49 @@
 {
-  "name": "ngx-cookie-service",
-  "description": "an (aot ready) angular (4.2+) cookie service",
-  "version": "2.4.0",
-  "license": "MIT",
-  "author": "7leads GmbH <info@7leads.org>",
-  "keywords": [
-    "angular",
-    "angular2",
-    "angular4",
-    "angular5",
-    "angular-2",
-    "angular-4",
-    "angular-5",
-    "angular-6",
-    "angular-7",
-    "angular-8",
-    "aot",
-    "aot-compatible",
-    "aot-compilation",
-    "ngx",
-    "ng2",
-    "ng",
-    "service",
-    "angular-service",
-    "cookie-service",
-    "cookie",
-    "cookies"
-  ],
-  "contributors": [
-    {
-      "name": "Stepan Suvorov",
-      "email": "stepan@studytube.nl"
-    },
-    {
-      "name": "Christopher Parotat",
-      "email": "c.parotat@7leads.org"
-    },
-    {
-      "name": "Stefan Bauer",
-      "email": "bauer.stefan@live.de"
-    },
-    {
-      "name": "Kristian Thy",
-      "email": "thy@42.dk"
-    },
-    {
-      "name": "Jared Clemence"
-    },
-    {
-      "name": "flakolefluk"
-    },
-    {
-      "name": "mattbanks"
-    },
-    {
-      "name": "DBaker85"
-    },
-    {
-      "name": "Matt Lewis",
-      "email": "npm@mattlewis.me"
-    },
-    {
-      "name": "IceBreakerG"
-    }
-  ],
+  "name": "ngx-cookie-service-workspace",
+  "version": "0.0.0",
   "scripts": {
     "ng": "ng",
-    "start": "npm run compile && ng serve",
-    "build": "npm run compile && ng build",
-    "test": "npm run compile && ng test",
-    "lint": "npm run compile && ng lint",
-    "e2e": "npm run compile && ng e2e",
-    "compile": "ng-packagr -p ng-package.json",
-    "publish:dist": "npm run compile && npm publish dist-lib"
+    "start": "ng serve",
+    "build": "ng build",
+    "test": "ng test",
+    "lint": "ng lint",
+    "e2e": "ng e2e"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/stevermeister/ngx-cookie-service.git"
-  },
-  "bugs": {
-    "url": "https://github.com/stevermeister/ngx-cookie-service/issues",
-    "email": "stepan@studytube.nl"
-  },
-  "peerDependencies": {
-    "@angular/core": ">=4.2.0",
-    "@angular/platform-browser": ">=4.2.0",
-    "@angular/platform-browser-dynamic": ">=4.2.0"
+  "private": true,
+  "dependencies": {
+    "@angular/animations": "~9.0.3",
+    "@angular/common": "~9.0.3",
+    "@angular/compiler": "~9.0.3",
+    "@angular/core": "~9.0.3",
+    "@angular/forms": "~9.0.3",
+    "@angular/platform-browser": "~9.0.3",
+    "@angular/platform-browser-dynamic": "~9.0.3",
+    "@angular/router": "~9.0.3",
+    "rxjs": "~6.5.4",
+    "tslib": "^1.10.0",
+    "zone.js": "~0.10.2"
   },
   "devDependencies": {
-    "@angular/cli": "1.0.0",
-    "@angular/common": "^4.0.0",
-    "@angular/compiler": "^4.0.0",
-    "@angular/compiler-cli": "^4.0.0",
-    "@angular/core": "^4.0.0",
-    "@angular/forms": "^4.0.0",
-    "@angular/http": "^4.0.0",
-    "@angular/platform-browser": "^4.0.0",
-    "@angular/platform-browser-dynamic": "^4.0.0",
-    "@angular/platform-server": "^4.0.0",
-    "@angular/router": "^4.0.0",
-    "@types/jasmine": "2.5.38",
-    "@types/node": "~6.0.60",
-    "async": "^2.3.0",
-    "codelyzer": "~2.0.0",
-    "core-js": "^2.4.1",
-    "jasmine-core": "~2.5.2",
-    "jasmine-spec-reporter": "~3.2.0",
-    "karma": "~1.4.1",
-    "karma-chrome-launcher": "~2.0.0",
-    "karma-cli": "~1.0.1",
-    "karma-coverage-istanbul-reporter": "^0.2.0",
-    "karma-jasmine": "~1.1.0",
-    "karma-jasmine-html-reporter": "^0.2.2",
-    "ng-packagr": "^1.7.0",
-    "protractor": "~5.1.0",
-    "rimraf": "^2.6.1",
-    "rxjs": "^5.1.0",
-    "ts-node": "~2.0.0",
-    "tslint": "~4.5.0",
-    "typescript": "~2.2.0",
-    "zone.js": "^0.8.4"
+    "@angular-devkit/build-angular": "~0.900.5",
+    "@angular-devkit/build-ng-packagr": "~0.900.5",
+    "@angular/cli": "~9.0.4",
+    "@angular/compiler-cli": "~9.0.3",
+    "@angular/language-service": "~9.0.3",
+    "@types/node": "^12.11.1",
+    "@types/jasmine": "~3.5.0",
+    "@types/jasminewd2": "~2.0.3",
+    "codelyzer": "^5.1.2",
+    "jasmine-core": "~3.5.0",
+    "jasmine-spec-reporter": "~4.2.1",
+    "karma": "~4.3.0",
+    "karma-chrome-launcher": "~3.1.0",
+    "karma-coverage-istanbul-reporter": "~2.1.0",
+    "karma-jasmine": "~2.0.1",
+    "karma-jasmine-html-reporter": "^1.4.2",
+    "ng-packagr": "^9.0.0",
+    "protractor": "~5.4.3",
+    "ts-node": "~8.3.0",
+    "tslint": "~5.18.0",
+    "typescript": "~3.7.5"
   }
 }

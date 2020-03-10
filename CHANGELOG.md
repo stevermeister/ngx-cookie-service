@@ -1,3 +1,7 @@
+# 3.0.0
+- new build structure
+- update up to Angular 9.0.4
+
 # 2.3.0
 - `sameSite` now defaults to `None`
  
