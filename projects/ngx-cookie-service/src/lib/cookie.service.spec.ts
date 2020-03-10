@@ -64,8 +64,8 @@ describe('NgxCookieServiceService', () => {
 
     const cookies = cookieService.getAll();
 
-    expect( cookies['Foo'] ).toEqual( 'Bar' );
-    expect( cookies['Hello'] ).toEqual( 'World' );
+    expect( cookies.Foo ).toEqual( 'Bar' );
+    expect( cookies.Hello ).toEqual( 'World' );
   });
 
   it('should delete all cookies', () => {
@@ -74,15 +74,15 @@ describe('NgxCookieServiceService', () => {
 
     let cookies = cookieService.getAll();
 
-    expect( cookies['Foo'] ).toEqual('Bar');
-    expect( cookies['Hello'] ).toEqual('World');
+    expect( cookies.Foo ).toEqual('Bar');
+    expect( cookies.Hello ).toEqual('World');
 
     cookieService.deleteAll();
 
     cookies = cookieService.getAll();
 
-    expect( cookies['Foo'] ).toBe( undefined );
-    expect( cookies['Hello'] ).toBe( undefined );
+    expect( cookies.Foo ).toBe( undefined );
+    expect( cookies.Hello ).toBe( undefined );
   });
 
   it('should handle special characters properly',  () => {

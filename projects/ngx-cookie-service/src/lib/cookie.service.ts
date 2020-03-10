@@ -65,12 +65,12 @@ export class CookieService {
   /**
    * @returns all the cookies in json
    */
-  getAll(): {} {
+  getAll(): {[key: string]: string} {
     if ( !this.documentIsAccessible ) {
       return {};
     }
 
-    const cookies: {} = {};
+    const cookies: {[key: string]: string}  = {};
     const document: any = this.document;
 
     if ( document.cookie && document.cookie !== '' ) {
