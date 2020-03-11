@@ -125,7 +125,13 @@ export class CookieService {
       cookieString += 'domain=' + domain + ';';
     }
 
-    if ( secure ) {
+    if ( secure === false && sameSite === 'None') {
+      secure = true;
+      console.warn(`[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
+        `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`);
+    }
+
+    if (secure) {
       cookieString += 'secure;';
     }
 
