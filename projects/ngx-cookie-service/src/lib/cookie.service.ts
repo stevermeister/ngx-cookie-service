@@ -99,7 +99,7 @@ export class CookieService {
     path?: string,
     domain?: string,
     secure?: boolean,
-    sameSite: 'Lax' | 'None' | 'Strict' = 'None'
+    sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'
   ): void {
     if ( !this.documentIsAccessible ) {
       return;
