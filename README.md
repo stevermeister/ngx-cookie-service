@@ -76,7 +76,7 @@ Sets a cookie with the specified `name` and `value`. It is good practice to spec
 
 **Important:** For security reasons, it is not possible to define cookies for other domains. Browsers do not allow this. Read [this](https://stackoverflow.com/a/1063760) and [this](https://stackoverflow.com/a/17777005/1007003) StackOverflow answer for a more in-depth explanation.
 
-## delete( name: string, path?: string, domain?: string ): void;
+## delete( name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'None' ): void;
 
 ```typescript
 cookieService.delete('test');
@@ -86,7 +86,7 @@ Deletes a cookie with the specified `name`.  It is best practice to always defin
 
 **Important:** For security reasons, it is not possible to delete cookies for other domains. Browsers do not allow this. Read [this](https://stackoverflow.com/a/1063760) and [this](https://stackoverflow.com/a/17777005/1007003) StackOverflow answer for a more in-depth explanation.
 
-## deleteAll( path?: string, domain?: string ): void;
+## deleteAll( path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'None' ): void;
 
 ```typescript
 cookieService.deleteAll();
