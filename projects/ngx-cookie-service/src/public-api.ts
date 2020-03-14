@@ -3,3 +3,4 @@
  */
 
 export * from './lib/cookie.service';
+export * from './types'
