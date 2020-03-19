@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service",
   "description": "an (aot ready) angular (4.2+) cookie service",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "license": "MIT",
   "author": "Stepan Suvorov <stevermeister@gmail.com>",
   "keywords": [
