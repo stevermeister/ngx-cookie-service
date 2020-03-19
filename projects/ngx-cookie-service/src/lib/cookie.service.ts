@@ -90,7 +90,7 @@ export class CookieService {
    * @param path     Cookie path
    * @param domain   Cookie domain
    * @param secure   Secure flag
-   * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `None`
+   * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `Lax`
    */
   set(
     name: string,
@@ -145,7 +145,7 @@ export class CookieService {
    * @param path   Cookie path
    * @param domain Cookie domain
    */
-  delete( name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'None' ): void {
+  delete( name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax' ): void {
     if ( !this.documentIsAccessible ) {
       return;
     }
@@ -157,7 +157,7 @@ export class CookieService {
    * @param path   Cookie path
    * @param domain Cookie domain
    */
-  deleteAll( path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'None' ): void {
+  deleteAll( path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax' ): void {
     if ( !this.documentIsAccessible ) {
       return;
     }
