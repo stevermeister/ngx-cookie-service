@@ -78,7 +78,7 @@ Sets a cookie with the specified `name` and `value`. It is good practice to spec
 
 **Important:** Browsers do not accept cookies flagged sameSite = 'None' if secure flag isn't set as well. CookieService will override the secure flag to true if sameSite='None'.
 
-## delete( name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'None' ): void;
+## delete( name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax' ): void;
 
 ```typescript
 cookieService.delete('test');
@@ -88,7 +88,7 @@ Deletes a cookie with the specified `name`.  It is best practice to always defin
 
 **Important:** For security reasons, it is not possible to delete cookies for other domains. Browsers do not allow this. Read [this](https://stackoverflow.com/a/1063760) and [this](https://stackoverflow.com/a/17777005/1007003) StackOverflow answer for a more in-depth explanation.
 
-## deleteAll( path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'None' ): void;
+## deleteAll( path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax' ): void;
 
 ```typescript
 cookieService.deleteAll();
