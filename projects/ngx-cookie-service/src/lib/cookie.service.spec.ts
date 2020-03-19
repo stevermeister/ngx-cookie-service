@@ -97,7 +97,6 @@ describe('NgxCookieServiceService', () => {
         documentCookieGetterSpy.and.returnValue('foo=%E0%A4%A');
 
         expect(cookieService.get('foo')).toEqual('%E0%A4%A');
-        documentCookieGetterSpy.and.returnValue('');
       });
       it('should return empty string for not set cookie', () => {
         documentCookieGetterSpy.and.returnValue('foo=bar;');
@@ -117,6 +116,18 @@ describe('NgxCookieServiceService', () => {
         );
 
         expect(cookieService.getAll()).toEqual({ foo: 'bar', Hello: 'World', ';,/?:@&=+$': ';,/?:@&=+$' });
+      });
+      it('should return object with safely decoded cookie names and values', () => {
+        documentCookieGetterSpy.and.returnValue(
+          'foo=%E0%A4%A; %E0%A4%A=%E0%A4%A; Hello=World; %3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24'
+        );
+
+        expect(cookieService.getAll()).toEqual({
+          foo: '%E0%A4%A',
+          '%E0%A4%A': '%E0%A4%A',
+          Hello: 'World',
+          ';,/?:@&=+$': ';,/?:@&=+$'
+        });
       });
     });
     describe('#set', () => {

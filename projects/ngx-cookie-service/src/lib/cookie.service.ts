@@ -51,12 +51,7 @@ export class CookieService {
       const regExp: RegExp = this.getCookieRegExp( name );
       const result: RegExpExecArray = regExp.exec( this.document.cookie );
 
-      try {
-        return decodeURIComponent( result[ 1 ] );
-      } catch (error) {
-        // the cookie probably is not uri encoded. return as is
-        return result[ 1 ];
-      }
+      return this.safeDecodeURIComponent(result[1]);
     } else {
       return '';
     }
@@ -76,7 +71,7 @@ export class CookieService {
     if ( document.cookie && document.cookie !== '' ) {
       document.cookie.split(';').forEach(currentCookie => {
         const [cookieName, cookieValue] = currentCookie.split('=');
-        cookies[decodeURIComponent(cookieName.replace( /^ /, '' ))] = decodeURIComponent(cookieValue);
+        cookies[this.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = this.safeDecodeURIComponent(cookieValue);
       });
     }
 
@@ -179,5 +174,14 @@ export class CookieService {
     const escapedName: string = name.replace( /([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/ig, '\\$1' );
 
     return new RegExp( '(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g' );
+  }
+
+  private safeDecodeURIComponent(encodedURIComponent: string): string {
+    try {
+      return decodeURIComponent(encodedURIComponent);
+    } catch {
+      // probably it is not uri encoded. return as is
+      return encodedURIComponent;
+    }
   }
 }
