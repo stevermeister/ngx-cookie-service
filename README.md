@@ -72,7 +72,7 @@ Returns a map of key-value pairs for cookies that can be accessed.
 cookieService.set( 'test', 'Hello World' );
 ```
 
-Sets a cookie with the specified `name` and `value`. It is good practice to specify a path. If you are unsure about the path value, use `'/'`. If no path or domain is explicitly defined, the current location is assumed. `sameSite` defaults to `None`.
+Sets a cookie with the specified `name` and `value`. It is good practice to specify a path. If you are unsure about the path value, use `'/'`. If no path or domain is explicitly defined, the current location is assumed. `sameSite` defaults to `Lax`.
 
 **Important:** For security reasons, it is not possible to define cookies for other domains. Browsers do not allow this. Read [this](https://stackoverflow.com/a/1063760) and [this](https://stackoverflow.com/a/17777005/1007003) StackOverflow answer for a more in-depth explanation.
 
