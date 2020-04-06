@@ -27,6 +27,13 @@
             "main": "projects/ngx-cookie-service/src/test.ts",
             "tsConfig": "projects/ngx-cookie-service/tsconfig.spec.json",
             "karmaConfig": "projects/ngx-cookie-service/karma.conf.js"
+          },
+          "configurations": {
+            "ci": {
+              "watch": false,
+              "progress": false,
+              "browsers": "ChromeHeadlessCI"
+            }
           }
         },
         "lint": {
