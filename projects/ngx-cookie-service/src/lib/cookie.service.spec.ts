@@ -18,8 +18,8 @@ describe('NgxCookieServiceService', () => {
     TestBed.configureTestingModule({
       providers: [
         { provide: PLATFORM_ID, useFactory: () => platformId },
-        { provide: DOCUMENT, useFactory: () => documentMock }
-      ]
+        { provide: DOCUMENT, useFactory: () => documentMock },
+      ],
     });
     cookieService = TestBed.inject(CookieService);
   });
@@ -79,7 +79,7 @@ describe('NgxCookieServiceService', () => {
           '-O_o%7B1%2C2%7D=-O_o%7B1%2C2%7D',
           'B%3Far%7CFo%2Bo=B%3Far%7CFo%2Bo',
           'Hello%3DWorld%3B=Hello%3DWorld%3B',
-          '%5Bfoo-_*.%5Dbar=%5Bfoo-_*.%5Dbar'
+          '%5Bfoo-_*.%5Dbar=%5Bfoo-_*.%5Dbar',
         ].join('; ');
         documentCookieGetterSpy.and.returnValue(cookieString);
 
@@ -111,9 +111,7 @@ describe('NgxCookieServiceService', () => {
         expect(cookieService.getAll()).toEqual({});
       });
       it('should return object with decoded cookie names and values', () => {
-        documentCookieGetterSpy.and.returnValue(
-          'foo=bar; Hello=World; %3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24'
-        );
+        documentCookieGetterSpy.and.returnValue('foo=bar; Hello=World; %3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24');
 
         expect(cookieService.getAll()).toEqual({ foo: 'bar', Hello: 'World', ';,/?:@&=+$': ';,/?:@&=+$' });
       });
@@ -126,7 +124,7 @@ describe('NgxCookieServiceService', () => {
           foo: '%E0%A4%A',
           '%E0%A4%A': '%E0%A4%A',
           Hello: 'World',
-          ';,/?:@&=+$': ';,/?:@&=+$'
+          ';,/?:@&=+$': ';,/?:@&=+$',
         });
       });
     });
@@ -147,12 +145,8 @@ describe('NgxCookieServiceService', () => {
         cookieService.set('Hello=World;', 'Hello=World;');
         cookieService.set('[foo-_*.]bar', '[foo-_*.]bar');
 
-        expect(documentCookieSetterSpy).toHaveBeenCalledWith(
-          '%3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24;sameSite=Lax;'
-        );
-        expect(documentCookieSetterSpy).toHaveBeenCalledWith(
-          '-H%40ll%C3%B6_%20W%C3%B6rld-=-H%40ll%C3%B6_%20W%C3%B6rld-;sameSite=Lax;'
-        );
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('%3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24;sameSite=Lax;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('-H%40ll%C3%B6_%20W%C3%B6rld-=-H%40ll%C3%B6_%20W%C3%B6rld-;sameSite=Lax;');
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('%24uper%5ETEST(123)=%24uper%5ETEST(123);sameSite=Lax;');
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('F()!!()%2Fbar=F()!!()%2Fbar;sameSite=Lax;');
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('*F.)%2Fo(o*=*F.)%2Fo(o*;sameSite=Lax;');
@@ -167,18 +161,14 @@ describe('NgxCookieServiceService', () => {
         jasmine.clock().mockDate(new Date('Sun, 15 Mar 2020 10:00:00 GMT'));
         cookieService.set('foo', 'bar', 2);
 
-        expect(documentCookieSetterSpy).toHaveBeenCalledWith(
-          'foo=bar;expires=Tue, 17 Mar 2020 10:00:00 GMT;sameSite=Lax;'
-        );
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;expires=Tue, 17 Mar 2020 10:00:00 GMT;sameSite=Lax;');
         jasmine.clock().uninstall();
       });
       it('should set cookie with expires option from Date object', () => {
         const expiresDate = new Date('Mon, 15 Mar 2021 10:00:00 GMT');
         cookieService.set('foo', 'bar', expiresDate);
 
-        expect(documentCookieSetterSpy).toHaveBeenCalledWith(
-          'foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;sameSite=Lax;'
-        );
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;sameSite=Lax;');
       });
       it('should set cookie with path option', () => {
         cookieService.set('foo', 'bar', undefined, '/test');
