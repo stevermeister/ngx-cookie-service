@@ -7,7 +7,7 @@ import Spy = jasmine.Spy;
 describe('NgxCookieServiceService', () => {
   let cookieService: CookieService;
   let platformId: string;
-  let documentMock: Document = document;
+  const documentMock: Document = document;
   let documentCookieGetterSpy: Spy;
   let documentCookieSetterSpy: Spy;
 
