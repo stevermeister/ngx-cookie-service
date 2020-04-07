@@ -27,22 +27,25 @@
             "main": "projects/ngx-cookie-service/src/test.ts",
             "tsConfig": "projects/ngx-cookie-service/tsconfig.spec.json",
             "karmaConfig": "projects/ngx-cookie-service/karma.conf.js"
+          },
+          "configurations": {
+            "ci": {
+              "watch": false,
+              "progress": false,
+              "browsers": "ChromeHeadlessCI"
+            }
           }
         },
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": [
-              "projects/ngx-cookie-service/tsconfig.lib.json",
-              "projects/ngx-cookie-service/tsconfig.spec.json"
-            ],
-            "exclude": [
-              "**/node_modules/**"
-            ]
+            "tsConfig": ["projects/ngx-cookie-service/tsconfig.lib.json", "projects/ngx-cookie-service/tsconfig.spec.json"],
+            "exclude": ["**/node_modules/**"]
           }
         }
       }
-    }},
+    }
+  },
   "cli": {
     "analytics": "672a95e4-d4b2-4161-ac1f-25d2c513bef0"
   },
