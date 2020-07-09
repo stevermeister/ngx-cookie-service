@@ -154,7 +154,12 @@ export class CookieService {
    * @param path   Cookie path
    * @param domain Cookie domain
    */
-  delete(name: string, path?: string, domain?: string, secure?: boolean, httpOnly?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
+  delete(name: string, 
+          path?: string, 
+          domain?: string, 
+          secure?: boolean, 
+          httpOnly?: boolean, 
+          sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
     if (!this.documentIsAccessible) {
       return;
     }
