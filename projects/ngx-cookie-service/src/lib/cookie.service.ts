@@ -129,11 +129,9 @@ export class CookieService {
           `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
       );
     }
-      
     if (secure) {
       cookieString += 'secure;';
     }
-      
     if (httpOnly === false && sameSite === 'None') {
       httpOnly = true;
       console.warn(
