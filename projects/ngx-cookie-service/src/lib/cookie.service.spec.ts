@@ -181,26 +181,26 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;domain=example.com;sameSite=Lax;');
       });
       it('should set cookie with secure option', () => {
-        cookieService.set('foo', 'bar', undefined, undefined, undefined, true);
+        cookieService.set('foo', 'bar', undefined, undefined, undefined, true, true);
 
-        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=Lax;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;HttpOnly;sameSite=Lax;');
       });
       it('should set cookie with forced secure flag when SameSite option is "None"', () => {
-        cookieService.set('foo', 'bar', undefined, undefined, undefined, false, 'None');
+        cookieService.set('foo', 'bar', undefined, undefined, undefined, false, false, 'None');
 
-        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=None;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;HttpOnly;sameSite=None;');
       });
       it('should set cookie with SameSite option', () => {
-        cookieService.set('foo', 'bar', undefined, undefined, undefined, false, 'Strict');
+        cookieService.set('foo', 'bar', undefined, undefined, undefined, false, false, 'Strict');
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;sameSite=Strict;');
       });
       it('should set cookie with all options', () => {
         const expiresDate = new Date('Mon, 15 Mar 2021 10:00:00 GMT');
-        cookieService.set('foo', 'bar', expiresDate, '/test', 'example.com', true, 'Strict');
+        cookieService.set('foo', 'bar', expiresDate, '/test', 'example.com', true, true, 'Strict');
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith(
-          'foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;path=/test;domain=example.com;secure;sameSite=Strict;'
+          'foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;path=/test;domain=example.com;secure;HttpOnly;sameSite=Strict;'
         );
       });
     });
