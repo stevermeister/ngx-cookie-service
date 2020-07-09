@@ -130,6 +130,10 @@ export class CookieService {
       );
     }
       
+    if (secure) {
+      cookieString += 'secure;';
+    }
+      
     if (httpOnly === false && sameSite === 'None') {
       httpOnly = true;
       console.warn(
