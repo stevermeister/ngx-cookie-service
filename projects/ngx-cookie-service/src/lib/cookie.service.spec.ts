@@ -116,9 +116,7 @@ describe('NgxCookieServiceService', () => {
         expect(cookieService.getAll()).toEqual({ foo: 'bar', Hello: 'World', ';,/?:@&=+$': ';,/?:@&=+$' });
       });
       it('should return object with safely decoded cookie names and values', () => {
-        documentCookieGetterSpy.and.returnValue(
-          'foo=%E0%A4%A; %E0%A4%A=%E0%A4%A; Hello=World; %3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24'
-        );
+        documentCookieGetterSpy.and.returnValue('foo=%E0%A4%A; %E0%A4%A=%E0%A4%A; Hello=World; %3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24');
 
         expect(cookieService.getAll()).toEqual({
           foo: '%E0%A4%A',
@@ -216,15 +214,7 @@ describe('NgxCookieServiceService', () => {
         spyOn(cookieService, 'set');
         cookieService.delete('foo', '/test', 'example.com', true, 'Lax');
 
-        expect(cookieService.set).toHaveBeenCalledWith(
-          'foo',
-          '',
-          new Date('Thu, 01 Jan 1970 00:00:01 GMT'),
-          '/test',
-          'example.com',
-          true,
-          'Lax'
-        );
+        expect(cookieService.set).toHaveBeenCalledWith('foo', '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), '/test', 'example.com', true, 'Lax');
       });
     });
     describe('#deleteAll', () => {
