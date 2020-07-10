@@ -234,7 +234,7 @@ describe('NgxCookieServiceService', () => {
         cookieService.deleteAll('/test', 'example.com', true, true, 'Lax');
 
         expect(cookieService.delete).toHaveBeenCalledWith('foo', '/test', 'example.com', true, true, 'Lax');
-        expect(cookieService.delete).toHaveBeenCalledWith('test', '/test', 'example.com', true, true,'Lax');
+        expect(cookieService.delete).toHaveBeenCalledWith('test', '/test', 'example.com', true, true, 'Lax');
       });
     });
   });
