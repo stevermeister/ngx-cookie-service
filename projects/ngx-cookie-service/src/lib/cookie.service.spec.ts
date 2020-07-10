@@ -212,9 +212,9 @@ describe('NgxCookieServiceService', () => {
       });
       it('should invoke set method with fixed date and and pass other params through', () => {
         spyOn(cookieService, 'set');
-        cookieService.delete('foo', '/test', 'example.com', true, 'Lax');
+        cookieService.delete('foo', '/test', 'example.com', true, true, 'Lax');
 
-        expect(cookieService.set).toHaveBeenCalledWith('foo', '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), '/test', 'example.com', true, 'Lax');
+        expect(cookieService.set).toHaveBeenCalledWith('foo', '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), '/test', 'example.com', true, true, 'Lax');
       });
     });
     describe('#deleteAll', () => {
@@ -231,10 +231,10 @@ describe('NgxCookieServiceService', () => {
         documentMock.cookie = 'foo=bar';
         documentMock.cookie = 'test=test123';
         expect(documentMock.cookie).toEqual('foo=bar; test=test123');
-        cookieService.deleteAll('/test', 'example.com', true, 'Lax');
+        cookieService.deleteAll('/test', 'example.com', true, true, 'Lax');
 
-        expect(cookieService.delete).toHaveBeenCalledWith('foo', '/test', 'example.com', true, 'Lax');
-        expect(cookieService.delete).toHaveBeenCalledWith('test', '/test', 'example.com', true, 'Lax');
+        expect(cookieService.delete).toHaveBeenCalledWith('foo', '/test', 'example.com', true, true, 'Lax');
+        expect(cookieService.delete).toHaveBeenCalledWith('test', '/test', 'example.com', true, true,'Lax');
       });
     });
   });
