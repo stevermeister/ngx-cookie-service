@@ -85,8 +85,8 @@ export class CookieService {
    * @param path     Cookie path
    * @param domain   Cookie domain
    * @param secure   Secure flag
-   * @param httpOnly HttpOnly flag
    * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `Lax`
+   * @param httpOnly HttpOnly flag
    */
   set(
     name: string,
@@ -95,8 +95,8 @@ export class CookieService {
     path?: string,
     domain?: string,
     secure?: boolean,
-    httpOnly?: boolean,
-    sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'
+    sameSite: 'Lax' | 'None' | 'Strict' = 'Lax',
+    httpOnly?: boolean
   ): void {
     if (!this.documentIsAccessible) {
       return;
@@ -154,19 +154,19 @@ export class CookieService {
    * @param path   Cookie path
    * @param domain Cookie domain
    */
-  delete(name: string, path?: string, domain?: string, secure?: boolean, httpOnly?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
+  delete(name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax', httpOnly?: boolean): void {
     if (!this.documentIsAccessible) {
       return;
     }
 
-    this.set(name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain, secure, httpOnly, sameSite);
+    this.set(name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain, secure, sameSite, httpOnly);
   }
 
   /**
    * @param path   Cookie path
    * @param domain Cookie domain
    */
-  deleteAll(path?: string, domain?: string, secure?: boolean, httpOnly?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
+  deleteAll(path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax', httpOnly?: boolean): void {
     if (!this.documentIsAccessible) {
       return;
     }
@@ -175,7 +175,7 @@ export class CookieService {
 
     for (const cookieName in cookies) {
       if (cookies.hasOwnProperty(cookieName)) {
-        this.delete(cookieName, path, domain, secure, httpOnly, sameSite);
+        this.delete(cookieName, path, domain, secure, sameSite, httpOnly);
       }
     }
   }
