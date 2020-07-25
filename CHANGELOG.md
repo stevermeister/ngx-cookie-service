@@ -1,3 +1,7 @@
+# 10.0.0
+- major version sync with angular core
+- update up to Angular 10.0.5
+
 # 3.0.0
 - new build structure
 - update up to Angular 9.0.4
