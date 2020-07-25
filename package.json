@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "format": "prettier ./**/*.{ts,js,json}",
+    "format": "prettier ./projects/**/*.{ts,js,json}",
     "format:write": "npm run format -- --write",
     "format:check": "npm run format -- --check",
     "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
