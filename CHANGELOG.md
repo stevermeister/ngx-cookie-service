@@ -1,3 +1,6 @@
+# 10.0.1
+- fix peerDependencies
+
 # 10.0.0
 - major version sync with angular core
 - update up to Angular 10.0.5
