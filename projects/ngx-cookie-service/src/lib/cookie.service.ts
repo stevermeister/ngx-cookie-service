@@ -94,44 +94,98 @@ export class CookieService {
     path?: string,
     domain?: string,
     secure?: boolean,
-    sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'
-  ): void {
+    sameSite?: 'Lax' | 'None' | 'Strict'
+  ): void;
+
+  /**
+   * Cookie's parameters:
+   * <pre>
+   * expires  Number of days until the cookies expires or an actual `Date`
+   * path     Cookie path
+   * domain   Cookie domain
+   * secure   Secure flag
+   * sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `Lax`
+   * </pre>
+   * @param name     Cookie name
+   * @param value    Cookie value
+   * @param options  Body with cookie's params
+   */
+  set(
+    name: string,
+    value: string,
+    options?: {
+      expires?: number | Date,
+      path?: string,
+      domain?: string,
+      secure?: boolean,
+      sameSite?: 'Lax' | 'None' | 'Strict'
+    }
+  ): void;
+
+  set(
+    name: string,
+    value: string,
+    expiresOrOptions?: number | Date | any,
+    path?: string,
+    domain?: string,
+    secure?: boolean,
+    sameSite?: 'Lax' | 'None' | 'Strict'
+  ): void  {
     if (!this.documentIsAccessible) {
+      return;
+    }
+
+    if (typeof expiresOrOptions === 'number' || expiresOrOptions instanceof Date || path || domain || secure || sameSite) {
+      const optionsBody = {
+        expires: expiresOrOptions,
+        path,
+        domain,
+        secure,
+        sameSite: sameSite ? sameSite : 'Lax'
+      };
+
+      this.set(name, value, optionsBody);
       return;
     }
 
     let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
 
-    if (expires) {
-      if (typeof expires === 'number') {
-        const dateExpires: Date = new Date(new Date().getTime() + expires * 1000 * 60 * 60 * 24);
+    const options = expiresOrOptions ? expiresOrOptions : {};
+
+    if (options.expires) {
+      if (typeof options.expires === 'number') {
+        const dateExpires: Date = new Date(new Date().getTime() + options.expires * 1000 * 60 * 60 * 24);
 
         cookieString += 'expires=' + dateExpires.toUTCString() + ';';
       } else {
-        cookieString += 'expires=' + expires.toUTCString() + ';';
+        cookieString += 'expires=' + options.expires.toUTCString() + ';';
       }
     }
 
-    if (path) {
-      cookieString += 'path=' + path + ';';
+    if (options.path) {
+      cookieString += 'path=' + options.path + ';';
     }
 
-    if (domain) {
-      cookieString += 'domain=' + domain + ';';
+    if (options.domain) {
+      cookieString += 'domain=' + options.domain + ';';
     }
 
-    if (secure === false && sameSite === 'None') {
-      secure = true;
+    if (options.secure === false && options.sameSite === 'None') {
+      options.secure = true;
       console.warn(
         `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
-          `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
+        `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
       );
     }
-    if (secure) {
+    if (options.secure) {
       cookieString += 'secure;';
     }
 
-    cookieString += 'sameSite=' + sameSite + ';';
+    if (!options.sameSite) {
+      options.sameSite = 'Lax';
+    }
+
+    cookieString += 'sameSite=' + options.sameSite + ';';
 
     this.document.cookie = cookieString;
   }
@@ -145,8 +199,8 @@ export class CookieService {
     if (!this.documentIsAccessible) {
       return;
     }
-
-    this.set(name, '', new Date('Thu, 01 Jan 1970 00:00:01 GMT'), path, domain, secure, sameSite);
+    const expiresDate = new Date('Thu, 01 Jan 1970 00:00:01 GMT');
+    this.set(name, '', {expires: expiresDate, path, domain, secure, sameSite});
   }
 
   /**
