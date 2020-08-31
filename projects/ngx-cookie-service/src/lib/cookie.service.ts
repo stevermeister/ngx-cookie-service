@@ -87,15 +87,7 @@ export class CookieService {
    * @param secure   Secure flag
    * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `Lax`
    */
-  set(
-    name: string,
-    value: string,
-    expires?: number | Date,
-    path?: string,
-    domain?: string,
-    secure?: boolean,
-    sameSite?: 'Lax' | 'None' | 'Strict'
-  ): void;
+  set(name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'None' | 'Strict'): void;
 
   /**
    * Cookie's parameters:
@@ -114,11 +106,11 @@ export class CookieService {
     name: string,
     value: string,
     options?: {
-      expires?: number | Date,
-      path?: string,
-      domain?: string,
-      secure?: boolean,
-      sameSite?: 'Lax' | 'None' | 'Strict'
+      expires?: number | Date;
+      path?: string;
+      domain?: string;
+      secure?: boolean;
+      sameSite?: 'Lax' | 'None' | 'Strict';
     }
   ): void;
 
@@ -130,7 +122,7 @@ export class CookieService {
     domain?: string,
     secure?: boolean,
     sameSite?: 'Lax' | 'None' | 'Strict'
-  ): void  {
+  ): void {
     if (!this.documentIsAccessible) {
       return;
     }
@@ -141,7 +133,7 @@ export class CookieService {
         path,
         domain,
         secure,
-        sameSite: sameSite ? sameSite : 'Lax'
+        sameSite: sameSite ? sameSite : 'Lax',
       };
 
       this.set(name, value, optionsBody);
@@ -174,7 +166,7 @@ export class CookieService {
       options.secure = true;
       console.warn(
         `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
-        `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
+          `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
       );
     }
     if (options.secure) {
@@ -200,7 +192,7 @@ export class CookieService {
       return;
     }
     const expiresDate = new Date('Thu, 01 Jan 1970 00:00:01 GMT');
-    this.set(name, '', {expires: expiresDate, path, domain, secure, sameSite});
+    this.set(name, '', { expires: expiresDate, path, domain, secure, sameSite });
   }
 
   /**

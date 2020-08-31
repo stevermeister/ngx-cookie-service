@@ -166,7 +166,7 @@ describe('NgxCookieServiceService', () => {
         jasmine.clock().uninstall();
         jasmine.clock().install();
         jasmine.clock().mockDate(new Date('Sun, 30 Aug 2020 10:00:00 GMT'));
-        cookieService.set('foo', 'bar', {expires: 2});
+        cookieService.set('foo', 'bar', { expires: 2 });
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;expires=Tue, 01 Sep 2020 10:00:00 GMT;sameSite=Lax;');
         jasmine.clock().uninstall();
@@ -179,7 +179,7 @@ describe('NgxCookieServiceService', () => {
       });
       it('should set cookie with expires option from Date object in options body', () => {
         const expires = new Date('Mon, 15 Mar 2021 10:00:00 GMT');
-        cookieService.set('foo', 'bar', {expires});
+        cookieService.set('foo', 'bar', { expires });
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;sameSite=Lax;');
       });
@@ -189,7 +189,7 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;path=/test;sameSite=Lax;');
       });
       it('should set cookie with path option in options body', () => {
-        cookieService.set('foo', 'bar', {path: '/test'});
+        cookieService.set('foo', 'bar', { path: '/test' });
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;path=/test;sameSite=Lax;');
       });
@@ -199,7 +199,7 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;domain=example.com;sameSite=Lax;');
       });
       it('should set cookie with domain option in options body', () => {
-        cookieService.set('foo', 'bar', {domain: 'example.com'});
+        cookieService.set('foo', 'bar', { domain: 'example.com' });
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;domain=example.com;sameSite=Lax;');
       });
@@ -209,7 +209,7 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=Lax;');
       });
       it('should set cookie with secure option in options body', () => {
-        cookieService.set('foo', 'bar', {secure: true, sameSite: 'Lax'});
+        cookieService.set('foo', 'bar', { secure: true, sameSite: 'Lax' });
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=Lax;');
       });
@@ -219,7 +219,7 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=None;');
       });
       it('should set cookie with forced secure flag when SameSite option is "None" in options body', () => {
-        cookieService.set('foo', 'bar', {secure: false, sameSite: 'None'});
+        cookieService.set('foo', 'bar', { secure: false, sameSite: 'None' });
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=None;');
       });
@@ -229,7 +229,7 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;sameSite=Strict;');
       });
       it('should set cookie with SameSite option in options body', () => {
-        cookieService.set('foo', 'bar', {secure: false, sameSite: 'Strict'});
+        cookieService.set('foo', 'bar', { secure: false, sameSite: 'Strict' });
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;sameSite=Strict;');
       });
@@ -249,7 +249,7 @@ describe('NgxCookieServiceService', () => {
           path: '/test',
           domain: 'example.com',
           secure: true,
-          sameSite: 'Strict'
+          sameSite: 'Strict',
         });
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith(
@@ -270,7 +270,13 @@ describe('NgxCookieServiceService', () => {
         cookieService.delete('foo', '/test', 'example.com', true, 'Lax');
 
         const expiresDate = new Date('Thu, 01 Jan 1970 00:00:01 GMT');
-        expect(cookieService.set).toHaveBeenCalledWith('foo', '', {expires: expiresDate, path: '/test', domain: 'example.com', secure: true, sameSite: 'Lax'});
+        expect(cookieService.set).toHaveBeenCalledWith('foo', '', {
+          expires: expiresDate,
+          path: '/test',
+          domain: 'example.com',
+          secure: true,
+          sameSite: 'Lax',
+        });
       });
     });
     describe('#deleteAll', () => {
