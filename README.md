@@ -67,9 +67,10 @@ const allCookies: {} = cookieService.getAll();
 Returns a map of key-value pairs for cookies that can be accessed.
 
 ## set( name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'Strict' | 'None' ): void;
-
+## set( name: string, value: string, options?: { expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'None' | 'Strict'}): void;
 ```typescript
 cookieService.set( 'test', 'Hello World' );
+cookieService.set( 'test', 'Hello World', {expires: 2, sameSite: 'Lax'});
 ```
 
 Sets a cookie with the specified `name` and `value`. It is good practice to specify a path. If you are unsure about the path value, use `'/'`. If no path or domain is explicitly defined, the current location is assumed. `sameSite` defaults to `Lax`.
@@ -163,6 +164,7 @@ Thanks to all contributors:
 * [mattlewis92](https://github.com/mattlewis92)
 * [IceBreakerG](https://github.com/IceBreakerG)
 * [rojedalopez](https://github.com/rojedalopez)
+* [Nikel163](https://github.com/Nikel163)
 
 # License
 
