@@ -11,7 +11,8 @@
     "format": "prettier ./projects/**/*.{ts,js,json}",
     "format:write": "npm run format -- --write",
     "format:check": "npm run format -- --check",
-    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points"
+    "postinstall": "ngcc --properties es2015 browser module main --first-only --create-ivy-entry-points",
+    "package": "ng build ngx-cookie-service --prod && cp ./README.md ./dist/ngx-cookie-service && cd dist/ngx-cookie-service && npm pack"
   },
   "private": true,
   "dependencies": {
