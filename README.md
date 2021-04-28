@@ -1,6 +1,6 @@
 # NGX Cookie Service
 
-Angular 9 IVY Ready service for cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library.
+Angular 11 IVY Ready service for cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library.
 
 For versions <9, please use 2.3.0 version of library.
 
