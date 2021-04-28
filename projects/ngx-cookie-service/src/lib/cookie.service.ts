@@ -51,7 +51,7 @@ export class CookieService {
       const regExp: RegExp = this.getCookieRegExp(name);
       const result: RegExpExecArray = regExp.exec(this.document.cookie);
 
-      return this.safeDecodeURIComponent(result[1]);
+      return result[1] ? this.safeDecodeURIComponent(result[1]) : '';
     } else {
       return '';
     }
