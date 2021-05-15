@@ -2,7 +2,7 @@
 // not use `DOCUMENT` injection and therefore doesn't work well with AoT production builds.
 // Package: https://github.com/BCJTI/ng2-cookies
 
-import { Injectable, Inject, PLATFORM_ID, InjectionToken } from '@angular/core';
+import { Inject, Injectable, InjectionToken, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -18,12 +18,35 @@ export class CookieService {
     // Fix: https://github.com/angular/angular/pull/14894
     @Inject(DOCUMENT) private document: any,
     // Get the `PLATFORM_ID` so we can check if we're in a browser.
-    @Inject(PLATFORM_ID) private platformId: InjectionToken<object>
+    @Inject(PLATFORM_ID) private platformId: InjectionToken<object>,
   ) {
     this.documentIsAccessible = isPlatformBrowser(this.platformId);
   }
 
   /**
+   * Get cookie Regular Expression
+   *
+   * @param name Cookie name
+   * @returns property RegExp
+   */
+  private static getCookieRegExp(name: string): RegExp {
+    const escapedName: string = name.replace(/([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi, '\\$1');
+
+    return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
+  }
+
+  private static safeDecodeURIComponent(encodedURIComponent: string): string {
+    try {
+      return decodeURIComponent(encodedURIComponent);
+    } catch {
+      // probably it is not uri encoded. return as is
+      return encodedURIComponent;
+    }
+  }
+
+  /**
+   * Return `true` if {@link Document} is accessible, otherwise return `false`
+   *
    * @param name Cookie name
    * @returns boolean - whether cookie with specified name exists
    */
@@ -31,16 +54,14 @@ export class CookieService {
     if (!this.documentIsAccessible) {
       return false;
     }
-
     name = encodeURIComponent(name);
-
-    const regExp: RegExp = this.getCookieRegExp(name);
-    const exists: boolean = regExp.test(this.document.cookie);
-
-    return exists;
+    const regExp: RegExp = CookieService.getCookieRegExp(name);
+    return regExp.test(this.document.cookie);
   }
 
   /**
+   * Get cookies by name
+   *
    * @param name Cookie name
    * @returns property value
    */
@@ -48,16 +69,18 @@ export class CookieService {
     if (this.documentIsAccessible && this.check(name)) {
       name = encodeURIComponent(name);
 
-      const regExp: RegExp = this.getCookieRegExp(name);
+      const regExp: RegExp = CookieService.getCookieRegExp(name);
       const result: RegExpExecArray = regExp.exec(this.document.cookie);
 
-      return result[1] ? this.safeDecodeURIComponent(result[1]) : '';
+      return result[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
     } else {
       return '';
     }
   }
 
   /**
+   * Get all cookies in JSON format
+   *
    * @returns all the cookies in json
    */
   getAll(): { [key: string]: string } {
@@ -71,7 +94,7 @@ export class CookieService {
     if (document.cookie && document.cookie !== '') {
       document.cookie.split(';').forEach((currentCookie) => {
         const [cookieName, cookieValue] = currentCookie.split('=');
-        cookies[this.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = this.safeDecodeURIComponent(cookieValue);
+        cookies[CookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = CookieService.safeDecodeURIComponent(cookieValue);
       });
     }
 
@@ -79,6 +102,8 @@ export class CookieService {
   }
 
   /**
+   * Set cookie based on provided information
+   *
    * @param name     Cookie name
    * @param value    Cookie value
    * @param expires  Number of days until the cookies expires or an actual `Date`
@@ -90,6 +115,8 @@ export class CookieService {
   set(name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'None' | 'Strict'): void;
 
   /**
+   * Set cookie based on provided information
+   *
    * Cookie's parameters:
    * <pre>
    * expires  Number of days until the cookies expires or an actual `Date`
@@ -111,7 +138,7 @@ export class CookieService {
       domain?: string;
       secure?: boolean;
       sameSite?: 'Lax' | 'None' | 'Strict';
-    }
+    },
   ): void;
 
   set(
@@ -121,7 +148,7 @@ export class CookieService {
     path?: string,
     domain?: string,
     secure?: boolean,
-    sameSite?: 'Lax' | 'None' | 'Strict'
+    sameSite?: 'Lax' | 'None' | 'Strict',
   ): void {
     if (!this.documentIsAccessible) {
       return;
@@ -166,7 +193,7 @@ export class CookieService {
       options.secure = true;
       console.warn(
         `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
-          `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
+        `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`,
       );
     }
     if (options.secure) {
@@ -183,9 +210,13 @@ export class CookieService {
   }
 
   /**
+   * Delete cookie by name
+   *
    * @param name   Cookie name
    * @param path   Cookie path
    * @param domain Cookie domain
+   * @param secure
+   * @param sameSite
    */
   delete(name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
     if (!this.documentIsAccessible) {
@@ -196,8 +227,12 @@ export class CookieService {
   }
 
   /**
+   * Delete all cookies
+   *
    * @param path   Cookie path
    * @param domain Cookie domain
+   * @param secure Is the Cookie secure
+   * @param sameSite Is the cookie same site
    */
   deleteAll(path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
     if (!this.documentIsAccessible) {
@@ -210,25 +245,6 @@ export class CookieService {
       if (cookies.hasOwnProperty(cookieName)) {
         this.delete(cookieName, path, domain, secure, sameSite);
       }
-    }
-  }
-
-  /**
-   * @param name Cookie name
-   * @returns property RegExp
-   */
-  private getCookieRegExp(name: string): RegExp {
-    const escapedName: string = name.replace(/([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi, '\\$1');
-
-    return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
-  }
-
-  private safeDecodeURIComponent(encodedURIComponent: string): string {
-    try {
-      return decodeURIComponent(encodedURIComponent);
-    } catch {
-      // probably it is not uri encoded. return as is
-      return encodedURIComponent;
     }
   }
 }
