@@ -1,3 +1,7 @@
+# 12.0.0
+- upgrade to Angular 12 ( [106ad8f](https://github.com/stevermeister/ngx-cookie-service/pull/125/commits/106ad8f6bccb96a9bc8b9b0db5d6b5f26ca71100) )
+- cleanup
+
 # 11.0.2
 - upgrade to Angular 11 ( [49a45b1](https://github.com/stevermeister/ngx-cookie-service/commit/49a45b1f8638e97af51f7757960d7a6ed98eace8) )
 - options_body_param ([2c9de92](https://github.com/stevermeister/ngx-cookie-service/commit/2c9de92df7bb509c2adb9488b426d6cf3230aab7))
