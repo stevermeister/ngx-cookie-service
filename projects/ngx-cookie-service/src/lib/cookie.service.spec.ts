@@ -238,7 +238,7 @@ describe('NgxCookieServiceService', () => {
         cookieService.set('foo', 'bar', expiresDate, '/test', 'example.com', true, 'Strict');
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith(
-          'foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;path=/test;domain=example.com;secure;sameSite=Strict;',
+          'foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;path=/test;domain=example.com;secure;sameSite=Strict;'
         );
       });
       it('should set cookie with all options in options body', () => {
@@ -253,7 +253,7 @@ describe('NgxCookieServiceService', () => {
         });
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith(
-          'foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;path=/test;domain=example.com;secure;sameSite=Strict;',
+          'foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;path=/test;domain=example.com;secure;sameSite=Strict;'
         );
       });
     });

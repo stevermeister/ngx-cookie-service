@@ -39,8 +39,13 @@
         "lint": {
           "builder": "@angular-devkit/build-angular:tslint",
           "options": {
-            "tsConfig": ["projects/ngx-cookie-service/tsconfig.lib.json", "projects/ngx-cookie-service/tsconfig.spec.json"],
-            "exclude": ["**/node_modules/**"]
+            "tsConfig": [
+              "projects/ngx-cookie-service/tsconfig.lib.json",
+              "projects/ngx-cookie-service/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
           }
         }
       }
