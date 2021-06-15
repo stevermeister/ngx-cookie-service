@@ -1,5 +1,16 @@
 # NGX Cookie Service
 
+<p align="center">
+  <a href="https://circleci.com/gh/angular/workflows/angular/tree/master">
+    <img src="https://img.shields.io/circleci/build/github/angular/angular/master.svg?logo=circleci&logoColor=fff&label=CircleCI" alt="CI status" />
+  </a>&nbsp;
+  <a href="https://www.npmjs.com/@angular/core">
+    <img src="https://img.shields.io/npm/v/@angular/core.svg?logo=npm&logoColor=fff&label=NPM+package&color=limegreen" alt="Angular on npm" />
+  </a>&nbsp;
+  <a href="https://discord.gg/angular">
+    <img src="https://img.shields.io/discord/463752820026376202.svg?logo=discord&logoColor=fff&label=Discord&color=7389d8" alt="Discord conversation" />
+  </a>
+</p>
 Angular 12 IVY Ready service for cookies. Originally based on
 the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library.
 
@@ -121,22 +132,22 @@ the path value, use `'/'`.
 
 Checking out the following resources usually solves most of the problems people seem to have with this cookie service:
 
-* [article about cookies in general @MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies) (recommended read!)
-* [common localhost problems @StackOverflow](https://stackoverflow.com/questions/1134290/cookies-on-localhost-with-explicit-domain)
-* [problems with secure cookies @StackOverflow](https://stackoverflow.com/questions/8064318/how-to-read-a-secure-cookie-using-javascript)
-* [how do browser cookie domains work? @StackOverflow](https://stackoverflow.com/questions/1062963/how-do-browser-cookie-domains-work)
-* [get cookies from different paths](https://github.com/7leads/ngx-cookie-service/issues/7#issuecomment-351321518)
+- [article about cookies in general @MDN](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies) (recommended read!)
+- [common localhost problems @StackOverflow](https://stackoverflow.com/questions/1134290/cookies-on-localhost-with-explicit-domain)
+- [problems with secure cookies @StackOverflow](https://stackoverflow.com/questions/8064318/how-to-read-a-secure-cookie-using-javascript)
+- [how do browser cookie domains work? @StackOverflow](https://stackoverflow.com/questions/1062963/how-do-browser-cookie-domains-work)
+- [get cookies from different paths](https://github.com/7leads/ngx-cookie-service/issues/7#issuecomment-351321518)
 
 The following general steps are usually very helpful when debugging problems with this cookie service or cookies in
 general:
 
-* check out if there are any [open](https://github.com/stevermeister/ngx-cookie-service/issues)
+- check out if there are any [open](https://github.com/stevermeister/ngx-cookie-service/issues)
   or [closed](https://github.com/stevermeister/ngx-cookie-service/issues?q=is%3Aissue+is%3Aclosed) issues that answer
   your question
-* check out the actual value(s) of `document.cookie`
-* does it work if you use `document.cookie` manually (i.e. in a console of your choice)?
-* set explicit paths for your cookies
-* [explain to your local rubber duck why your code should work and why it (probably) does not](https://en.wikipedia.org/wiki/Rubber_duck_debugging)
+- check out the actual value(s) of `document.cookie`
+- does it work if you use `document.cookie` manually (i.e. in a console of your choice)?
+- set explicit paths for your cookies
+- [explain to your local rubber duck why your code should work and why it (probably) does not](https://en.wikipedia.org/wiki/Rubber_duck_debugging)
 
 # I am always getting a "token missing" or "no provider" error.
 
@@ -172,7 +183,7 @@ We are happy to accept pull requests or test cases for things that do not work. 
 However, we will only accept pull requests that pass all tests and include some new ones (as long as it makes sense to
 add them, of course).
 
-* [Open a new pull request](https://github.com/stevermeister/ngx-cookie-service/compare)
+- [Open a new pull request](https://github.com/stevermeister/ngx-cookie-service/compare)
 
 # Author
 
@@ -183,17 +194,17 @@ the other cookie packages we found were either not designed "the Angular way" or
 
 Thanks to all contributors:
 
-* [paroe](https://github.com/paroe)
-* [CunningFatalist](https://github.com/CunningFatalist)
-* [kthy](https://github.com/kthy)
-* [JaredClemence](https://github.com/JaredClemence)
-* [flakolefluk](https://github.com/flakolefluk)
-* [mattbanks](https://github.com/mattbanks)
-* [DBaker85](https://github.com/DBaker85)
-* [mattlewis92](https://github.com/mattlewis92)
-* [IceBreakerG](https://github.com/IceBreakerG)
-* [rojedalopez](https://github.com/rojedalopez)
-* [Nikel163](https://github.com/Nikel163)
+- [paroe](https://github.com/paroe)
+- [CunningFatalist](https://github.com/CunningFatalist)
+- [kthy](https://github.com/kthy)
+- [JaredClemence](https://github.com/JaredClemence)
+- [flakolefluk](https://github.com/flakolefluk)
+- [mattbanks](https://github.com/mattbanks)
+- [DBaker85](https://github.com/DBaker85)
+- [mattlewis92](https://github.com/mattlewis92)
+- [IceBreakerG](https://github.com/IceBreakerG)
+- [rojedalopez](https://github.com/rojedalopez)
+- [Nikel163](https://github.com/Nikel163)
 
 # License
 

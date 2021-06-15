@@ -8,8 +8,7 @@
 
 - upgrade to Angular
   11 ( [49a45b1](https://github.com/stevermeister/ngx-cookie-service/commit/49a45b1f8638e97af51f7757960d7a6ed98eace8) )
--
-options_body_param ([2c9de92](https://github.com/stevermeister/ngx-cookie-service/commit/2c9de92df7bb509c2adb9488b426d6cf3230aab7))
+- options_body_param ([2c9de92](https://github.com/stevermeister/ngx-cookie-service/commit/2c9de92df7bb509c2adb9488b426d6cf3230aab7))
 - Added the 2nd variant set() with options
   body ( [bf15abc](https://github.com/stevermeister/ngx-cookie-service/commit/bf15abc51e6e063e8075dd1531f4b70b24fe3739) )
 
