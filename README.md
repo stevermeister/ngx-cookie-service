@@ -6,7 +6,7 @@
 <a href="https://www.npmjs.com/ngx-cookie-service">
 <img src="https://img.shields.io/npm/v/ngx-cookie-service.svg?logo=npm&logoColor=fff&label=NPM+package&color=limegreen" alt="Ngx Cookie Service on npm" />
 </a>
-<a href="https://gitter.im/ngx-cookie-service/communityr">
+<a href="https://gitter.im/ngx-cookie-service/community">
 <img src="https://badges.gitter.im/ngx-cookie-service/community.svg" alt="Chat in Gitter" />
 </a>
 
