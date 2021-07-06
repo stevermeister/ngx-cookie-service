@@ -11,10 +11,8 @@
     <img src="https://img.shields.io/discord/463752820026376202.svg?logo=discord&logoColor=fff&label=Discord&color=7389d8" alt="Discord conversation" />
   </a>
 </p>
-Angular 12 IVY Ready service for cookies. Originally based on
-the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library.
 
-For versions <9, please use 2.3.0 version of library.
+Angular 12 IVY Ready service for cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. For versions < 9.x.x, please use 2.3.0 version of library.
 
 The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
 
@@ -205,6 +203,7 @@ Thanks to all contributors:
 - [IceBreakerG](https://github.com/IceBreakerG)
 - [rojedalopez](https://github.com/rojedalopez)
 - [Nikel163](https://github.com/Nikel163)
+- [pavankjadda](https://github.com/pavankjadda)
 
 # License
 
