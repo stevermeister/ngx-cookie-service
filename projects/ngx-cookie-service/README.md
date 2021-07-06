@@ -1,15 +1,15 @@
 # NGX Cookie Service
 
 <p align="center">
-  <a href="https://circleci.com/gh/angular/workflows/angular/tree/master">
-    <img src="https://img.shields.io/circleci/build/github/angular/angular/master.svg?logo=circleci&logoColor=fff&label=CircleCI" alt="CI status" />
-  </a>&nbsp;
-  <a href="https://www.npmjs.com/@angular/core">
-    <img src="https://img.shields.io/npm/v/@angular/core.svg?logo=npm&logoColor=fff&label=NPM+package&color=limegreen" alt="Angular on npm" />
-  </a>&nbsp;
-  <a href="https://discord.gg/angular">
-    <img src="https://img.shields.io/discord/463752820026376202.svg?logo=discord&logoColor=fff&label=Discord&color=7389d8" alt="Discord conversation" />
-  </a>
+
+![build](https://github.com/stevermeister/ngx-cookie-service/workflows/CI/badge.svg?branch=master)
+<a href="https://www.npmjs.com/ngx-cookie-service">
+<img src="https://img.shields.io/npm/v/ngx-cookie-service.svg?logo=npm&logoColor=fff&label=NPM+package&color=limegreen" alt="Ngx Cookie Service on npm" />
+</a>
+<a href="https://gitter.im/ngx-cookie-service/community">
+<img src="https://badges.gitter.im/ngx-cookie-service/community.svg" alt="Chat in Gitter" />
+</a>
+
 </p>
 
 Angular 12 IVY Ready service for cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. For versions < 9.x.x, please use 2.3.0 version of library.
