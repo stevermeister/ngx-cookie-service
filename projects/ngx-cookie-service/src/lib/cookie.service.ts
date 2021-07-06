@@ -12,11 +12,7 @@ export class CookieService {
   private readonly documentIsAccessible: boolean;
 
   constructor(
-    // The type `Document` may not be used here. Although a fix is on its way,
-    // we will go with `any` for now to support Angular 2.4.x projects.
-    // Issue: https://github.com/angular/angular/issues/12631
-    // Fix: https://github.com/angular/angular/pull/14894
-    @Inject(DOCUMENT) private document: any,
+    @Inject(DOCUMENT) private document: Document,
     // Get the `PLATFORM_ID` so we can check if we're in a browser.
     @Inject(PLATFORM_ID) private platformId: InjectionToken<object>
   ) {
