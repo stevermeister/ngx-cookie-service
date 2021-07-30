@@ -22,4 +22,5 @@ jobs:
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
+          package: projects/ngx-cookie-service/package.json
           access: public
