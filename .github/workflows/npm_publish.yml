@@ -2,8 +2,8 @@ name: Publish to NPM
 on:
   push:
     ### Publish on new tag release
-    #tags:
-      #- v*
+    tags:
+      - v*
 jobs:
   publish:
     runs-on: ubuntu-latest
