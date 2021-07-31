@@ -2,8 +2,8 @@ name: Publish to NPM
 on:
   push:
     ### Publish on new tag release
-    tags:
-      - v*
+    #tags:
+      #- v*
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -22,5 +22,5 @@ jobs:
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: projects/ngx-cookie-service/package.json
+          package: dist/ngx-cookie-service/package.json
           access: public
