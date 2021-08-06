@@ -9,7 +9,8 @@
 <a href="https://gitter.im/ngx-cookie-service/community">
 <img src="https://badges.gitter.im/ngx-cookie-service/community.svg" alt="Chat in Gitter" />
 </a>
-
+![ngx-cookie-service channel on discord](https://img.shields.io/discord/873021904708059177.svg?style=flat-square)
+  
 </p>
 
 Angular service to read, set and delete browser cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
