@@ -12,9 +12,7 @@
 
 </p>
 
-Angular 12 IVY Ready service for cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. For versions < 9.x.x, please use 2.3.0 version of library.
-
-The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
+Angular service to read, set and delete browser cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
 
 # Installation
 
@@ -56,7 +54,15 @@ cookieService: CookieService
 
 That's it!
 
-# Methods
+## Supported Versions
+For Angular 9.0.0+ use latest version of the library. For versions < 9.x.x, use 2.3.0 version
+
+| Angular Version | Supported Version          |
+| ------- | ------------------ |
+| 9.0.0+   | latest |
+| < 9.0.0   | 2.3.0                |
+
+# API
 
 ## check( name: string ): boolean;
 
