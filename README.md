@@ -10,7 +10,7 @@
 <img src="https://badges.gitter.im/ngx-cookie-service/community.svg" alt="Chat in Gitter" />
 </a>
 [![ngx-cookie-service channel on discord](https://img.shields.io/discord/873021904708059177.svg?style=flat-square)](https://discord.gg/N3xc4Jfb)
-  
+
 </p>
 
 Angular service to read, set and delete browser cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
@@ -56,12 +56,13 @@ cookieService: CookieService
 That's it!
 
 ## Supported Versions
+
 For Angular 9.0.0+ use latest version of the library. For versions < 9.x.x, use 2.3.0 version
 
-| Angular Version | Supported Version          |
-| ------- | ------------------ |
-| 9.0.0+   | latest |
-| < 9.0.0   | 2.3.0                |
+| Angular Version | Supported Version |
+| --------------- | ----------------- |
+| 9.0.0+          | latest            |
+| < 9.0.0         | 2.3.0             |
 
 # API
 
