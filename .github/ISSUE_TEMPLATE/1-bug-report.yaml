@@ -69,7 +69,7 @@ body:
   - type: textarea
     id: desktop
     attributes:
-      label: Desktop (please complete the following information):
+      label: Desktop (please complete the following information)
       placeholder: |
         OS: [e.g. macOS Big Sur, Windows 10]
         Browser [e.g. chrome, safari]
@@ -79,7 +79,7 @@ body:
   - type: textarea
     id: mobile
     attributes:
-      label:  (please complete the following information):
+      label: Mobile (please complete the following information):
       placeholder: |
         Device: [e.g. iOS]
         OS: [e.g. iOS]
