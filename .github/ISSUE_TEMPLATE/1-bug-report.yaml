@@ -9,7 +9,7 @@ body:
     validations:
       required: true
   - type: textarea
-    id: steps-t-reproduce
+    id: steps-to-reproduce
     attributes:
       label: Steps to Reproduce
     validations:
@@ -20,6 +20,10 @@ body:
         Click on '....'
         Scroll down to '....'
         See error
+  - type: input
+    id: reproduction-link
+    attributes:
+      label: Please provide a link to a minimal reproduction of the bug. StackBlitz, CodePen or CodeSanBox
 
   - type: textarea
     id: expected-behaviour
@@ -53,10 +57,6 @@ body:
     validations:
       required: true
 
-  - type: input
-    id: reproduction-link
-    attributes:
-      label: Please provide a link to a minimal reproduction of the bug. StackBlitz, CodePen or CodeSanBox
 
   - type: textarea
     id: screenshots
