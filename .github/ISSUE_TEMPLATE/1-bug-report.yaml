@@ -1,0 +1,92 @@
+name: Bug Report
+description: Report a bug in the ngx-cookie-service
+
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the bug
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Steps to Reproduce
+    validations:
+      required: true
+      placeholder: |
+        Steps to reproduce the behavior:
+        Go to '...'
+        Click on '....'
+        Scroll down to '....'
+        See error
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Expected behaviour
+    validations:
+      required: true
+      
+  - type: input
+    id: library-version
+    attributes:
+      label: What version of the library you see this issue?
+    validations:
+      required: true
+
+  - type: dropdown
+    id: angular-version
+    attributes:
+      label: What version of Angular are you using?
+      options:
+        - Angular 12
+        - Angular 11
+        - Angular 10
+        - Angular 9
+        - Angular 8
+        - Angular 7
+        - Angular 6
+        - Angular 4
+        - Angular 2
+      multiple: true
+    validations:
+      required: true
+
+  - type: input
+    id: reproduction
+    attributes:
+      label: Please provide a link to a minimal reproduction of the bug. StackBlitz, CodePen or CodeSanBox
+
+  - type: textarea
+    id: screensots
+    attributes:
+      label: Screenshots
+      placeholder: |
+        If applicable, add screenshots to help explain your problem.
+
+
+  - type: textarea
+    id: desktop
+    attributes:
+      label: Screenshots
+      placeholder: |
+        OS: [e.g. macOS Big Sur, Windows 10]
+        Browser [e.g. chrome, safari]
+        Version [e.g. 22]
+
+
+  - type: textarea
+    id: mobile
+    attributes:
+      label: Screenshots
+      placeholder: |
+        Device: [e.g. iOS]
+        OS: [e.g. iOS]
+        Browser [e.g. chrome, safari]
+        Version [e.g. 22]
+        
+  - type: textarea
+    id: other
+    attributes:
+      label: Anything else?
