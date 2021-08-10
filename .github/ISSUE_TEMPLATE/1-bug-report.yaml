@@ -9,7 +9,7 @@ body:
     validations:
       required: true
   - type: textarea
-    id: description
+    id: steps-t-reproduce
     attributes:
       label: Steps to Reproduce
     validations:
@@ -22,7 +22,7 @@ body:
         See error
 
   - type: textarea
-    id: description
+    id: expected-behaviour
     attributes:
       label: Expected behaviour
     validations:
@@ -54,12 +54,12 @@ body:
       required: true
 
   - type: input
-    id: reproduction
+    id: reproduction-link
     attributes:
       label: Please provide a link to a minimal reproduction of the bug. StackBlitz, CodePen or CodeSanBox
 
   - type: textarea
-    id: screensots
+    id: screenshots
     attributes:
       label: Screenshots
       placeholder: |
