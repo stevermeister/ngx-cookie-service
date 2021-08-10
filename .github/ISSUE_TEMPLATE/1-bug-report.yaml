@@ -24,7 +24,8 @@ body:
     id: reproduction-link
     attributes:
       label: Please provide a link to a minimal reproduction of the bug. StackBlitz, CodePen or CodeSanBox
-
+    validations:
+      required: true
   - type: textarea
     id: expected-behaviour
     attributes:
