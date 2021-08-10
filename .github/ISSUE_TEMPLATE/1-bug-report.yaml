@@ -69,22 +69,22 @@ body:
   - type: textarea
     id: desktop
     attributes:
-      label: Desktop (please complete the following information)
+      label: Desktop? Please complete the following information
       placeholder: |
         OS: [e.g. macOS Big Sur, Windows 10]
-        Browser [e.g. chrome, safari]
-        Version [e.g. 22]
+        Browser [e.g. Google Chrome, Mozilla Firefox, Micro Soft Edge, Safari]
+        Version [e.g. 92]
 
 
   - type: textarea
     id: mobile
     attributes:
-      label: Mobile (please complete the following information):
+      label: Mobile? Please complete the following information
       placeholder: |
-        Device: [e.g. iOS]
+        Device: [e.g. iPhone 12 Pro, Google Pixel 5]
         OS: [e.g. iOS]
-        Browser [e.g. chrome, safari]
-        Version [e.g. 22]
+        Browser [e.g. Google Chrome, Mozilla Firefox, Micro Soft Edge, Safari]
+        Version [e.g. 91]
         
   - type: textarea
     id: other
