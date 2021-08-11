@@ -14,7 +14,7 @@ export class CookieService {
   constructor(
     @Inject(DOCUMENT) private document: any,
     // Get the `PLATFORM_ID` so we can check if we're in a browser.
-    @Inject(PLATFORM_ID) private platformId,
+    @Inject(PLATFORM_ID) private platformId
   ) {
     this.documentIsAccessible = isPlatformBrowser(this.platformId);
   }
@@ -135,7 +135,7 @@ export class CookieService {
       domain?: string;
       secure?: boolean;
       sameSite?: 'Lax' | 'None' | 'Strict';
-    },
+    }
   ): void;
 
   set(
@@ -145,7 +145,7 @@ export class CookieService {
     path?: string,
     domain?: string,
     secure?: boolean,
-    sameSite?: 'Lax' | 'None' | 'Strict',
+    sameSite?: 'Lax' | 'None' | 'Strict'
   ): void {
     if (!this.documentIsAccessible) {
       return;
@@ -190,7 +190,7 @@ export class CookieService {
       options.secure = true;
       console.warn(
         `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
-        `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
+          `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
       );
     }
     if (options.secure) {
