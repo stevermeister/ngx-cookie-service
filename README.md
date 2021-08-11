@@ -55,6 +55,9 @@ cookieService: CookieService
 
 That's it!
 
+## Demo
+https://stackblitz.com/edit/angular-ivy-1lrgdt?file=src%2Fapp%2Fapp.component.ts
+
 ## Supported Versions
 
 For Angular 9.0.0+ use latest version of the library. For versions < 9.x.x, use 2.3.0 version
