@@ -135,7 +135,7 @@ export class CookieService {
       domain?: string;
       secure?: boolean;
       sameSite?: 'Lax' | 'None' | 'Strict';
-    },
+    }
   ): void;
 
   set(
@@ -190,7 +190,7 @@ export class CookieService {
       options.secure = true;
       console.warn(
         `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
-        `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`,
+        `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
       );
     }
     if (options.secure) {

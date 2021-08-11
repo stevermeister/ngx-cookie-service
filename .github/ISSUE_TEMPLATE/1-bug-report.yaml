@@ -32,7 +32,7 @@ body:
       label: Expected behaviour
     validations:
       required: true
-      
+
   - type: input
     id: library-version
     attributes:
@@ -58,14 +58,12 @@ body:
     validations:
       required: true
 
-
   - type: textarea
     id: screenshots
     attributes:
       label: Screenshots
       placeholder: |
         If applicable, add screenshots to help explain your problem.
-
 
   - type: textarea
     id: desktop
@@ -76,7 +74,6 @@ body:
         Browser [e.g. Google Chrome, Mozilla Firefox, Micro Soft Edge, Safari]
         Version [e.g. 92]
 
-
   - type: textarea
     id: mobile
     attributes:
@@ -86,7 +83,7 @@ body:
         OS: [e.g. iOS]
         Browser [e.g. Google Chrome, Mozilla Firefox, Micro Soft Edge, Safari]
         Version [e.g. 91]
-        
+
   - type: textarea
     id: other
     attributes:
