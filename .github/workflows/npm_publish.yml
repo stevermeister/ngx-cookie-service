@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 14
       - name: Install Angular CLI
-        run:  npm install -g @angular/cli @angular/core
+        run: npm install -g @angular/cli @angular/core
       - name: Install NPM Dependencies
         run: npm ci
       - name: Build project
