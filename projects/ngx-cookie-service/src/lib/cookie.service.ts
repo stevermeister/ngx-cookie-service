@@ -2,8 +2,9 @@
 // not use `DOCUMENT` injection and therefore doesn't work well with AoT production builds.
 // Package: https://github.com/BCJTI/ng2-cookies
 
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Inject, Injectable, PLATFORM_ID, InjectionToken, Optional } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+export const COOKIES: InjectionToken<String> = new InjectionToken<String>('COOKIES');
 
 @Injectable({
   providedIn: 'root',
@@ -13,6 +14,7 @@ export class CookieService {
 
   constructor(
     @Inject(DOCUMENT) private document: any,
+    @Optional() @Inject(COOKIES) private cookie: any,
     // Get the `PLATFORM_ID` so we can check if we're in a browser.
     @Inject(PLATFORM_ID) private platformId
   ) {
@@ -62,11 +64,16 @@ export class CookieService {
    * @returns property value
    */
   get(name: string): string {
-    if (this.documentIsAccessible && this.check(name)) {
+    let cookie = this.cookie
+    if (this.documentIsAccessible) {
+      cookie = this.document.cookie
+    }
+
+    if (cookie && this.check(name)) {
       name = encodeURIComponent(name);
 
       const regExp: RegExp = CookieService.getCookieRegExp(name);
-      const result: RegExpExecArray = regExp.exec(this.document.cookie);
+      const result: RegExpExecArray = regExp.exec(cookie);
 
       return result[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
     } else {
@@ -80,15 +87,19 @@ export class CookieService {
    * @returns all the cookies in json
    */
   getAll(): { [key: string]: string } {
-    if (!this.documentIsAccessible) {
+    let cookie = this.cookie
+    if (this.documentIsAccessible) {
+      cookie = this.document.cookie
+    }
+
+    if (!cookie) {
       return {};
     }
 
     const cookies: { [key: string]: string } = {};
-    const document: any = this.document;
 
-    if (document.cookie && document.cookie !== '') {
-      document.cookie.split(';').forEach((currentCookie) => {
+    if (cookie && cookie !== '') {
+      cookie.split(';').forEach((currentCookie) => {
         const [cookieName, cookieValue] = currentCookie.split('=');
         cookies[CookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = CookieService.safeDecodeURIComponent(cookieValue);
       });
