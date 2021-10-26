@@ -24,6 +24,9 @@ export class CookieService {
    *
    * @param name Cookie name
    * @returns property RegExp
+   *
+   * @author: Stepan Suvorov
+   * @since: 1.0.0
    */
   private static getCookieRegExp(name: string): RegExp {
     const escapedName: string = name.replace(/([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi, '\\$1');
@@ -31,6 +34,16 @@ export class CookieService {
     return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
   }
 
+  /**
+   * Gets the unencoded version of an encoded component of a Uniform Resource Identifier (URI).
+   *
+   * @param encodedURIComponent A value representing an encoded URI component.
+   *
+   * @returns The unencoded version of an encoded component of a Uniform Resource Identifier (URI).
+   *
+   * @author: Stepan Suvorov
+   * @since: 1.0.0
+   */
   private static safeDecodeURIComponent(encodedURIComponent: string): string {
     try {
       return decodeURIComponent(encodedURIComponent);
@@ -45,6 +58,9 @@ export class CookieService {
    *
    * @param name Cookie name
    * @returns boolean - whether cookie with specified name exists
+   *
+   * @author: Stepan Suvorov
+   * @since: 1.0.0
    */
   check(name: string): boolean {
     if (!this.documentIsAccessible) {
@@ -60,6 +76,9 @@ export class CookieService {
    *
    * @param name Cookie name
    * @returns property value
+   *
+   * @author: Stepan Suvorov
+   * @since: 1.0.0
    */
   get(name: string): string {
     if (this.documentIsAccessible && this.check(name)) {
@@ -78,6 +97,9 @@ export class CookieService {
    * Get all cookies in JSON format
    *
    * @returns all the cookies in json
+   *
+   * @author: Stepan Suvorov
+   * @since: 1.0.0
    */
   getAll(): { [key: string]: string } {
     if (!this.documentIsAccessible) {
@@ -107,6 +129,9 @@ export class CookieService {
    * @param domain   Cookie domain
    * @param secure   Secure flag
    * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `Lax`
+   *
+   * @author: Stepan Suvorov
+   * @since: 1.0.0
    */
   set(name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'None' | 'Strict'): void;
 
@@ -125,6 +150,9 @@ export class CookieService {
    * @param name     Cookie name
    * @param value    Cookie value
    * @param options  Body with cookie's params
+   *
+   * @author: Stepan Suvorov
+   * @since: 1.0.0
    */
   set(
     name: string,
@@ -214,6 +242,9 @@ export class CookieService {
    * @param domain Cookie domain
    * @param secure Cookie secure flag
    * @param sameSite Cookie sameSite flag - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
+   *
+   * @author: Stepan Suvorov
+   * @since: 1.0.0
    */
   delete(name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
     if (!this.documentIsAccessible) {
@@ -230,6 +261,9 @@ export class CookieService {
    * @param domain Cookie domain
    * @param secure Is the Cookie secure
    * @param sameSite Is the cookie same site
+   *
+   * @author: Stepan Suvorov
+   * @since: 1.0.0
    */
   deleteAll(path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
     if (!this.documentIsAccessible) {
