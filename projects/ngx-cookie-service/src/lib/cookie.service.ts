@@ -31,6 +31,16 @@ export class CookieService {
     return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
   }
 
+  /**
+   * Gets the unencoded version of an encoded component of a Uniform Resource Identifier (URI).
+   *
+   * @param encodedURIComponent A value representing an encoded URI component.
+   *
+   * @returns The unencoded version of an encoded component of a Uniform Resource Identifier (URI).
+   *
+   * @author: Pavan Kumar Jadda
+   * @since: 1.0.0
+   */
   private static safeDecodeURIComponent(encodedURIComponent: string): string {
     try {
       return decodeURIComponent(encodedURIComponent);
