@@ -1,22 +1,25 @@
 // This service is based on the `ng2-cookies` package which sadly is not a service and does
 // not use `DOCUMENT` injection and therefore doesn't work well with AoT production builds.
 // Package: https://github.com/BCJTI/ng2-cookies
-
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
-import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { REQUEST } from '@nguniversal/express-engine/tokens';
+import { Inject, Injectable, Optional, PLATFORM_ID } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser, isPlatformServer } from '@angular/common';
 
 @Injectable({
   providedIn: 'root',
 })
 export class CookieService {
   private readonly documentIsAccessible: boolean;
+  private readonly isServer: boolean;
 
   constructor(
     @Inject(DOCUMENT) private document: any,
     // Get the `PLATFORM_ID` so we can check if we're in a browser.
-    @Inject(PLATFORM_ID) private platformId
+    @Inject(PLATFORM_ID) private platformId,
+    @Optional() @Inject(REQUEST) private request: Request
   ) {
     this.documentIsAccessible = isPlatformBrowser(this.platformId);
+    this.isServer = isPlatformServer(this.platformId);
   }
 
   /**
@@ -85,7 +88,7 @@ export class CookieService {
       name = encodeURIComponent(name);
 
       const regExp: RegExp = CookieService.getCookieRegExp(name);
-      const result: RegExpExecArray = regExp.exec(this.document.cookie);
+      const result: RegExpExecArray = regExp.exec(this.isServer ? this.request?.headers.get('cookie') : this.document.cookie);
 
       return result[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
     } else {
