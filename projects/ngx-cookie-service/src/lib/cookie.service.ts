@@ -12,7 +12,7 @@ export class CookieService {
   private readonly documentIsAccessible: boolean;
 
   constructor(
-    @Inject(DOCUMENT) private document: any,
+    @Inject(DOCUMENT) private document: Document,
     // Get the `PLATFORM_ID` so we can check if we're in a browser.
     @Inject(PLATFORM_ID) private platformId
   ) {
