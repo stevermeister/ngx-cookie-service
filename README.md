@@ -15,6 +15,8 @@
 
 Angular service to read, set and delete browser cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
 
+> Note: `ViewEngine` support has been removed on 13.x.x. See [compatability matrix](https://github.com/stevermeister/ngx-cookie-service#supported-versions) for details
+
 # Installation
 
 ```bash
@@ -59,13 +61,12 @@ That's it!
 https://stackblitz.com/edit/angular-ivy-1lrgdt?file=src%2Fapp%2Fapp.component.ts
 
 ## Supported Versions
-
-For Angular 13.x.x or later use the latest version of the library. For versions <12.x.x, use 12.0.3 version
+`ViewEngine` support has been removed on 13.x.x. For Angular versions 13.x.x or later use the latest version of the library. For versions <=12.x.x, use 12.0.3 version
 
 | Angular Version | Supported Version |
 | --------------- | ----------------- |
-| 13.0.0+          | latest            |
-| < 12.2.x        | 12.0.3             |
+| 13.x.x or later (Ivy)          | 13.x.x or later            |
+| <=12.x.x (View Engine)        | 12.0.3             |
 
 # API
 
