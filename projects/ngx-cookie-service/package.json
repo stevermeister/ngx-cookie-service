@@ -91,6 +91,7 @@
       "path": false,
       "http": false,
       "stream": false,
-      "util": false}
+      "util": false
+    }
   }
 }
