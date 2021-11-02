@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service",
   "description": "An (aot ready) angular (4.2+) cookie service",
-  "version": "12.1.0-rc.3",
+  "version": "12.1.0-rc.5",
   "license": "MIT",
   "author": "Stepan Suvorov <stevermeister@gmail.com>",
   "keywords": [
@@ -82,5 +82,15 @@
   },
   "dependencies": {
     "tslib": "^2.0.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.13"
+  },
+  "resolve": {
+    "fallback": {
+      "path": false,
+      "http": false,
+      "stream": false,
+      "util": false}
   }
 }
