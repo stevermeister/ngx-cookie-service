@@ -12,7 +12,7 @@
 
 </p>
 
-Angular 12 IVY Ready service for cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. For versions < 9.x.x, please use 2.3.0 version of library.
+Angular 13 Ivy Ready service for cookies. For versions < 9.x.x, please use 2.3.0 version of library.
 
 The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
 
@@ -165,9 +165,7 @@ at [StackOverflow](https://stackoverflow.com/) for help.
 
 ## Do you support Angular Universal?
 
-There is an [issue](https://github.com/7leads/ngx-cookie-service/issues/1) for that. Check
-out [this comment](https://github.com/7leads/ngx-cookie-service/issues/1#issuecomment-361150174) for more information
-about future support.
+We do not support Angular Universal at the moment. But we are working on it. See [PR](https://github.com/stevermeister/ngx-cookie-service/pull/177) for details
 
 # Opening issues
 
@@ -192,6 +190,7 @@ the other cookie packages we found were either not designed "the Angular way" or
 
 Thanks to all contributors:
 
+- [pavankjadda](https://github.com/pavankjadda)
 - [paroe](https://github.com/paroe)
 - [CunningFatalist](https://github.com/CunningFatalist)
 - [kthy](https://github.com/kthy)
@@ -203,7 +202,6 @@ Thanks to all contributors:
 - [IceBreakerG](https://github.com/IceBreakerG)
 - [rojedalopez](https://github.com/rojedalopez)
 - [Nikel163](https://github.com/Nikel163)
-- [pavankjadda](https://github.com/pavankjadda)
 
 # License
 
