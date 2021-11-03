@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service",
   "description": "Angular cookie service",
-  "version": "13.0.0-rc.2",
+  "version": "13.0.0",
   "license": "MIT",
   "author": "Stepan Suvorov <stevermeister@gmail.com>",
   "keywords": [
@@ -19,9 +19,10 @@
     "angular-10",
     "angular-11",
     "angular-12",
-    "aot",
-    "aot-compatible",
-    "aot-compilation",
+    "angular-13",
+    "ivy",
+    "ivy-compatible",
+    "ivy-compilation",
     "ngx",
     "ng2",
     "ng",
