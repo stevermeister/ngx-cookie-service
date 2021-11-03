@@ -9,12 +9,14 @@
 <a href="https://gitter.im/ngx-cookie-service/community">
 <img src="https://badges.gitter.im/ngx-cookie-service/community.svg" alt="Chat in Gitter" />
 </a>
+[![ngx-cookie-service channel on discord](https://img.shields.io/discord/873021904708059177.svg?style=flat-square)](https://discord.gg/N3xc4Jfb)
 
 </p>
 
-Angular 13 Ivy Ready service for cookies. For versions < 9.x.x, please use 2.3.0 version of library.
+Angular service to read, set and delete browser cookies. The experienced team
+behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
 
-The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
+> Note: `ViewEngine` support has been removed on 13.x.x. See [compatability matrix](https://github.com/stevermeister/ngx-cookie-service#supported-versions) for details
 
 # Installation
 
@@ -56,7 +58,21 @@ cookieService: CookieService
 
 That's it!
 
-# Methods
+## Demo
+
+https://stackblitz.com/edit/angular-ivy-1lrgdt?file=src%2Fapp%2Fapp.component.ts
+
+## Supported Versions
+
+`ViewEngine` support has been removed on 13.x.x. For Angular versions 13.x.x or later use the latest version of the
+library. For versions <=12.x.x, use 12.0.3 version
+
+| Angular Version | Supported Version |
+| --------------- | ----------------- |
+| 13.x.x or later (Ivy)          | 13.x.x or later            |
+| <=12.x.x (View Engine)        | 12.0.3             |
+
+# API
 
 ## check( name: string ): boolean;
 
@@ -165,7 +181,7 @@ at [StackOverflow](https://stackoverflow.com/) for help.
 
 ## Do you support Angular Universal?
 
-We do not support Angular Universal at the moment. But we are working on it. See [PR](https://github.com/stevermeister/ngx-cookie-service/pull/177) for details
+We are working on it. If you are interested in helping us out, see [PR](https://github.com/stevermeister/ngx-cookie-service/pull/177)
 
 # Opening issues
 
