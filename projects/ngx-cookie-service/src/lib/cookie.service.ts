@@ -101,15 +101,11 @@ export class CookieService {
    * @since: 1.0.0
    */
   getAll(): { [key: string]: string } {
-    if (!this.documentIsAccessible) {
-      return {};
-    }
-
     const cookies: { [key: string]: string } = {};
-    const document: any = this.document;
+    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.request?.headers.cookie;
 
-    if (document.cookie && document.cookie !== '') {
-      document.cookie.split(';').forEach((currentCookie) => {
+    if (cookieString && cookieString !== '') {
+      cookieString.split(';').forEach((currentCookie) => {
         const [cookieName, cookieValue] = currentCookie.split('=');
         cookies[CookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = CookieService.safeDecodeURIComponent(cookieValue);
       });
