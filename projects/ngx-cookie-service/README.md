@@ -9,12 +9,14 @@
 <a href="https://gitter.im/ngx-cookie-service/community">
 <img src="https://badges.gitter.im/ngx-cookie-service/community.svg" alt="Chat in Gitter" />
 </a>
+[![ngx-cookie-service channel on discord](https://img.shields.io/discord/873021904708059177.svg?style=flat-square)](https://discord.gg/N3xc4Jfb)
 
 </p>
 
-Angular 12 IVY Ready service for cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. For versions < 9.x.x, please use 2.3.0 version of library.
+Angular service to read, set and delete browser cookies. The experienced team
+behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
 
-The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
+> Note: `ViewEngine` support has been removed on 13.x.x. See [compatability matrix](https://github.com/stevermeister/ngx-cookie-service#supported-versions) for details
 
 # Installation
 
@@ -56,7 +58,21 @@ cookieService: CookieService
 
 That's it!
 
-# Methods
+## Demo
+
+https://stackblitz.com/edit/angular-ivy-1lrgdt?file=src%2Fapp%2Fapp.component.ts
+
+## Supported Versions
+
+`ViewEngine` support has been removed on 13.x.x. For Angular versions 13.x.x or later use the latest version of the
+library. For versions <=12.x.x, use 12.0.3 version
+
+| Angular Version | Supported Version |
+| --------------- | ----------------- |
+| 13.x.x or later (Ivy)          | 13.x.x or later            |
+| <=12.x.x (View Engine)        | 12.0.3             |
+
+# API
 
 ## check( name: string ): boolean;
 
@@ -165,9 +181,7 @@ at [StackOverflow](https://stackoverflow.com/) for help.
 
 ## Do you support Angular Universal?
 
-There is an [issue](https://github.com/7leads/ngx-cookie-service/issues/1) for that. Check
-out [this comment](https://github.com/7leads/ngx-cookie-service/issues/1#issuecomment-361150174) for more information
-about future support.
+We are working on it. If you are interested in helping us out, see [PR](https://github.com/stevermeister/ngx-cookie-service/pull/177)
 
 # Opening issues
 
@@ -192,6 +206,7 @@ the other cookie packages we found were either not designed "the Angular way" or
 
 Thanks to all contributors:
 
+- [pavankjadda](https://github.com/pavankjadda)
 - [paroe](https://github.com/paroe)
 - [CunningFatalist](https://github.com/CunningFatalist)
 - [kthy](https://github.com/kthy)
@@ -203,7 +218,6 @@ Thanks to all contributors:
 - [IceBreakerG](https://github.com/IceBreakerG)
 - [rojedalopez](https://github.com/rojedalopez)
 - [Nikel163](https://github.com/Nikel163)
-- [pavankjadda](https://github.com/pavankjadda)
 
 # License
 

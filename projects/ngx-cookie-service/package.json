@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service",
-  "description": "An (aot ready) angular (4.2+) cookie service",
-  "version": "12.1.0-rc.5",
+  "description": "Angular cookie service",
+  "version": "13.0.0",
   "license": "MIT",
   "author": "Stepan Suvorov <stevermeister@gmail.com>",
   "keywords": [
@@ -19,9 +19,10 @@
     "angular-10",
     "angular-11",
     "angular-12",
-    "aot",
-    "aot-compatible",
-    "aot-compilation",
+    "angular-13",
+    "ivy",
+    "ivy-compatible",
+    "ivy-compilation",
     "ngx",
     "ng2",
     "ng",
@@ -76,9 +77,9 @@
     "email": "stepan@studytube.nl"
   },
   "peerDependencies": {
-    "@angular/common": "^12.0.0",
-    "@angular/core": "^12.0.0",
-    "@nguniversal/express-engine": "^12.0.0"
+    "@angular/common": "^13.0.0",
+    "@angular/core": "^13.0.0"
+    "@nguniversal/express-engine": "^13.0.0"
   },
   "dependencies": {
     "tslib": "^2.0.0"
