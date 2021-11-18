@@ -11,18 +11,10 @@
     "moduleResolution": "node",
     "importHelpers": true,
     "target": "es2015",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "es2018",
-      "dom"
-    ],
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["es2018", "dom"],
     "paths": {
-      "ngx-cookie-service": [
-        "dist/ngx-cookie-service/ngx-cookie-service",
-        "dist/ngx-cookie-service"
-      ]
+      "ngx-cookie-service": ["dist/ngx-cookie-service/ngx-cookie-service", "dist/ngx-cookie-service"]
     }
   },
   "angularCompilerOptions": {
