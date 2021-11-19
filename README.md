@@ -58,15 +58,17 @@ cookieService: CookieService
 That's it!
 
 ## Demo
+
 https://stackblitz.com/edit/angular-ivy-1lrgdt?file=src%2Fapp%2Fapp.component.ts
 
 ## Supported Versions
+
 `ViewEngine` support has been removed on 13.x.x. For Angular versions 13.x.x or later use the latest version of the library. For versions <=12.x.x, use 12.0.3 version
 
-| Angular Version | Supported Version |
-| --------------- | ----------------- |
-| 13.x.x or later (Ivy)          | 13.x.x or later            |
-| <=12.x.x (View Engine)        | 12.0.3             |
+| Angular Version        | Supported Version |
+| ---------------------- | ----------------- |
+| 13.x.x or later (Ivy)  | 13.x.x or later   |
+| <=12.x.x (View Engine) | 12.0.3            |
 
 # API
 

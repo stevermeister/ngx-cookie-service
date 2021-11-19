@@ -17,7 +17,7 @@ module.exports = function (config) {
     },
     coverageReporter: {
       dir: require('path').join(__dirname, '../../coverage/'),
-      subdir:'ngx-cookie-service',
+      subdir: 'ngx-cookie-service',
       type: 'lcovonly',
     },
     reporters: ['progress', 'kjhtml'],
