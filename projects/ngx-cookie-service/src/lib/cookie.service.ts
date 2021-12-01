@@ -1,8 +1,9 @@
 // This service is based on the `ng2-cookies` package which sadly is not a service and does
 // not use `DOCUMENT` injection and therefore doesn't work well with AoT production builds.
 // Package: https://github.com/BCJTI/ng2-cookies
-
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { Request } from 'express';
+import { REQUEST } from '@nguniversal/express-engine/tokens';
+import { Inject, Injectable, Optional, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -14,7 +15,8 @@ export class CookieService {
   constructor(
     @Inject(DOCUMENT) private document: Document,
     // Get the `PLATFORM_ID` so we can check if we're in a browser.
-    @Inject(PLATFORM_ID) private platformId
+    @Inject(PLATFORM_ID) private platformId: any,
+    @Optional() @Inject(REQUEST) private request: Request
   ) {
     this.documentIsAccessible = isPlatformBrowser(this.platformId);
   }
@@ -28,7 +30,7 @@ export class CookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  private static getCookieRegExp(name: string): RegExp {
+  static getCookieRegExp(name: string): RegExp {
     const escapedName: string = name.replace(/([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi, '\\$1');
 
     return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
@@ -44,7 +46,7 @@ export class CookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  private static safeDecodeURIComponent(encodedURIComponent: string): string {
+  static safeDecodeURIComponent(encodedURIComponent: string): string {
     try {
       return decodeURIComponent(encodedURIComponent);
     } catch {
@@ -63,12 +65,9 @@ export class CookieService {
    * @since: 1.0.0
    */
   check(name: string): boolean {
-    if (!this.documentIsAccessible) {
-      return false;
-    }
     name = encodeURIComponent(name);
     const regExp: RegExp = CookieService.getCookieRegExp(name);
-    return regExp.test(this.document.cookie);
+    return regExp.test(this.documentIsAccessible ? this.document.cookie : this.request?.headers.cookie);
   }
 
   /**
@@ -81,11 +80,11 @@ export class CookieService {
    * @since: 1.0.0
    */
   get(name: string): string {
-    if (this.documentIsAccessible && this.check(name)) {
+    if (this.check(name)) {
       name = encodeURIComponent(name);
 
       const regExp: RegExp = CookieService.getCookieRegExp(name);
-      const result: RegExpExecArray = regExp.exec(this.document.cookie);
+      const result: RegExpExecArray = regExp.exec(this.documentIsAccessible ? this.document.cookie : this.request?.headers.cookie);
 
       return result[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
     } else {
@@ -102,15 +101,11 @@ export class CookieService {
    * @since: 1.0.0
    */
   getAll(): { [key: string]: string } {
-    if (!this.documentIsAccessible) {
-      return {};
-    }
-
     const cookies: { [key: string]: string } = {};
-    const document: any = this.document;
+    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.request?.headers.cookie;
 
-    if (document.cookie && document.cookie !== '') {
-      document.cookie.split(';').forEach((currentCookie) => {
+    if (cookieString && cookieString !== '') {
+      cookieString.split(';').forEach((currentCookie) => {
         const [cookieName, cookieValue] = currentCookie.split('=');
         cookies[CookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = CookieService.safeDecodeURIComponent(cookieValue);
       });
