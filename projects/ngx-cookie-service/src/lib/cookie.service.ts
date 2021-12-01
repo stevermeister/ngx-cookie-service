@@ -30,7 +30,7 @@ export class CookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-   static getCookieRegExp(name: string): RegExp {
+  static getCookieRegExp(name: string): RegExp {
     const escapedName: string = name.replace(/([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi, '\\$1');
 
     return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
