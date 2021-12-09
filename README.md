@@ -17,7 +17,7 @@ Angular service to read, set and delete browser cookies. Originally based on the
 
 > Note: `ViewEngine` support has been removed on 13.x.x. See [compatability matrix](https://github.com/stevermeister/ngx-cookie-service#supported-versions) for details
 
-# Installation
+## Installation
 
 ```bash
 npm install ngx-cookie-service --save
@@ -26,6 +26,8 @@ npm install ngx-cookie-service --save
 
 yarn add ngx-cookie-service
 ```
+
+## Usage
 
 Add the cookie service to your `app.module.ts` as a provider:
 
@@ -57,13 +59,45 @@ cookieService: CookieService
 
 That's it!
 
+## Server Side Rendering
+
+`ngx-cookie-service` supports Server Side Rendering (SSR) through Angular Universal. By default, browser cookies are not
+available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your SSR
+project, and replace the following code
+
+```typescript
+server.get('*', (req, res) => {
+  res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
+});
+```
+
+with this
+
+```typescript
+server.get('*', (req, res) => {
+  res.render(indexHtml, {
+    req,
+    providers: [
+      { provide: APP_BASE_HREF, useValue: req.baseUrl },
+      { provide: 'REQUEST', useValue: req },
+      { provide: 'RESPONSE', useValue: res },
+    ],
+  });
+});
+```
+
+This will make sure the cookies are available in `REQUEST` object, and the `ngx-cookie-service` can use `REQUEST.cookies` to access the
+cookies in SSR. Then proceed to use `ngx-cookie-service` as usual. See
+the [sample repo](https://github.com/pavankjadda/angular-ssr-docker) for more details.
+
 ## Demo
 
 https://stackblitz.com/edit/angular-ivy-1lrgdt?file=src%2Fapp%2Fapp.component.ts
 
 ## Supported Versions
 
-`ViewEngine` support has been removed on 13.x.x. For Angular versions 13.x.x or later use the latest version of the library. For versions <=12.x.x, use 12.0.3 version
+`ViewEngine` support has been removed on 13.x.x. For Angular versions 13.x.x or later use the latest version of the
+library. For versions <=12.x.x, use 12.0.3 version
 
 | Angular Version        | Supported Version |
 | ---------------------- | ----------------- |
