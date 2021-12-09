@@ -86,8 +86,8 @@ server.get('*', (req, res) => {
 });
 ```
 
-This will make sure the cookies are available in `REQUEST` object and you can then use `REQUEST.cookies` to access the
-cookies. Then proceed to use `ngx-cookie-service` as usual. See
+This will make sure the cookies are available in `REQUEST` object, and the `ngx-cookie-service` can use `REQUEST.cookies` to access the
+cookies in SSR. Then proceed to use `ngx-cookie-service` as usual. See
 the [sample repo](https://github.com/pavankjadda/angular-ssr-docker) for more details.
 
 ## Demo
