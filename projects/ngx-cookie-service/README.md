@@ -13,12 +13,11 @@
 
 </p>
 
-Angular service to read, set and delete browser cookies. The experienced team
-behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
+Angular service to read, set and delete browser cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
 
 > Note: `ViewEngine` support has been removed on 13.x.x. See [compatability matrix](https://github.com/stevermeister/ngx-cookie-service#supported-versions) for details
 
-# Installation
+## Installation
 
 ```bash
 npm install ngx-cookie-service --save
@@ -27,6 +26,8 @@ npm install ngx-cookie-service --save
 
 yarn add ngx-cookie-service
 ```
+
+## Usage
 
 Add the cookie service to your `app.module.ts` as a provider:
 
@@ -57,6 +58,35 @@ cookieService: CookieService
 ```
 
 That's it!
+
+## Server Side Rendering
+
+`ngx-cookie-service` supports Server Side Rendering (SSR) through Angular Universal. By default, browser cookies are not available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file
+in your SSR project, and replace the following code
+
+```typescript
+server.get('*', (req, res) => {
+  res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
+});
+```
+
+with this
+
+```typescript
+server.get('*', (req, res) => {
+  res.render(indexHtml, {
+    req,
+    providers: [
+      { provide: APP_BASE_HREF, useValue: req.baseUrl },
+      { provide: 'REQUEST', useValue: req },
+      { provide: 'RESPONSE', useValue: res },
+    ],
+  });
+});
+```
+
+This will make sure the cookies are available in `REQUEST` object and you can then use `REQUEST.cookies` to access the cookies.
+Then proceed to use `ngx-cookie-service` as usual.
 
 ## Demo
 
@@ -181,7 +211,9 @@ at [StackOverflow](https://stackoverflow.com/) for help.
 
 ## Do you support Angular Universal?
 
-We are working on it. If you are interested in helping us out, see [PR](https://github.com/stevermeister/ngx-cookie-service/pull/177)
+There is an [issue](https://github.com/7leads/ngx-cookie-service/issues/1) for that. Check
+out [this comment](https://github.com/7leads/ngx-cookie-service/issues/1#issuecomment-361150174) for more information
+about future support.
 
 # Opening issues
 
@@ -206,7 +238,6 @@ the other cookie packages we found were either not designed "the Angular way" or
 
 Thanks to all contributors:
 
-- [pavankjadda](https://github.com/pavankjadda)
 - [paroe](https://github.com/paroe)
 - [CunningFatalist](https://github.com/CunningFatalist)
 - [kthy](https://github.com/kthy)
@@ -218,6 +249,7 @@ Thanks to all contributors:
 - [IceBreakerG](https://github.com/IceBreakerG)
 - [rojedalopez](https://github.com/rojedalopez)
 - [Nikel163](https://github.com/Nikel163)
+- [pavankjadda](https://github.com/pavankjadda)
 
 # License
 
