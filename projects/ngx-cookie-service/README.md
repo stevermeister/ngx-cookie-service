@@ -59,10 +59,11 @@ cookieService: CookieService
 
 That's it!
 
-## Server Side Rendering
+## Server Side Rendering (Coming Soon)
 
-`ngx-cookie-service` supports Server Side Rendering (SSR) through Angular Universal. By default, browser cookies are not available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file
-in your SSR project, and replace the following code
+`ngx-cookie-service` supports Server Side Rendering (SSR) through Angular Universal. By default, browser cookies are not
+available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your SSR
+project, and replace the following code
 
 ```typescript
 server.get('*', (req, res) => {
@@ -85,8 +86,9 @@ server.get('*', (req, res) => {
 });
 ```
 
-This will make sure the cookies are available in `REQUEST` object and you can then use `REQUEST.cookies` to access the cookies.
-Then proceed to use `ngx-cookie-service` as usual.
+This will make sure the cookies are available in `REQUEST` object, and the `ngx-cookie-service` can use `REQUEST.cookies` to access the
+cookies in SSR. Then proceed to use `ngx-cookie-service` as usual. See
+the [sample repo](https://github.com/pavankjadda/angular-ssr-docker) for more details.
 
 ## Demo
 

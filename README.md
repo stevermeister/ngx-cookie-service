@@ -59,7 +59,7 @@ cookieService: CookieService
 
 That's it!
 
-## Server Side Rendering
+## Server Side Rendering (Coming Soon)
 
 `ngx-cookie-service` supports Server Side Rendering (SSR) through Angular Universal. By default, browser cookies are not
 available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your SSR
