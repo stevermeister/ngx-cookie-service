@@ -1,9 +1,10 @@
 // This service is based on the `ng2-cookies` package which sadly is not a service and does
 // not use `DOCUMENT` injection and therefore doesn't work well with AoT production builds.
 // Package: https://github.com/BCJTI/ng2-cookies
+
 import { Inject, Injectable, Optional, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
-import {REQUEST_PROVIDER_TOKEN, RequestProvider} from 'ngx-cookie-service/request-provider';
+import { REQUEST_PROVIDER_TOKEN, RequestProvider } from 'ngx-cookie-service/request-provider';
 
 @Injectable({
   providedIn: 'root',
@@ -29,7 +30,7 @@ export class CookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  static getCookieRegExp(name: string): RegExp {
+  private static getCookieRegExp(name: string): RegExp {
     const escapedName: string = name.replace(/([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi, '\\$1');
 
     return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
@@ -45,7 +46,7 @@ export class CookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  static safeDecodeURIComponent(encodedURIComponent: string): string {
+  private static safeDecodeURIComponent(encodedURIComponent: string): string {
     try {
       return decodeURIComponent(encodedURIComponent);
     } catch {
@@ -64,9 +65,12 @@ export class CookieService {
    * @since: 1.0.0
    */
   check(name: string): boolean {
+    if (!this.documentIsAccessible) {
+      return false;
+    }
     name = encodeURIComponent(name);
     const regExp: RegExp = CookieService.getCookieRegExp(name);
-    return regExp.test(this.documentIsAccessible ? this.document.cookie : this.request?.headers.cookie);
+    return regExp.test(this.document.cookie);
   }
 
   /**
@@ -79,11 +83,11 @@ export class CookieService {
    * @since: 1.0.0
    */
   get(name: string): string {
-    if (this.check(name)) {
+    if (this.documentIsAccessible && this.check(name)) {
       name = encodeURIComponent(name);
 
       const regExp: RegExp = CookieService.getCookieRegExp(name);
-      const result: RegExpExecArray = regExp.exec(this.documentIsAccessible ? this.document.cookie : this.request?.headers.cookie);
+      const result: RegExpExecArray = regExp.exec(this.document.cookie);
 
       return result[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
     } else {
@@ -100,11 +104,15 @@ export class CookieService {
    * @since: 1.0.0
    */
   getAll(): { [key: string]: string } {
-    const cookies: { [key: string]: string } = {};
-    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.request?.headers.cookie;
+    if (!this.documentIsAccessible) {
+      return {};
+    }
 
-    if (cookieString && cookieString !== '') {
-      cookieString.split(';').forEach((currentCookie) => {
+    const cookies: { [key: string]: string } = {};
+    const document: any = this.document;
+
+    if (document.cookie && document.cookie !== '') {
+      document.cookie.split(';').forEach((currentCookie) => {
         const [cookieName, cookieValue] = currentCookie.split('=');
         cookies[CookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = CookieService.safeDecodeURIComponent(cookieValue);
       });
@@ -212,7 +220,7 @@ export class CookieService {
       options.secure = true;
       console.warn(
         `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
-          `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
+        `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
       );
     }
     if (options.secure) {
