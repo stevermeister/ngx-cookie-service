@@ -1,0 +1,8 @@
+{
+  "name": "ngx-cookie-service/express-ssr",
+  "license": "MIT",
+  "peerDependencies": {
+    "@nguniversal/express-engine": "^13.0.1",
+    "express": "^4.17.2"
+  }
+}
