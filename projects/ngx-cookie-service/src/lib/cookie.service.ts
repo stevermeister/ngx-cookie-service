@@ -5,6 +5,16 @@
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
+export type SameSite = 'Lax' | 'None' | 'Strict';
+
+export interface CookieOptions {
+  expires?: number | Date;
+  path?: string;
+  domain?: string;
+  secure?: boolean;
+  sameSite?: SameSite;
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -133,7 +143,15 @@ export class CookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  set(name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'None' | 'Strict'): void;
+  set(
+    name: string,
+    value: string,
+    expires?: CookieOptions['expires'],
+    path?: CookieOptions['path'],
+    domain?: CookieOptions['domain'],
+    secure?: CookieOptions['secure'],
+    sameSite?: SameSite
+  ): void;
 
   /**
    * Set cookie based on provided information
@@ -154,26 +172,16 @@ export class CookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  set(
-    name: string,
-    value: string,
-    options?: {
-      expires?: number | Date;
-      path?: string;
-      domain?: string;
-      secure?: boolean;
-      sameSite?: 'Lax' | 'None' | 'Strict';
-    }
-  ): void;
+  set(name: string, value: string, options?: CookieOptions): void;
 
   set(
     name: string,
     value: string,
-    expiresOrOptions?: number | Date | any,
-    path?: string,
-    domain?: string,
-    secure?: boolean,
-    sameSite?: 'Lax' | 'None' | 'Strict'
+    expiresOrOptions?: CookieOptions['expires'] | CookieOptions,
+    path?: CookieOptions['path'],
+    domain?: CookieOptions['domain'],
+    secure?: CookieOptions['secure'],
+    sameSite?: SameSite
   ): void {
     if (!this.documentIsAccessible) {
       return;
@@ -181,7 +189,7 @@ export class CookieService {
 
     if (typeof expiresOrOptions === 'number' || expiresOrOptions instanceof Date || path || domain || secure || sameSite) {
       const optionsBody = {
-        expires: expiresOrOptions,
+        expires: expiresOrOptions as CookieOptions['expires'],
         path,
         domain,
         secure,
@@ -246,7 +254,7 @@ export class CookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  delete(name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
+  delete(name: string, path?: CookieOptions['path'], domain?: CookieOptions['domain'], secure?: CookieOptions['secure'], sameSite: SameSite = 'Lax'): void {
     if (!this.documentIsAccessible) {
       return;
     }
@@ -265,7 +273,7 @@ export class CookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  deleteAll(path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
+  deleteAll(path?: CookieOptions['path'], domain?: CookieOptions['domain'], secure?: CookieOptions['secure'], sameSite: SameSite = 'Lax'): void {
     if (!this.documentIsAccessible) {
       return;
     }
