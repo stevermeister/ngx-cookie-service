@@ -1,4 +1,4 @@
-#13.2.0
+# 13.2.0
 
 ### New Features
 
@@ -18,7 +18,7 @@
 
 - @minijus made their first contribution in https://github.com/stevermeister/ngx-cookie-service/pull/218
 
-#13.2.0-rc.1
+# 13.2.0-rc.1
 
 ### New Features
 
@@ -39,7 +39,7 @@
 
 # 13.1.2
 
-## Bug Fixes
+### Bug Fixes
 
 - reverts ssr changes by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/205
 
