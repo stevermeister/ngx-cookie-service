@@ -47,6 +47,5 @@
   },
   "cli": {
     "analytics": "672a95e4-d4b2-4161-ac1f-25d2c513bef0"
-  },
-  "defaultProject": "ngx-cookie-service"
+  }
 }
