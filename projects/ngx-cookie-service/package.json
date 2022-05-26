@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service",
   "description": "Angular cookie service",
-  "version": "14.0.0-rc.0",
+  "version": "14.0.0-rc.1",
   "license": "MIT",
   "author": "Stepan Suvorov <stevermeister@gmail.com>",
   "keywords": [
@@ -78,8 +78,8 @@
     "email": "stepan@studytube.nl"
   },
   "peerDependencies": {
-    "@angular/common": "^14.0.0-rc.0",
-    "@angular/core": "^14.0.0-rc.0"
+    "@angular/common": "^14.0.0-rc.1",
+    "@angular/core": "^14.0.0-rc.1"
   },
   "dependencies": {
     "tslib": "^2.0.0"
