@@ -12,6 +12,8 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: 16
+      - name: Install Angular CLI
+        run: npm install -g @angular/cli @angular/core
       - name: Install NPM Dependencies
         run: npm ci --force
       - name: Build project
