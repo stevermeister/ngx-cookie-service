@@ -1,0 +1,24 @@
+name: Auto Comment
+on: [issues, pull_request]
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: wow-actions/auto-comment@v1
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          issuesOpenedReactions: 'eyes, +1'
+          issuesOpenedComment: >
+            Hello 👋 @{{ author }}
+            <br>
+            Thank you for raising an issue. We will investigate into the issue and get back to you as soon as possible.
+            Please make sure you have given us as much context as possible.
+            <br>
+            Feel free to raise a PR if you can fix the issue
+
+          pullRequestOpenedReactions: 'hooray, +1'
+          pullRequestOpenedComment: >
+            Hello 👋 @{{ author }}
+            <br>
+            Thank you for raising your pull request.
+            Please make sure you have followed our [contributing guidelines](https://github.com/stevermeister/ngx-cookie-service/blob/master/CONTRIBUTING.md). We will review it as soon as possible.
