@@ -1,0 +1,96 @@
+{
+  "name": "ngx-cookie-service-ssr",
+  "description": "Angular SSR cookie service",
+  "version": "14.0.0",
+  "license": "MIT",
+  "author": "Stepan Suvorov <stevermeister@gmail.com>",
+  "keywords": [
+    "angular",
+    "angular2",
+    "angular4",
+    "angular5",
+    "angular-2",
+    "angular-4",
+    "angular-5",
+    "angular-6",
+    "angular-7",
+    "angular-8",
+    "angular-9",
+    "angular-10",
+    "angular-11",
+    "angular-12",
+    "angular-13",
+    "angular-14",
+    "ivy",
+    "ivy-compatible",
+    "ivy-compilation",
+    "ngx",
+    "ng2",
+    "ng",
+    "service",
+    "angular-service",
+    "cookie-service",
+    "cookie",
+    "cookies"
+  ],
+  "contributors": [
+    {
+      "name": "Pavan Kumar Jadda"
+    },
+    {
+      "name": "Christopher Parotat",
+      "email": "c.parotat@7leads.org"
+    },
+    {
+      "name": "Stefan Bauer",
+      "email": "bauer.stefan@live.de"
+    },
+    {
+      "name": "Kristian Thy",
+      "email": "thy@42.dk"
+    },
+    {
+      "name": "Jared Clemence"
+    },
+    {
+      "name": "flakolefluk"
+    },
+    {
+      "name": "mattbanks"
+    },
+    {
+      "name": "DBaker85"
+    },
+    {
+      "name": "Matt Lewis",
+      "email": "npm@mattlewis.me"
+    },
+    {
+      "name": "IceBreakerG"
+    }
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stevermeister/ngx-cookie-service.git"
+  },
+  "bugs": {
+    "url": "https://github.com/stevermeister/ngx-cookie-service/issues",
+    "email": "stepan@studytube.nl"
+  },
+  "peerDependencies": {
+    "@angular/common": "^14.0.0",
+    "@angular/core": "^14.0.0",
+    "@nguniversal/express-engine": "^14.0.0"
+  },
+  "dependencies": {
+    "tslib": "^2.0.0"
+  },
+  "resolve": {
+    "fallback": {
+      "path": false,
+      "http": false,
+      "stream": false,
+      "util": false
+    }
+  }
+}
