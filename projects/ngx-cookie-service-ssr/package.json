@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service-ssr",
   "description": "Angular SSR cookie service",
-  "version": "14.0.0",
+  "version": "14.0.0-beta.0",
   "license": "MIT",
   "author": "Stepan Suvorov <stevermeister@gmail.com>",
   "keywords": [
