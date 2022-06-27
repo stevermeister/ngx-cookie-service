@@ -17,10 +17,10 @@ jobs:
       - name: Install NPM Dependencies
         run: npm ci --force
       - name: Build project
-        run: ng build --configuration production --project=ngx-cookie-service
+        run: ng build --configuration production --project=ngx-cookie-service-ssr
       - name: Publish to NPM
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: dist/ngx-cookie-service/package.json
+          package: dist/ngx-cookie-service-ssr/package.json
           access: public
