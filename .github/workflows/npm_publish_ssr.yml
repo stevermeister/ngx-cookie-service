@@ -15,7 +15,7 @@ jobs:
       - name: Install NPM Dependencies
         run: npm i --legacy-peer-deps
       - name: Build project
-        run: npm run build --configuration production --project=ngx-cookie-service-ssr
+        run: npm run build:ngx-cookie-service-ssr --configuration production
       - name: Publish to NPM
         uses: JS-DevTools/npm-publish@v1
         with:
