@@ -1,6 +1,6 @@
 {
-  "name": "ngx-cookie-service",
-  "description": "Angular cookie service",
+  "name": "ngx-cookie-service-ssr",
+  "description": "Angular SSR cookie service",
   "version": "14.0.1",
   "license": "MIT",
   "author": "Stepan Suvorov <stevermeister@gmail.com>",
@@ -79,7 +79,8 @@
   },
   "peerDependencies": {
     "@angular/common": "^14.0.0",
-    "@angular/core": "^14.0.0"
+    "@angular/core": "^14.0.0",
+    "@nguniversal/express-engine": "^14.0.0"
   },
   "dependencies": {
     "tslib": "^2.0.0"

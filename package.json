@@ -4,9 +4,12 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
+    "build": "ng build ngx-cookie-service",
+    "build:ngx-cookie-service-ssr": "ng build ngx-cookie-service-ssr",
+    "test": "ng test ngx-cookie-service",
+    "test:ngx-cookie-service-ssr": "ng test ngx-cookie-service-ssr",
+    "lint": "ng lint ngx-cookie-service",
+    "lint:ngx-cookie-service-ssr": "ng lint ngx-cookie-service-ssr",
     "e2e": "ng e2e",
     "format": "prettier ./projects/**/*.{ts,js,json}",
     "format:write": "npm run format -- --write",
@@ -24,6 +27,7 @@
     "@angular/platform-browser": "^14.0.3",
     "@angular/platform-browser-dynamic": "^14.0.3",
     "@angular/router": "^14.0.3",
+    "@nguniversal/express-engine": "^14.0.0",
     "rxjs": "^7.5.5",
     "tslib": "^2.4.0",
     "zone.js": "^0.11.5"

@@ -1,4 +1,4 @@
-name: Publish ngx-cookie-service to NPM
+name: Publish ngx-cookie-service-ssr to NPM
 on:
   push:
     ### Publish on new tag release
@@ -15,10 +15,10 @@ jobs:
       - name: Install NPM Dependencies
         run: npm i --legacy-peer-deps
       - name: Build project
-        run: npm run build:ngx-cookie-service-ssr --configuration=production
+        run: npm run build --configuration production --project=ngx-cookie-service-ssr
       - name: Publish to NPM
         uses: JS-DevTools/npm-publish@v1
         with:
           token: ${{ secrets.NPM_TOKEN }}
-          package: dist/ngx-cookie-service/package.json
+          package: dist/ngx-cookie-service-ssr/package.json
           access: public

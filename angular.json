@@ -46,6 +46,37 @@
           }
         }
       }
+    },
+    "ngx-cookie-service-ssr": {
+      "projectType": "library",
+      "root": "projects/ngx-cookie-service-ssr",
+      "sourceRoot": "projects/ngx-cookie-service-ssr/src",
+      "prefix": "lib",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:ng-packagr",
+          "options": {
+            "project": "projects/ngx-cookie-service-ssr/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-cookie-service-ssr/tsconfig.lib.prod.json"
+            },
+            "development": {
+              "tsConfig": "projects/ngx-cookie-service-ssr/tsconfig.lib.json"
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-cookie-service-ssr/src/test.ts",
+            "tsConfig": "projects/ngx-cookie-service-ssr/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-cookie-service-ssr/karma.conf.js"
+          }
+        }
+      }
     }
   },
   "cli": {
