@@ -97,10 +97,9 @@ That's it!
       }
     }
     ```
-## Server Side Rendering (Beta)
+## Server Side Rendering
 Ngx Cookie Service supports Server Side Rendering (SSR) via dedicated library [ngx-cookie-service-ssr](https://www.npmjs.com/package/ngx-cookie-service-ssr).
-
-> Note: SSR support is in beta via dedicated library [ngx-cookie-service-ssr](https://www.npmjs.com/package/ngx-cookie-service-ssr). Please test and let us know if you find any issues.
+Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) for SSR
 
 1. Install the library using below command
     ```shell

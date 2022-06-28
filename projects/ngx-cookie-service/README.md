@@ -28,7 +28,6 @@ yarn add ngx-cookie-service
 ```
 
 ## Usage
-
 Add the cookie service to your `app.module.ts` as a provider:
 
 ```typescript
@@ -58,37 +57,85 @@ cookieService: CookieService
 ```
 
 That's it!
+### Angular 14+
+1. Angular 14 introduced support for standalone components.
+   If you are using just standalone components, you can import the service directly into the component
+    ```typescript
+    import {CookieService} from 'ngx-cookie-service';
+    import {Component} from '@angular/core';
+    
+    @Component({
+      selector: 'my-component',
+      template: `<h1>Hello World</h1>`,
+      providers: [CookieService]
+    })
+    
+    export class HelloComponent {
+      constructor(private cookieService: CookieService) {
+        this.cookieService.set('Test', 'Hello World');
+        this.cookieValue = this.cookieService.get('Test');
+      }
+    }
+    ```
+2. You can also use `inject()` method in v14+ to inject the service into the component
+    ```typescript
+    import {CookieService} from 'ngx-cookie-service';
+    import {Component,inject} from '@angular/core';
+    
+    @Component({
+      selector: 'my-component',
+      template: `<h1>Hello World</h1>`,
+      providers: [CookieService]
+    })
+    
+    export class HelloComponent {
+        cookieService=inject(CookieService);
+   
+        constructor() {
+        this.cookieService.set('Test', 'Hello World');
+        this.cookieValue = this.cookieService.get('Test');
+      }
+    }
+    ```
+## Server Side Rendering
+Ngx Cookie Service supports Server Side Rendering (SSR) via dedicated library [ngx-cookie-service-ssr](https://www.npmjs.com/package/ngx-cookie-service-ssr).
+Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) for SSR
 
-## Server Side Rendering (Coming Soon)
+1. Install the library using below command
+    ```shell
+        npm install ngx-cookie-service-ssr --save
+        
+        # or
+        
+        yarn add ngx-cookie-service-ssr
+    ```
+2. By default, browser cookies are not
+   available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your SSR
+   project, and replace the following code
 
-`ngx-cookie-service` supports Server Side Rendering (SSR) through Angular Universal. By default, browser cookies are not
-available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your SSR
-project, and replace the following code
-
-```typescript
-server.get('*', (req, res) => {
-  res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
-});
-```
-
+    ```typescript
+    server.get('*', (req, res) => {
+      res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
+    });
+    ```
 with this
 
 ```typescript
 server.get('*', (req, res) => {
-  res.render(indexHtml, {
-    req,
-    providers: [
-      { provide: APP_BASE_HREF, useValue: req.baseUrl },
-      { provide: 'REQUEST', useValue: req },
-      { provide: 'RESPONSE', useValue: res },
-    ],
-  });
-});
+      res.render(indexHtml, {
+        req,
+        providers: [
+          { provide: APP_BASE_HREF, useValue: req.baseUrl },
+          { provide: 'REQUEST', useValue: req },
+          { provide: 'RESPONSE', useValue: res },
+        ],
+      });
+    });
 ```
 
-This will make sure the cookies are available in `REQUEST` object, and the `ngx-cookie-service` can use `REQUEST.cookies` to access the
-cookies in SSR. Then proceed to use `ngx-cookie-service` as usual. See
-the [sample repo](https://github.com/pavankjadda/angular-ssr-docker) for more details.
+3. This will make sure the cookies are available in `REQUEST` object, and the `ngx-cookie-service-ssr` can use `REQUEST.cookies` to access the
+   cookies in SSR. Then proceed to use `ngx-cookie-service` as usual.
+4. See the [sample repo](https://github.com/pavankjadda/angular-ssr-docker) for more details.
 
 ## Demo
 

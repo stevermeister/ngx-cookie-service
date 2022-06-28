@@ -1,3 +1,9 @@
+# 14.0.1
+### New Features
+* feat(ssr): adds SSR support by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/237
+* feat(deps): updates `angular-eslint` version to 14.0.0 by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/239
+* docs: updates README.md by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/238
+
 # 14.0.0
 ## What's Changed
 * feat(core): adds Angular 14 support by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/234
