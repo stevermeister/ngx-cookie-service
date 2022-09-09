@@ -91,16 +91,15 @@ export class CookieService {
    * @since: 1.0.0
    */
   get(name: string): string {
-    if (this.documentIsAccessible && this.check(name)) {
-      name = encodeURIComponent(name);
-
-      const regExp: RegExp = CookieService.getCookieRegExp(name);
-      const result: RegExpExecArray = regExp.exec(this.document.cookie);
-
+    const nameEncoded = encodeURIComponent(name);
+    const regExp = CookieService.getCookieRegExp(nameEncoded);
+    const { cookie } = this.document;
+    
+    if (this.documentIsAccessible && regExp.test(cookie)) {
+      const result: RegExpExecArray = regExp.exec(cookie);
       return result[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
-    } else {
-      return '';
     }
+    return '';
   }
 
   /**
