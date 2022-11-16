@@ -10,9 +10,14 @@
     "module": "es2020",
     "moduleResolution": "node",
     "importHelpers": true,
-    "target": "es2020",
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["es2020", "dom"],
+    "target": "ES2022",
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "paths": {
       "ngx-cookie-service": [
         "dist/ngx-cookie-service/ngx-cookie-service",
@@ -21,7 +26,8 @@
       "ngx-cookie-service-ssr": [
         "dist/ngx-cookie-service-ssr"
       ]
-    }
+    },
+    "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
     "compilationMode": "partial",
