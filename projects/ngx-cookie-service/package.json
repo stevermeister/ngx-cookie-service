@@ -22,6 +22,7 @@
     "angular-13",
     "angular-14",
     "angular-15",
+    "angular-16",
     "ivy",
     "ivy-compatible",
     "ivy-compilation",
@@ -79,8 +80,8 @@
     "email": "stepan@studytube.nl"
   },
   "peerDependencies": {
-    "@angular/common": "^15.0.0",
-    "@angular/core": "^15.0.0"
+    "@angular/common": "^16.0.0-next.0",
+    "@angular/core": "^16.0.0-next.0"
   },
   "dependencies": {
     "tslib": "^2.0.0"
