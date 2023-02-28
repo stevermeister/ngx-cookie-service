@@ -13,9 +13,9 @@
 
 </p>
 
-Angular service to read, set and delete browser cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. The experienced team behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
-
-> Note: `ViewEngine` support has been removed on 13.x.x. See [compatability matrix](https://github.com/stevermeister/ngx-cookie-service#supported-versions) for details
+Angular service to read, set and delete browser cookies. Originally based on
+the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. The experienced team
+behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
 
 ## Installation
 
@@ -28,10 +28,11 @@ yarn add ngx-cookie-service
 ```
 
 ## Usage
+
 Add the cookie service to your `app.module.ts` as a provider:
 
 ```typescript
-import { CookieService } from 'ngx-cookie-service';
+import {CookieService} from 'ngx-cookie-service';
 
 @NgModule({
   ...
@@ -57,7 +58,9 @@ cookieService: CookieService
 ```
 
 That's it!
+
 ### Angular 14+
+
 1. Angular 14 introduced support for standalone components.
    If you are using just standalone components, you can import the service directly into the component
     ```typescript
@@ -97,8 +100,11 @@ That's it!
       }
     }
     ```
+
 ## Server Side Rendering
-Ngx Cookie Service supports Server Side Rendering (SSR) via dedicated library [ngx-cookie-service-ssr](https://www.npmjs.com/package/ngx-cookie-service-ssr).
+
+Ngx Cookie Service supports Server Side Rendering (SSR) via dedicated
+library [ngx-cookie-service-ssr](https://www.npmjs.com/package/ngx-cookie-service-ssr).
 Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) for SSR
 
 1. Install the library using below command
@@ -110,7 +116,8 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
         yarn add ngx-cookie-service-ssr
     ```
 2. By default, browser cookies are not
-   available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your SSR
+   available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your
+   SSR
    project, and replace the following code
 
     ```typescript
@@ -118,22 +125,24 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
       res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
     });
     ```
+
 with this
 
 ```typescript
 server.get('*', (req, res) => {
-      res.render(indexHtml, {
-        req,
-        providers: [
-          { provide: APP_BASE_HREF, useValue: req.baseUrl },
-          { provide: 'REQUEST', useValue: req },
-          { provide: 'RESPONSE', useValue: res },
-        ],
-      });
-    });
+  res.render(indexHtml, {
+    req,
+    providers: [
+      {provide: APP_BASE_HREF, useValue: req.baseUrl},
+      {provide: 'REQUEST', useValue: req},
+      {provide: 'RESPONSE', useValue: res},
+    ],
+  });
+});
 ```
 
-3. This will make sure the cookies are available in `REQUEST` object, and the `ngx-cookie-service-ssr` can use `REQUEST.cookies` to access the
+3. This will make sure the cookies are available in `REQUEST` object, and the `ngx-cookie-service-ssr` can
+   use `REQUEST.cookies` to access the
    cookies in SSR. Then proceed to use `ngx-cookie-service` as usual.
 4. See the [sample repo](https://github.com/pavankjadda/angular-ssr-docker) for more details.
 
@@ -147,8 +156,11 @@ https://stackblitz.com/edit/angular-ivy-1lrgdt?file=src%2Fapp%2Fapp.component.ts
 library. For versions <=12.x.x, use 12.0.3 version
 
 | Angular Version        | Supported Version |
-| ---------------------- | ----------------- |
-| 13.x.x or later (Ivy)  | 13.x.x or later   |
+|------------------------|-------------------|
+| 16.x.x                 | 16.x.x            |
+| 15.x.x                 | 15.x.x            |
+| 14.x.x                 | 14.x.x            |
+| 13.x.x                 | 13.x.x            |
 | <=12.x.x (View Engine) | 12.0.3            |
 
 # API
@@ -183,7 +195,7 @@ Returns a map of key-value pairs for cookies that can be accessed.
 
 ```typescript
 cookieService.set('test', 'Hello World');
-cookieService.set('test', 'Hello World', { expires: 2, sameSite: 'Lax' });
+cookieService.set('test', 'Hello World', {expires: 2, sameSite: 'Lax'});
 ```
 
 Sets a cookie with the specified `name` and `value`. It is good practice to specify a path. If you are unsure about the
@@ -287,6 +299,7 @@ the other cookie packages we found were either not designed "the Angular way" or
 
 Thanks to all contributors:
 
+- [Pavan Kumar Jadda](https://github.com/pavankjadda)
 - [paroe](https://github.com/paroe)
 - [CunningFatalist](https://github.com/CunningFatalist)
 - [kthy](https://github.com/kthy)
@@ -298,7 +311,6 @@ Thanks to all contributors:
 - [IceBreakerG](https://github.com/IceBreakerG)
 - [rojedalopez](https://github.com/rojedalopez)
 - [Nikel163](https://github.com/Nikel163)
-- [pavankjadda](https://github.com/pavankjadda)
 
 # License
 
