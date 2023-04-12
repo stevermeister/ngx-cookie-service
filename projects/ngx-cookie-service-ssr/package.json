@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service-ssr",
   "description": "Angular SSR cookie service",
-  "version": "15.0.0",
+  "version": "16.0.0-rc.0",
   "license": "MIT",
   "author": "Stepan Suvorov <stevermeister@gmail.com>",
   "keywords": [
@@ -79,9 +79,9 @@
     "email": "stepan@studytube.nl"
   },
   "peerDependencies": {
-    "@angular/common": "^16.0.0-next.0",
-    "@angular/core": "^16.0.0-next.0",
-    "@nguniversal/express-engine": "^15.2.0"
+    "@angular/common": "^16.0.0-rc.0",
+    "@angular/core": "^16.0.0-rc.0",
+    "@nguniversal/express-engine": "^16.0.0-next.0"
   },
   "dependencies": {
     "tslib": "^2.0.0"
