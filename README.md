@@ -157,6 +157,7 @@ library. For versions <=12.x.x, use 12.0.3 version
 
 | Angular Version        | Supported Version |
 |------------------------|-------------------|
+| 16.x.x                 | 16.x.x            |
 | 15.x.x                 | 15.x.x            |
 | 14.x.x                 | 14.x.x            |
 | 13.x.x                 | 13.x.x            |
@@ -298,6 +299,7 @@ the other cookie packages we found were either not designed "the Angular way" or
 
 Thanks to all contributors:
 
+- [Pavan Kumar Jadda](https://github.com/pavankjadda)
 - [paroe](https://github.com/paroe)
 - [CunningFatalist](https://github.com/CunningFatalist)
 - [kthy](https://github.com/kthy)
@@ -309,7 +311,6 @@ Thanks to all contributors:
 - [IceBreakerG](https://github.com/IceBreakerG)
 - [rojedalopez](https://github.com/rojedalopez)
 - [Nikel163](https://github.com/Nikel163)
-- [pavankjadda](https://github.com/pavankjadda)
 
 # License
 
