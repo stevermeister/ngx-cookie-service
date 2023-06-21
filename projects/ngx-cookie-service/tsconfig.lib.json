@@ -14,5 +14,5 @@
     "enableResourceInlining": true,
     "fullTemplateTypeCheck": true
   },
-  "exclude": ["src/test.ts", "**/*.spec.ts"]
+  "exclude": [ "**/*.spec.ts"]
 }
