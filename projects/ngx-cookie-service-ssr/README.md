@@ -63,43 +63,42 @@ That's it!
 
 1. Angular 14 introduced support for standalone components.
    If you are using just standalone components, you can import the service directly into the component
-    ```typescript
-    import {CookieService} from 'ngx-cookie-service';
-    import {Component} from '@angular/core';
-    
-    @Component({
-      selector: 'my-component',
-      template: `<h1>Hello World</h1>`,
-      providers: [CookieService]
-    })
-    
-    export class HelloComponent {
-      constructor(private cookieService: CookieService) {
-        this.cookieService.set('Test', 'Hello World');
-        this.cookieValue = this.cookieService.get('Test');
-      }
-    }
-    ```
+   ```typescript
+   import { CookieService } from 'ngx-cookie-service';
+   import { Component } from '@angular/core';
+
+   @Component({
+     selector: 'my-component',
+     template: `<h1>Hello World</h1>`,
+     providers: [CookieService],
+   })
+   export class HelloComponent {
+     constructor(private cookieService: CookieService) {
+       this.cookieService.set('Test', 'Hello World');
+       this.cookieValue = this.cookieService.get('Test');
+     }
+   }
+   ```
 2. You can also use `inject()` method in v14+ to inject the service into the component
-    ```typescript
-    import {CookieService} from 'ngx-cookie-service';
-    import {Component,inject} from '@angular/core';
-    
-    @Component({
-      selector: 'my-component',
-      template: `<h1>Hello World</h1>`,
-      providers: [CookieService]
-    })
-    
-    export class HelloComponent {
-        cookieService=inject(CookieService);
-   
-        constructor() {
-        this.cookieService.set('Test', 'Hello World');
-        this.cookieValue = this.cookieService.get('Test');
-      }
-    }
-    ```
+
+   ```typescript
+   import { CookieService } from 'ngx-cookie-service';
+   import { Component, inject } from '@angular/core';
+
+   @Component({
+     selector: 'my-component',
+     template: `<h1>Hello World</h1>`,
+     providers: [CookieService],
+   })
+   export class HelloComponent {
+     cookieService = inject(CookieService);
+
+     constructor() {
+       this.cookieService.set('Test', 'Hello World');
+       this.cookieValue = this.cookieService.get('Test');
+     }
+   }
+   ```
 
 ## Server Side Rendering
 
@@ -108,23 +107,23 @@ library [ngx-cookie-service-ssr](https://www.npmjs.com/package/ngx-cookie-servic
 Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) for SSR
 
 1. Install the library using below command
-    ```shell
-        npm install ngx-cookie-service-ssr --save
-        
-        # or
-        
-        yarn add ngx-cookie-service-ssr
-    ```
+   ```shell
+       npm install ngx-cookie-service-ssr --save
+
+       # or
+
+       yarn add ngx-cookie-service-ssr
+   ```
 2. By default, browser cookies are not
    available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your
    SSR
    project, and replace the following code
 
-    ```typescript
-    server.get('*', (req, res) => {
-      res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
-    });
-    ```
+   ```typescript
+   server.get('*', (req, res) => {
+     res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
+   });
+   ```
 
 with this
 
@@ -133,9 +132,9 @@ server.get('*', (req, res) => {
   res.render(indexHtml, {
     req,
     providers: [
-      {provide: APP_BASE_HREF, useValue: req.baseUrl},
-      {provide: 'REQUEST', useValue: req},
-      {provide: 'RESPONSE', useValue: res},
+      { provide: APP_BASE_HREF, useValue: req.baseUrl },
+      { provide: 'REQUEST', useValue: req },
+      { provide: 'RESPONSE', useValue: res },
     ],
   });
 });
@@ -156,7 +155,7 @@ https://stackblitz.com/edit/angular-ivy-1lrgdt?file=src%2Fapp%2Fapp.component.ts
 library. For versions <=12.x.x, use 12.0.3 version
 
 | Angular Version        | Supported Version |
-|------------------------|-------------------|
+| ---------------------- | ----------------- |
 | 16.x.x                 | 16.x.x            |
 | 15.x.x                 | 15.x.x            |
 | 14.x.x                 | 14.x.x            |
@@ -195,7 +194,7 @@ Returns a map of key-value pairs for cookies that can be accessed.
 
 ```typescript
 cookieService.set('test', 'Hello World');
-cookieService.set('test', 'Hello World', {expires: 2, sameSite: 'Lax'});
+cookieService.set('test', 'Hello World', { expires: 2, sameSite: 'Lax' });
 ```
 
 Sets a cookie with the specified `name` and `value`. It is good practice to specify a path. If you are unsure about the
