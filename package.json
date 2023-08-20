@@ -12,8 +12,8 @@
     "lint:ngx-cookie-service-ssr": "ng lint ngx-cookie-service-ssr",
     "e2e": "ng e2e",
     "format": "prettier ./projects/**/*.{ts,js,json}",
-    "format:write": "pnpm format -- --write",
-    "format:check": "pnpm format -- --check",
+    "format:write": "pnpm format --write .",
+    "format:check": "pnpm format --check .",
     "package": "ng build ngx-cookie-service --prod && cp ./README.md ./dist/ngx-cookie-service && cd dist/ngx-cookie-service && npm pack"
   },
   "private": true,
