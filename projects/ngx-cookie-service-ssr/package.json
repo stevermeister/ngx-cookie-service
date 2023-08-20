@@ -1,27 +1,15 @@
 {
   "name": "ngx-cookie-service-ssr",
   "description": "Angular SSR cookie service",
-  "version": "16.0.0",
+  "version": "16.0.1",
   "license": "MIT",
   "author": "Stepan Suvorov <stevermeister@gmail.com>",
   "keywords": [
     "angular",
-    "angular2",
-    "angular4",
-    "angular5",
-    "angular-2",
-    "angular-4",
-    "angular-5",
-    "angular-6",
-    "angular-7",
-    "angular-8",
-    "angular-9",
-    "angular-10",
-    "angular-11",
-    "angular-12",
-    "angular-13",
     "angular-14",
     "angular-15",
+    "angular-16",
+    "angular-17",
     "ivy",
     "ivy-compatible",
     "ivy-compilation",
@@ -37,37 +25,6 @@
   "contributors": [
     {
       "name": "Pavan Kumar Jadda"
-    },
-    {
-      "name": "Christopher Parotat",
-      "email": "c.parotat@7leads.org"
-    },
-    {
-      "name": "Stefan Bauer",
-      "email": "bauer.stefan@live.de"
-    },
-    {
-      "name": "Kristian Thy",
-      "email": "thy@42.dk"
-    },
-    {
-      "name": "Jared Clemence"
-    },
-    {
-      "name": "flakolefluk"
-    },
-    {
-      "name": "mattbanks"
-    },
-    {
-      "name": "DBaker85"
-    },
-    {
-      "name": "Matt Lewis",
-      "email": "npm@mattlewis.me"
-    },
-    {
-      "name": "IceBreakerG"
     }
   ],
   "repository": {
