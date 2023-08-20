@@ -29,8 +29,8 @@ jobs:
       - name: Format check
         run: pnpm format:check
       - name: Build
-        run: pnpm run build --configuration=production && pnpm build:ngx-cookie-service-ssr --configuration=production
+        run: pnpm build --configuration=production && pnpm build:ngx-cookie-service-ssr --configuration=production
       - name: Test
-        run: pnpm run test
+        run: pnpm test
         env:
           CI: true
