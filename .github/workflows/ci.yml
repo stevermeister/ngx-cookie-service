@@ -14,20 +14,23 @@ jobs:
         os: ['ubuntu-latest']
         node: ['18']
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+        with:
+          version: latest
       - name: Use Node.js ${{ matrix.node }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
       - name: Install dependencies
-        run: npm i --legacy-peer-deps
+        run: pnpm install --frozen-lockfile
       - name: Lint
-        run: npm run lint
+        run: pnpm lint
       - name: Format check
-        run: npm run format:check
+        run: pnpm format:check
       - name: Build
-        run: npm run build --configuration=production && npm run build:ngx-cookie-service-ssr --configuration=production
+        run: pnpm run build --configuration=production && pnpm build:ngx-cookie-service-ssr --configuration=production
       - name: Test
-        run: npm run test --configuration=ci
+        run: pnpm run test --configuration=ci
         env:
           CI: true
