@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service",
   "description": "Angular cookie service",
-  "version": "16.0.0",
+  "version": "16.0.1",
   "license": "MIT",
   "author": "Stepan Suvorov <stevermeister@gmail.com>",
   "keywords": [
@@ -23,6 +23,7 @@
     "angular-14",
     "angular-15",
     "angular-16",
+    "angular-17",
     "ivy",
     "ivy-compatible",
     "ivy-compilation",
