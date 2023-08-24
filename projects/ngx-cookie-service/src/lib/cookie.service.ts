@@ -176,7 +176,7 @@ export class CookieService {
 
   set(
     name: string,
-    value: string,
+    value: string | number,
     expiresOrOptions?: CookieOptions['expires'] | CookieOptions,
     path?: CookieOptions['path'],
     domain?: CookieOptions['domain'],
@@ -186,7 +186,9 @@ export class CookieService {
     if (!this.documentIsAccessible) {
       return;
     }
-
+    if (typeof value === 'number') {
+      value = value.toString();
+    }
     if (typeof expiresOrOptions === 'number' || expiresOrOptions instanceof Date || path || domain || secure || sameSite) {
       const optionsBody = {
         expires: expiresOrOptions as CookieOptions['expires'],
