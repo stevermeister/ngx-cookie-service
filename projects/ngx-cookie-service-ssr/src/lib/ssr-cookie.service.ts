@@ -1,5 +1,5 @@
 import { Request } from 'express';
-import { REQUEST } from '@angular/ssr/tokens';
+import { REQUEST } from '@nguniversal/express-engine/tokens';
 import { Inject, Injectable, Optional, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
