@@ -1,7 +1,9 @@
 import { Request } from 'express';
-import { REQUEST } from '@angular/ssr/tokens';
-import { Inject, Injectable, Optional, PLATFORM_ID } from '@angular/core';
+import {Inject, Injectable, InjectionToken, Optional, PLATFORM_ID} from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+
+// Define the `Request` token
+export const REQUEST = new InjectionToken<Request>('REQUEST');
 
 @Injectable({
   providedIn: 'root',
