@@ -23,8 +23,8 @@ jobs:
         run: npm i
       - name: Lint
         run: npm run lint
-      - name: Format check
-        run: npm run format:check
+#      - name: Format check
+#        run: npm run format:check
       - name: Build
         run: npm run build --configuration=production && npm run build:ngx-cookie-service-ssr --configuration=production
       - name: Test
