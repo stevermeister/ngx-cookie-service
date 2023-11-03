@@ -1,19 +1,24 @@
 # 14.0.1
+
 ### New Features
-* feat(ssr): adds SSR support by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/237
-* feat(deps): updates `angular-eslint` version to 14.0.0 by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/239
-* docs: updates README.md by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/238
+
+- feat(ssr): adds SSR support by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/237
+- feat(deps): updates `angular-eslint` version to 14.0.0 by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/239
+- docs: updates README.md by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/238
 
 # 14.0.0
-## What's Changed
-* feat(core): adds Angular 14 support by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/234
-* chore(cicd): updates github actions to force install deps by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/236
 
+## What's Changed
+
+- feat(core): adds Angular 14 support by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/234
+- chore(cicd): updates github actions to force install deps by @pavankjadda in https://github.com/stevermeister/ngx-cookie-service/pull/236
 
 # 13.2.1
+
 ### What's Changed
-* chore(deps): bump ejs from 3.1.6 to 3.1.7 by @dependabot in https://github.com/stevermeister/ngx-cookie-service/pull/226
-* chore(deps): bump async from 2.6.3 to 2.6.4 by @dependabot in https://github.com/stevermeister/ngx-cookie-service/pull/227
+
+- chore(deps): bump ejs from 3.1.6 to 3.1.7 by @dependabot in https://github.com/stevermeister/ngx-cookie-service/pull/226
+- chore(deps): bump async from 2.6.3 to 2.6.4 by @dependabot in https://github.com/stevermeister/ngx-cookie-service/pull/227
 
 # 13.2.0
 

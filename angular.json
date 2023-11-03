@@ -31,10 +31,7 @@
         "lint": {
           "builder": "@angular-eslint/builder:lint",
           "options": {
-            "lintFilePatterns": [
-              "projects/ngx-cookie-service/**/*.ts",
-              "projects/ngx-cookie-service/**/*.html"
-            ]
+            "lintFilePatterns": ["projects/ngx-cookie-service/**/*.ts", "projects/ngx-cookie-service/**/*.html"]
           }
         }
       }
