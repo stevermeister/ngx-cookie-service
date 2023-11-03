@@ -13,7 +13,7 @@ jobs:
         with:
           node-version: 18
       - name: Install NPM Dependencies
-        run: npm install--legacy-peer-deps
+        run: npm i
       - name: Build project
         run: npm build:ngx-cookie-service-ssr
       - name: Publish to NPM registry
