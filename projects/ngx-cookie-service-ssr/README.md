@@ -63,6 +63,7 @@ That's it!
 
 1. Angular 14 introduced support for standalone components.
    If you are using just standalone components, you can import the service directly into the component
+
    ```typescript
    import { CookieService } from 'ngx-cookie-service';
    import { Component } from '@angular/core';
@@ -79,6 +80,7 @@ That's it!
      }
    }
    ```
+
 2. You can also use `inject()` method in v14+ to inject the service into the component
 
    ```typescript
@@ -107,6 +109,7 @@ library [ngx-cookie-service-ssr](https://www.npmjs.com/package/ngx-cookie-servic
 Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) for SSR
 
 1. Install the library using below command
+
    ```shell
        npm install ngx-cookie-service-ssr --save
 
@@ -114,6 +117,7 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
 
        yarn add ngx-cookie-service-ssr
    ```
+
 2. By default, browser cookies are not
    available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your
    SSR
