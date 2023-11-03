@@ -27,9 +27,9 @@
     "@angular/platform-browser-dynamic": "^17.0.0-rc.2",
     "@angular/router": "^17.0.0-rc.2",
     "@angular/ssr": "^17.0.0-rc.3",
-    "rxjs": "^7.5.7",
-    "tslib": "^2.4.0",
-    "zone.js": "^0.14.0"
+    "rxjs": "^7.8.1",
+    "tslib": "^2.6.2",
+    "zone.js": "^0.14.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^17.0.0-rc.3",
