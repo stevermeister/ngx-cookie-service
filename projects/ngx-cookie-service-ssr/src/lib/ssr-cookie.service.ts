@@ -1,7 +1,9 @@
 import { Request } from 'express';
-import { REQUEST } from '@nguniversal/express-engine/tokens';
-import { Inject, Injectable, Optional, PLATFORM_ID } from '@angular/core';
+import { Inject, Injectable, InjectionToken, Optional, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+
+// Define the `Request` token
+export const REQUEST = new InjectionToken<Request>('REQUEST');
 
 @Injectable({
   providedIn: 'root',
@@ -28,7 +30,7 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   static getCookieRegExp(name: string): RegExp {
-    const escapedName: string = name.replace(/([\[\]{}()|=;+?,.*^$])/gi, '\\$1');
+    const escapedName: string = name.replace(/([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi, '\\$1');
 
     return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
   }
