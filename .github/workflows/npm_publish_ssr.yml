@@ -9,18 +9,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
+      - uses: npm/action-setup@v2
         with:
           version: latest
       - uses: actions/setup-node@v2
         with:
           node-version: 18
-      - name: Install PNPM Dependencies
-        run: pnpm install --frozen-lockfile
+      - name: Install NPM Dependencies
+        run: npm install --legacy-peer-deps
       - name: Build project
-        run: pnpm build:ngx-cookie-service-ssr
+        run: npm run build:ngx-cookie-service-ssr
       - name: Publish to NPM registry
-        uses: JS-DevTools/npm-publish@v1
+        uses: JS-DevTools/npm-publish@v3
         with:
           token: ${{ secrets.NPM_TOKEN }}
           package: dist/ngx-cookie-service-ssr/package.json
