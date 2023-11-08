@@ -1,6 +1,6 @@
-import {Request} from 'express';
-import {Inject, Injectable, InjectionToken, Optional, PLATFORM_ID} from '@angular/core';
-import {DOCUMENT, isPlatformBrowser} from '@angular/common';
+import { Request } from 'express';
+import { Inject, Injectable, InjectionToken, Optional, PLATFORM_ID } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 // Define the `Request` token
 const REQUEST = new InjectionToken<Request>('REQUEST');
