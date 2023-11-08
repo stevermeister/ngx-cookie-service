@@ -60,7 +60,6 @@
         "test": {
           "builder": "@angular-devkit/build-angular:jest",
           "options": {
-            "main": "projects/ngx-cookie-service-ssr/src/test.ts",
             "tsConfig": "projects/ngx-cookie-service-ssr/tsconfig.spec.json"
           }
         }
