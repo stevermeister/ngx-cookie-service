@@ -2,7 +2,10 @@
 
 <p align="center">
 
-![build](https://github.com/stevermeister/ngx-cookie-service/workflows/CI/badge.svg?branch=master)
+
+
+[![Build](https://github.com/stevermeister/ngx-cookie-service/actions/workflows/ci.yml/badge.svg)](https://github.com/stevermeister/ngx-cookie-service/actions/workflows/ci.yml)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/ngx-cookie-service) 
 <a href="https://www.npmjs.com/ngx-cookie-service">
 <img src="https://img.shields.io/npm/v/ngx-cookie-service.svg?logo=npm&logoColor=fff&label=NPM+package&color=limegreen" alt="Ngx Cookie Service on npm" />
 </a>
