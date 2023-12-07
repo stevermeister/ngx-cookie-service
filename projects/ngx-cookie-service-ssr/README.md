@@ -132,12 +132,14 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
 with this
 
 ```typescript
+import { REQUEST as NCSS_REQUEST } from "ngx-cookie-service-ssr";
+
 server.get('*', (req, res) => {
   res.render(indexHtml, {
     req,
     providers: [
       { provide: APP_BASE_HREF, useValue: req.baseUrl },
-      { provide: 'REQUEST', useValue: req },
+      { provide: NCSS_REQUEST, useValue: req },
       { provide: 'RESPONSE', useValue: res },
     ],
   });
