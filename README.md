@@ -17,7 +17,7 @@
 </p>
 
 Angular service to read, set and delete browser cookies. Originally based on
-the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. This service is lightweight, and its bundle size is **1.3 Kb** to ensure fast loading times and optimal performance. Checkout bundle size details [here](https://bundlephobia.com/package/ngx-cookie-service@17.0.0)
+the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. This service is lightweight, and its bundle size is **1.3 Kb** to ensure fast loading times and optimal performance.
 
 ## Installation
 
