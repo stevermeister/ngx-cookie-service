@@ -38,8 +38,7 @@ import {CookieService} from 'ngx-cookie-service';
 
 @NgModule({
   ...
-    providers:
-[CookieService],
+    providers:[CookieService],
 ...
 })
 
@@ -50,9 +49,7 @@ export class AppModule {
 Then, import and inject it into a constructor:
 
 ```typescript
-constructor(private
-cookieService: CookieService
-)
+constructor(private cookieService: CookieService)
 {
   this.cookieService.set('Test', 'Hello World');
   this.cookieValue = this.cookieService.get('Test');

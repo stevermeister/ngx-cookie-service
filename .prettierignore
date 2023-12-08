@@ -3,4 +3,4 @@ dist
 .angular
 .github
 README.md
-pnpm-lock.yaml
+package-lock.json

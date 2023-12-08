@@ -15,22 +15,19 @@ jobs:
         node: ['18']
     steps:
       - uses: actions/checkout@v3
-      - uses: pnpm/action-setup@v2
-        with:
-          version: latest
       - name: Use Node.js ${{ matrix.node }}
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: npm i
       - name: Lint
-        run: pnpm lint
+        run: npm run lint
       - name: Format check
-        run: pnpm format:check
+        run: npm run format:check
       - name: Build
-        run: pnpm build --configuration=production && pnpm build:ngx-cookie-service-ssr --configuration=production
+        run: npm run build --configuration=production && npm run build:ngx-cookie-service-ssr --configuration=production
       - name: Test
-        run: pnpm test
+        run: npm run test
         env:
           CI: true

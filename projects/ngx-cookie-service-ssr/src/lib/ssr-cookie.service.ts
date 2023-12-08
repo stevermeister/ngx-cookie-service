@@ -3,7 +3,7 @@ import { Inject, Injectable, InjectionToken, Optional, PLATFORM_ID } from '@angu
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 // Define the `Request` token
-const REQUEST = new InjectionToken<Request>('REQUEST');
+export const REQUEST = new InjectionToken<Request>('REQUEST');
 
 @Injectable({
   providedIn: 'root',
