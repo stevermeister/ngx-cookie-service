@@ -121,7 +121,7 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
    available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your
    SSR
    project, and replace the following code
-
+   
    ```typescript
    server.get('*', (req, res) => {
      res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
@@ -131,12 +131,14 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
 with this
 
 ```typescript
+import { REQUEST as SSR_REQUEST } from "ngx-cookie-service-ssr";
+
 server.get('*', (req, res) => {
   res.render(indexHtml, {
     req,
     providers: [
       { provide: APP_BASE_HREF, useValue: req.baseUrl },
-      { provide: 'REQUEST', useValue: req },
+      { provide: SSR_REQUEST, useValue: req },
       { provide: 'RESPONSE', useValue: res },
     ],
   });
