@@ -2,7 +2,10 @@
 
 <p align="center">
 
-![build](https://github.com/stevermeister/ngx-cookie-service/workflows/CI/badge.svg?branch=master)
+
+
+[![Build](https://github.com/stevermeister/ngx-cookie-service/actions/workflows/ci.yml/badge.svg)](https://github.com/stevermeister/ngx-cookie-service/actions/workflows/ci.yml)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/ngx-cookie-service) 
 <a href="https://www.npmjs.com/ngx-cookie-service">
 <img src="https://img.shields.io/npm/v/ngx-cookie-service.svg?logo=npm&logoColor=fff&label=NPM+package&color=limegreen" alt="Ngx Cookie Service on npm" />
 </a>
@@ -14,8 +17,7 @@
 </p>
 
 Angular service to read, set and delete browser cookies. Originally based on
-the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. The experienced team
-behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
+the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. This service is lightweight, and its bundle size is **1.3 Kb** to ensure fast loading times and optimal performance.
 
 ## Installation
 
@@ -119,7 +121,7 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
    available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your
    SSR
    project, and replace the following code
-
+   
    ```typescript
    server.get('*', (req, res) => {
      res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
@@ -129,12 +131,14 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
 with this
 
 ```typescript
+import { REQUEST as SSR_REQUEST } from "ngx-cookie-service-ssr";
+
 server.get('*', (req, res) => {
   res.render(indexHtml, {
     req,
     providers: [
       { provide: APP_BASE_HREF, useValue: req.baseUrl },
-      { provide: 'REQUEST', useValue: req },
+      { provide: SSR_REQUEST, useValue: req },
       { provide: 'RESPONSE', useValue: res },
     ],
   });
