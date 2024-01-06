@@ -31,7 +31,7 @@ yarn add ngx-cookie-service
 
 ## Demo
 
-https://stackblitz.com/edit/angular-ivy-1lrgdt?file=src%2Fapp%2Fapp.component.ts
+https://stackblitz.com/~/github.com/pavankjadda/ngx-cookie-service-demo
 
 
 ## Usage
