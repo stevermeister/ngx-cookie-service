@@ -75,31 +75,6 @@ https://stackblitz.com/~/github.com/pavankjadda/ngx-cookie-service-demo
      }
    }
    ```
-### Angular 13 or below
-Add the cookie service to your `app.module.ts` as a provider:
-
-```typescript
-import {CookieService} from 'ngx-cookie-service';
-
-@NgModule({
-  ...
-    providers:[CookieService],
-...
-})
-
-export class AppModule {
-}
-```
-
-Then, import and inject it into a constructor:
-
-```typescript
-constructor(private cookieService: CookieService)
-{
-  this.cookieService.set('token', 'Hello World');
-  console.log(this.cookieService.get('token'));
-}
-```
 
 ## Server Side Rendering
 
