@@ -13,6 +13,7 @@ export interface CookieOptions {
   domain?: string;
   secure?: boolean;
   sameSite?: SameSite;
+  partitioned?: boolean;
 }
 
 @Injectable({
@@ -138,7 +139,8 @@ export class CookieService {
    * @param path     Cookie path
    * @param domain   Cookie domain
    * @param secure   Secure flag
-   * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `Lax`
+   * @param partitioned Partitioned flag
+   * @param sameSite OWASP same site token `Lax`, `None`, or `Strict`. Defaults to `Lax`
    *
    * @author: Stepan Suvorov
    * @since: 1.0.0
@@ -150,7 +152,8 @@ export class CookieService {
     path?: CookieOptions['path'],
     domain?: CookieOptions['domain'],
     secure?: CookieOptions['secure'],
-    sameSite?: SameSite
+    sameSite?: SameSite,
+    partitioned?: CookieOptions['partitioned']
   ): void;
 
   /**
@@ -161,8 +164,8 @@ export class CookieService {
    * expires  Number of days until the cookies expires or an actual `Date`
    * path     Cookie path
    * domain   Cookie domain
-   * secure   Secure flag
-   * sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `Lax`
+   * secure flag
+   * sameSite OWASP same site token `Lax`, `None`, or `Strict`. Defaults to `Lax`
    * </pre>
    *
    * @param name     Cookie name
@@ -181,7 +184,8 @@ export class CookieService {
     path?: CookieOptions['path'],
     domain?: CookieOptions['domain'],
     secure?: CookieOptions['secure'],
-    sameSite?: SameSite
+    sameSite?: SameSite,
+    partitioned?: CookieOptions['partitioned']
   ): void {
     if (!this.documentIsAccessible) {
       return;
@@ -194,6 +198,7 @@ export class CookieService {
         domain,
         secure,
         sameSite: sameSite ? sameSite : 'Lax',
+        partitioned,
       };
 
       this.set(name, value, optionsBody);
@@ -238,6 +243,10 @@ export class CookieService {
     }
 
     cookieString += 'sameSite=' + options.sameSite + ';';
+
+    if (options.partitioned) {
+      cookieString += 'Partitioned;';
+    }
 
     this.document.cookie = cookieString;
   }
