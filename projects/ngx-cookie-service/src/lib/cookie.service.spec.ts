@@ -205,7 +205,7 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;domain=example.com;sameSite=Lax;');
       });
       it('should set cookie with secure option', () => {
-        cookieService.set('foo', 'bar', undefined, undefined, undefined, true, 'Lax');
+        cookieService.set('foo', 'bar', undefined, undefined, undefined, true, 'Lax', false);
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=Lax;');
       });
@@ -215,7 +215,7 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=Lax;');
       });
       it('should set cookie with forced secure flag when SameSite option is "None"', () => {
-        cookieService.set('foo', 'bar', undefined, undefined, undefined, false, 'None');
+        cookieService.set('foo', 'bar', undefined, undefined, undefined, false, 'None', false);
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=None;');
       });
@@ -225,7 +225,7 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=None;');
       });
       it('should set cookie with SameSite option', () => {
-        cookieService.set('foo', 'bar', undefined, undefined, undefined, false, 'Strict');
+        cookieService.set('foo', 'bar', undefined, undefined, undefined, false, 'Strict', false);
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;sameSite=Strict;');
       });
@@ -236,12 +236,21 @@ describe('NgxCookieServiceService', () => {
       });
       it('should set cookie with all options', () => {
         const expiresDate = new Date('Mon, 15 Mar 2021 10:00:00 GMT');
-        cookieService.set('foo', 'bar', expiresDate, '/test', 'example.com', true, 'Strict');
+        cookieService.set('foo', 'bar', expiresDate, '/test', 'example.com', true, 'Strict', false);
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith(
           'foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;path=/test;domain=example.com;secure;sameSite=Strict;'
         );
       });
+      it('should set cookie with partitioned', () => {
+        const expiresDate = new Date('Mon, 15 Mar 2021 10:00:00 GMT');
+        cookieService.set('foo', 'bar', expiresDate, '/test', 'example.com', true, 'Strict', true);
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith(
+          'foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;path=/test;domain=example.com;secure;sameSite=Strict;Partitioned;'
+        );
+      });
+
       it('should set cookie with all options in options body', () => {
         const expiresDate = new Date('Mon, 15 Mar 2021 10:00:00 GMT');
 
