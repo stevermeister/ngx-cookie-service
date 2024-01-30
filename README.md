@@ -2,7 +2,10 @@
 
 <p align="center">
 
-![build](https://github.com/stevermeister/ngx-cookie-service/workflows/CI/badge.svg?branch=master)
+
+
+[![Build](https://github.com/stevermeister/ngx-cookie-service/actions/workflows/ci.yml/badge.svg)](https://github.com/stevermeister/ngx-cookie-service/actions/workflows/ci.yml)
+![npm bundle size](https://img.shields.io/bundlephobia/minzip/ngx-cookie-service) 
 <a href="https://www.npmjs.com/ngx-cookie-service">
 <img src="https://img.shields.io/npm/v/ngx-cookie-service.svg?logo=npm&logoColor=fff&label=NPM+package&color=limegreen" alt="Ngx Cookie Service on npm" />
 </a>
@@ -14,21 +17,65 @@
 </p>
 
 Angular service to read, set and delete browser cookies. Originally based on
-the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. The experienced team
-behind [Studytube](https://www.studytube.nl/) will take care of our cookie service from now on.
+the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. This service is lightweight, and its bundle size is **1.3 Kb** to ensure fast loading times and optimal performance.
 
 ## Installation
 
 ```bash
-npm install ngx-cookie-service --save
+npm i ngx-cookie-service
 
 # or
 
 yarn add ngx-cookie-service
 ```
 
+## Demo
+
+https://stackblitz.com/~/github.com/pavankjadda/ngx-cookie-service-demo
+
+
 ## Usage
 
+1. In standalone components, import the CookieService directly into the component
+
+   ```typescript
+   import { CookieService } from 'ngx-cookie-service';
+   import { Component } from '@angular/core';
+
+   @Component({
+     selector: 'my-component',
+     template: `<h1>Hello World</h1>`,
+     providers: [CookieService],
+   })
+   export class HelloComponent {
+     constructor(private cookieService: CookieService) {
+       this.cookieService.set('token', 'Hello World');
+       console.log(this.cookieService.get('token'));
+     }
+   }
+   ```
+
+2. You can also use `inject()` method in v14+ to inject the service into the component
+
+   ```typescript
+   import { CookieService } from 'ngx-cookie-service';
+   import { Component, inject } from '@angular/core';
+
+   @Component({
+     selector: 'my-component',
+     template: `<h1>Hello World</h1>`,
+     providers: [CookieService],
+   })
+   export class HelloComponent {
+     cookieService = inject(CookieService);
+
+     constructor() {
+       this.cookieService.set('token', 'Hello World');
+       console.log(this.cookieService.get('token'));
+     }
+   }
+   ```
+### Angular 13 or below
 Add the cookie service to your `app.module.ts` as a provider:
 
 ```typescript
@@ -49,55 +96,10 @@ Then, import and inject it into a constructor:
 ```typescript
 constructor(private cookieService: CookieService)
 {
-  this.cookieService.set('Test', 'Hello World');
-  this.cookieValue = this.cookieService.get('Test');
+  this.cookieService.set('token', 'Hello World');
+  console.log(this.cookieService.get('token'));
 }
 ```
-
-That's it!
-
-### Angular 14+
-
-1. Angular 14 introduced support for standalone components.
-   If you are using just standalone components, you can import the service directly into the component
-
-   ```typescript
-   import { CookieService } from 'ngx-cookie-service';
-   import { Component } from '@angular/core';
-
-   @Component({
-     selector: 'my-component',
-     template: `<h1>Hello World</h1>`,
-     providers: [CookieService],
-   })
-   export class HelloComponent {
-     constructor(private cookieService: CookieService) {
-       this.cookieService.set('Test', 'Hello World');
-       this.cookieValue = this.cookieService.get('Test');
-     }
-   }
-   ```
-
-2. You can also use `inject()` method in v14+ to inject the service into the component
-
-   ```typescript
-   import { CookieService } from 'ngx-cookie-service';
-   import { Component, inject } from '@angular/core';
-
-   @Component({
-     selector: 'my-component',
-     template: `<h1>Hello World</h1>`,
-     providers: [CookieService],
-   })
-   export class HelloComponent {
-     cookieService = inject(CookieService);
-
-     constructor() {
-       this.cookieService.set('Test', 'Hello World');
-       this.cookieValue = this.cookieService.get('Test');
-     }
-   }
-   ```
 
 ## Server Side Rendering
 
@@ -119,7 +121,7 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
    available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your
    SSR
    project, and replace the following code
-
+   
    ```typescript
    server.get('*', (req, res) => {
      res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
@@ -129,12 +131,14 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
 with this
 
 ```typescript
+import { REQUEST as SSR_REQUEST } from "ngx-cookie-service-ssr";
+
 server.get('*', (req, res) => {
   res.render(indexHtml, {
     req,
     providers: [
       { provide: APP_BASE_HREF, useValue: req.baseUrl },
-      { provide: 'REQUEST', useValue: req },
+      { provide: SSR_REQUEST, useValue: req },
       { provide: 'RESPONSE', useValue: res },
     ],
   });
@@ -146,22 +150,14 @@ server.get('*', (req, res) => {
    cookies in SSR. Then proceed to use `ngx-cookie-service` as usual.
 4. See the [sample repo](https://github.com/pavankjadda/angular-ssr-docker) for more details.
 
-## Demo
-
-https://stackblitz.com/edit/angular-ivy-1lrgdt?file=src%2Fapp%2Fapp.component.ts
-
 ## Supported Versions
-
-`ViewEngine` support has been removed on 13.x.x. For Angular versions 13.x.x or later use the latest version of the
-library. For versions <=12.x.x, use 12.0.3 version
+We follow angular [LTS versions](https://angular.dev/reference/versions#actively-supported-versions). The latest version of the library supports Angular 17.x.x. Angular 14.x.x or below is not supported.
 
 | Angular Version        | Supported Version |
-| ---------------------- | ----------------- |
+|------------------------|-------------------|
+| 17.x.x                 | 17.x.x            |
 | 16.x.x                 | 16.x.x            |
 | 15.x.x                 | 15.x.x            |
-| 14.x.x                 | 14.x.x            |
-| 13.x.x                 | 13.x.x            |
-| <=12.x.x (View Engine) | 12.0.3            |
 
 # API
 
