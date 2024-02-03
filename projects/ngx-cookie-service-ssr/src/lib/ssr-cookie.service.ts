@@ -122,12 +122,22 @@ export class SsrCookieService {
    * @param path     Cookie path
    * @param domain   Cookie domain
    * @param secure   Secure flag
-   * @param sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `Lax`
+   * @param sameSite OWASP same site token `Lax`, `None`, or `Strict`. Defaults to `Lax`
+   * @param partitioned Partitioned flag
    *
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  set(name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'None' | 'Strict'): void;
+  set(
+    name: string,
+    value: string,
+    expires?: number | Date,
+    path?: string,
+    domain?: string,
+    secure?: boolean,
+    sameSite?: 'Lax' | 'None' | 'Strict',
+    partitioned?: boolean
+  ): void;
 
   /**
    * Set cookie based on provided information
@@ -137,8 +147,8 @@ export class SsrCookieService {
    * expires  Number of days until the cookies expires or an actual `Date`
    * path     Cookie path
    * domain   Cookie domain
-   * secure   Secure flag
-   * sameSite OWASP samesite token `Lax`, `None`, or `Strict`. Defaults to `Lax`
+   * secure Cookie secure flag
+   * sameSite OWASP same site token `Lax`, `None`, or `Strict`. Defaults to `Lax`
    * </pre>
    *
    * @param name     Cookie name
@@ -157,6 +167,7 @@ export class SsrCookieService {
       domain?: string;
       secure?: boolean;
       sameSite?: 'Lax' | 'None' | 'Strict';
+      partitioned?: boolean;
     }
   ): void;
 
@@ -167,7 +178,8 @@ export class SsrCookieService {
     path?: string,
     domain?: string,
     secure?: boolean,
-    sameSite?: 'Lax' | 'None' | 'Strict'
+    sameSite?: 'Lax' | 'None' | 'Strict',
+    partitioned?: boolean
   ): void {
     if (!this.documentIsAccessible) {
       return;
@@ -180,6 +192,7 @@ export class SsrCookieService {
         domain,
         secure,
         sameSite: sameSite ? sameSite : 'Lax',
+        partitioned,
       };
 
       this.set(name, value, optionsBody);
@@ -224,6 +237,10 @@ export class SsrCookieService {
     }
 
     cookieString += 'sameSite=' + options.sameSite + ';';
+
+    if (options.partitioned) {
+      cookieString += 'Partitioned;';
+    }
 
     this.document.cookie = cookieString;
   }
