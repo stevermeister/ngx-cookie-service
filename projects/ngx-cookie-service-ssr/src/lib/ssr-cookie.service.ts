@@ -64,6 +64,8 @@ export class SsrCookieService {
    *
    * @author: Blake Ballard (blakeoxx)
    * @since: 16.2.0
+   * @see {@link https://github.com/stevermeister/ngx-cookie-service/blob/f7625d789dc18ea6aebcf136edb4cc01eeac5de9/projects/ngx-cookie-service-ssr/src/lib/ssr-cookie.service.ts#L100}
+   *  for previous implementation of parsing logic
    */
    static cookieStringToMap(cookieString: string): Map<string, string> {
     const cookies = new Map<string, string>;
@@ -95,6 +97,8 @@ export class SsrCookieService {
    *
    * @author: Blake Ballard (blakeoxx)
    * @since: 16.2.0
+   * @see {@link https://github.com/stevermeister/ngx-cookie-service/blob/f7625d789dc18ea6aebcf136edb4cc01eeac5de9/projects/ngx-cookie-service-ssr/src/lib/ssr-cookie.service.ts#L100}
+   *  for previous implementation of parsing logic
    */
   private getCombinedCookies(): Map<string, string> {
     if (this.documentIsAccessible) {
@@ -131,6 +135,7 @@ export class SsrCookieService {
    *
    * @author: Blake Ballard (blakeoxx)
    * @since: 16.2.0
+   * @see {@link set} for the original client-side cookie setter logic. This logic is mostly straight from there
    */
   private setClientCookie(
     name: string,
