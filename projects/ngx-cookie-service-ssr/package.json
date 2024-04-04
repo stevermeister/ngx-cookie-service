@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service-ssr",
   "description": "Angular SSR cookie service",
-  "version": "17.1.0",
+  "version": "18.0.0-next.1",
   "license": "MIT",
   "author": "Stepan Suvorov <stevermeister@gmail.com>",
   "keywords": [
@@ -24,6 +24,7 @@
     "angular-15",
     "angular-16",
     "angular-17",
+    "angular-18",
     "ivy",
     "ivy-compatible",
     "ivy-compilation",
