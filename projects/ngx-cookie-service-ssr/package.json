@@ -82,9 +82,9 @@
     "email": "stepan@studytube.nl"
   },
   "peerDependencies": {
-    "@angular/common": "^17.0.0",
-    "@angular/core": "^17.0.0",
-    "@angular/ssr": "^17.0.0"
+    "@angular/common": "^18.0.0-next.3",
+    "@angular/core": "^18.0.0-next.3",
+    "@angular/ssr": "^18.0.0-next.2"
   },
   "dependencies": {
     "tslib": "^2.6.2"
