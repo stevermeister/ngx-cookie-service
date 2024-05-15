@@ -1,9 +1,10 @@
-import { Request } from 'express';
+import { Request, Response } from 'express';
 import { Inject, Injectable, InjectionToken, Optional, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
-// Define the `Request` token
+// Define the `Request` and `Response` token
 export const REQUEST = new InjectionToken<Request>('REQUEST');
+export const RESPONSE = new InjectionToken<Response>('RESPONSE');
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,8 @@ export class SsrCookieService {
     @Inject(DOCUMENT) private document: Document,
     // Get the `PLATFORM_ID` so we can check if we're in a browser.
     @Inject(PLATFORM_ID) private platformId: any,
-    @Optional() @Inject(REQUEST) private request: Request
+    @Optional() @Inject(REQUEST) private request: Request,
+    @Optional() @Inject(RESPONSE) private response: Response
   ) {
     this.documentIsAccessible = isPlatformBrowser(this.platformId);
   }
