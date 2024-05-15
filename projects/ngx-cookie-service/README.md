@@ -120,8 +120,7 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
 
 2. By default, browser cookies are not
    available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your
-   SSR
-   project, and replace the following code
+   SSR project, and add the provided exported tokens to the following code's providers array (also applicable to `commonEngine.render` providers):
 
    ```typescript
    server.get('*', (req, res) => {
@@ -129,24 +128,25 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
    });
    ```
 
-with this
+   like so:
 
-```typescript
-server.get('*', (req, res) => {
-  res.render(indexHtml, {
-    req,
-    providers: [
-      { provide: APP_BASE_HREF, useValue: req.baseUrl },
-      { provide: 'REQUEST', useValue: req },
-      { provide: 'RESPONSE', useValue: res },
-    ],
-  });
-});
-```
+   ```typescript
+   import { REQUEST as COOKIE_SERVICE_REQ, RESPONSE as COOKIE_SERVICE_RES } from '@ngx-cookie-service-ssr';
+   // ...
+   server.get('*', (req, res) => {
+     res.render(indexHtml, {
+       req,
+       providers: [
+         { provide: APP_BASE_HREF, useValue: req.baseUrl },
+         { provide: COOKIE_SERVICE_REQ, useValue: req },
+         { provide: COOKIE_SERVICE_RES, useValue: res },
+       ],
+     });
+   });
+   ```
 
-3. This will make sure the cookies are available in `REQUEST` object, and the `ngx-cookie-service-ssr` can
-   use `REQUEST.cookies` to access the
-   cookies in SSR. Then proceed to use `ngx-cookie-service` as usual.
+3. This will ensure cookies are available in the `REQUEST` and `RESPONSE` objects for `ngx-cookie-service-ssr` to access
+   via `REQUEST.cookies`/`RESPONSE.cookies` in SSR. Then proceed to use `ngx-cookie-service` as usual.
 4. See the [sample repo](https://github.com/pavankjadda/angular-ssr-docker) for more details.
 
 ## Demo
