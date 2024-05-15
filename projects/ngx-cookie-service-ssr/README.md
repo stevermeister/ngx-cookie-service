@@ -160,6 +160,7 @@ library. For versions <=12.x.x, use 12.0.3 version
 
 | Angular Version        | Supported Version |
 | ---------------------- | ----------------- |
+| 17.x.x                 | 17.x.x            |
 | 16.x.x                 | 16.x.x            |
 | 15.x.x                 | 15.x.x            |
 | 14.x.x                 | 14.x.x            |
