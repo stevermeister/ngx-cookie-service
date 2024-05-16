@@ -243,12 +243,7 @@ export class SsrCookieService {
     }
 
     if (options.partitioned) {
-      // TODO: Partitioned cookies aren't supported by express yet. See https://github.com/expressjs/express/issues/5275
-      // expressOptions.partitioned = options.partitioned;
-      console.warn(
-        `[ngx-cookie-service] Cookie ${name} was set with the partitioned option, but partitioned is not yet ` +
-        `supported by server-side cookies.`
-      );
+      expressOptions.partitioned = options.partitioned;
     }
 
     this.response?.cookie(name, value, expressOptions);

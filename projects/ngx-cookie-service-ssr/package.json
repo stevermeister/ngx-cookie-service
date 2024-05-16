@@ -98,5 +98,8 @@
       "stream": false,
       "util": false
     }
+  },
+  "overrides": {
+    "cookie": ">=0.6.0"
   }
 }
