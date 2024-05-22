@@ -1,7 +1,7 @@
 {
   "name": "ngx-cookie-service",
   "description": "Angular cookie service",
-  "version": "17.1.0",
+  "version": "18.0.0",
   "license": "MIT",
   "author": "Stepan Suvorov <stevermeister@gmail.com>",
   "keywords": [
@@ -24,6 +24,7 @@
     "angular-15",
     "angular-16",
     "angular-17",
+    "angular-18",
     "ivy",
     "ivy-compatible",
     "ivy-compilation",
@@ -81,8 +82,8 @@
     "email": "stepan@studytube.nl"
   },
   "peerDependencies": {
-    "@angular/common": "^17.0.0",
-    "@angular/core": "^17.0.0"
+    "@angular/common": "^18.0.0-rc.0",
+    "@angular/core": "^18.0.0-rc.0"
   },
   "dependencies": {
     "tslib": "^2.6.2"
