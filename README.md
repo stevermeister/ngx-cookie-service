@@ -126,10 +126,11 @@ server.get('*', (req, res) => {
 4. See the [sample repo](https://github.com/pavankjadda/angular-ssr-docker) for more details.
 
 ## Supported Versions
-We follow angular [LTS versions](https://angular.dev/reference/versions#actively-supported-versions). The latest version of the library supports Angular 17.x.x. Angular 14.x.x or below is not supported.
+We follow angular [LTS versions](https://angular.dev/reference/versions#actively-supported-versions). The latest version of the library supports Angular 18.x.x. Angular 14.x.x or below is not supported.
 
 | Angular Version        | Supported Version |
 |------------------------|-------------------|
+| 18.x.x                 | 18.x.x            |
 | 17.x.x                 | 17.x.x            |
 | 16.x.x                 | 16.x.x            |
 | 15.x.x                 | 15.x.x            |
