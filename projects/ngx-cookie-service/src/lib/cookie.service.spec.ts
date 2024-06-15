@@ -104,6 +104,16 @@ describe('NgxCookieServiceService', () => {
 
         expect(cookieService.get('bar')).toEqual('');
       });
+      it('should return empty string when there is no cookie', () => {
+        documentCookieGetterSpy.mockReturnValue('');
+
+        expect(cookieService.get('foo')).toEqual('');
+      });
+      it('should return empty string when there is no cookie', () => {
+        documentCookieGetterSpy.mockReturnValue(null);
+
+        expect(cookieService.get('foo')).toEqual('');
+      });
     });
     describe('#getAll', () => {
       it('should return empty object if cookies not set', () => {

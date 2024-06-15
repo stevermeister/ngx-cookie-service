@@ -96,9 +96,9 @@ export class CookieService {
       name = encodeURIComponent(name);
 
       const regExp: RegExp = CookieService.getCookieRegExp(name);
-      const result: RegExpExecArray = regExp.exec(this.document.cookie);
+      const result: RegExpExecArray | null = regExp.exec(this.document.cookie);
 
-      return result[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
+      return result?.[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
     } else {
       return '';
     }
