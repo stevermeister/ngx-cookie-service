@@ -159,7 +159,9 @@ https://stackblitz.com/edit/angular-ivy-1lrgdt?file=src%2Fapp%2Fapp.component.ts
 library. For versions <=12.x.x, use 12.0.3 version
 
 | Angular Version        | Supported Version |
-| ---------------------- | ----------------- |
+|------------------------|-------------------|
+| 18.x.x                 | 18.x.x            |
+| 17.x.x                 | 17.x.x            |
 | 16.x.x                 | 16.x.x            |
 | 15.x.x                 | 15.x.x            |
 | 14.x.x                 | 14.x.x            |
