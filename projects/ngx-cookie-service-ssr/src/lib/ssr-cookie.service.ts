@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { CookieOptions, Request, Response } from 'express';
 import { Inject, Injectable, InjectionToken, Optional, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
@@ -54,6 +54,71 @@ export class SsrCookieService {
       // probably it is not uri encoded. return as is
       return encodedURIComponent;
     }
+  }
+
+  /**
+   * Converts the provided cookie string to a key-value representation.
+   *
+   * @param cookieString - A concatenated string of cookies
+   * @returns Map - Key-value pairs of the provided cookies
+   *
+   * @author: Blake Ballard (blakeoxx)
+   * @since: 18.1.0
+   */
+  static cookieStringToMap(cookieString: string): Map<string, string> {
+    const cookies = new Map<string, string>;
+
+    if (cookieString?.length < 1) {
+      return cookies;
+    }
+
+    cookieString.split(';').forEach((currentCookie) => {
+      let [cookieName, cookieValue] = currentCookie.split('=');
+
+      // Remove any extra spaces from the beginning of cookie names. These are a side effect of browser/express cookie concatenation
+      cookieName = cookieName.replace(/^ +/, '');
+
+      cookies.set(SsrCookieService.safeDecodeURIComponent(cookieName), SsrCookieService.safeDecodeURIComponent(cookieValue));
+    });
+
+    return cookies;
+  }
+
+  /**
+   * Gets the current state of all cookies based on the request and response. Cookies added or changed in the response
+   * override any old values provided in the response.
+   *
+   * Client-side will always just return the document's cookies.
+   *
+   * @private
+   * @returns Map - All cookies from the request and response (or document) in key-value form.
+   *
+   * @author: Blake Ballard (blakeoxx)
+   * @since: 18.1.0
+   */
+  private getCombinedCookies(): Map<string, string> {
+    if (this.documentIsAccessible) {
+      return SsrCookieService.cookieStringToMap(this.document.cookie);
+    }
+
+    const requestCookies = SsrCookieService.cookieStringToMap(this.request?.headers.cookie || '');
+
+    let responseCookies: string | string[] = (this.response?.get('Set-Cookie') || []);
+    if (!Array.isArray(responseCookies)) {
+      responseCookies = [responseCookies];
+    }
+
+    let allCookies = new Map(requestCookies);
+    // Parse and merge response cookies with request cookies
+    responseCookies.forEach((currentCookie) => {
+      // Response cookie headers represent individual cookies and their options, so we parse them similar to other cookie strings, but slightly different
+      let [cookieName, cookieValue] = currentCookie.split(';')[0].split('=');
+      if (cookieName !== '') {
+        allCookies.set(SsrCookieService.safeDecodeURIComponent(cookieName), SsrCookieService.safeDecodeURIComponent(cookieValue));
+      }
+    });
+
+    return allCookies;
   }
 
   /**
