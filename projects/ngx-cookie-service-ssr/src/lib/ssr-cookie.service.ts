@@ -272,10 +272,6 @@ export class SsrCookieService {
     sameSite?: 'Lax' | 'None' | 'Strict',
     partitioned?: boolean
   ): void {
-    if (!this.documentIsAccessible) {
-      return;
-    }
-
     if (typeof expiresOrOptions === 'number' || expiresOrOptions instanceof Date || path || domain || secure || sameSite) {
       const optionsBody = {
         expires: expiresOrOptions,
@@ -290,26 +286,25 @@ export class SsrCookieService {
       return;
     }
 
-    let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
-
     const options = expiresOrOptions ? expiresOrOptions : {};
+    const outputOptions: CookieOptions = {};
 
     if (options.expires) {
       if (typeof options.expires === 'number') {
         const dateExpires: Date = new Date(new Date().getTime() + options.expires * 1000 * 60 * 60 * 24);
 
-        cookieString += 'expires=' + dateExpires.toUTCString() + ';';
+        outputOptions.expires = dateExpires;
       } else {
-        cookieString += 'expires=' + options.expires.toUTCString() + ';';
+        outputOptions.expires = options.expires;
       }
     }
 
     if (options.path) {
-      cookieString += 'path=' + options.path + ';';
+      outputOptions.path = options.path;
     }
 
     if (options.domain) {
-      cookieString += 'domain=' + options.domain + ';';
+      outputOptions.domain = options.domain;
     }
 
     if (options.secure === false && options.sameSite === 'None') {
@@ -320,20 +315,42 @@ export class SsrCookieService {
       );
     }
     if (options.secure) {
-      cookieString += 'secure;';
+      outputOptions.secure = options.secure;
     }
 
     if (!options.sameSite) {
       options.sameSite = 'Lax';
     }
 
-    cookieString += 'sameSite=' + options.sameSite + ';';
+    outputOptions.sameSite = options.sameSite.toLowerCase() as ('lax' | 'none' | 'strict');
 
     if (options.partitioned) {
-      cookieString += 'Partitioned;';
+      outputOptions.partitioned = options.partitioned;
     }
 
-    this.document.cookie = cookieString;
+    if (this.documentIsAccessible) {
+      // Set the client-side cookie (a string of the form `cookieName=cookieValue;opt1=optValue;opt2=optValue;`)
+      let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
+
+      // Step through each option, appending it to the cookie string depending on it's type
+      for (const optionName of Object.keys(outputOptions)) {
+        const optionValue: unknown = outputOptions[optionName];
+        if (optionValue instanceof Date) {
+          cookieString += `${optionName}=${optionValue.toUTCString()};`;
+        } else if (typeof optionValue === 'boolean') {
+          if (optionValue) {
+            cookieString += `${optionName};`;
+          }
+        } else if (typeof optionValue === 'string' || typeof optionValue === 'number') {
+          cookieString += `${optionName}=${optionValue};`;
+        }
+      }
+
+      this.document.cookie = cookieString;
+    } else {
+      // Set the server-side cookie (on the response, to be picked up by the client)
+      this.response?.cookie(name, value, outputOptions);
+    }
   }
 
   /**
