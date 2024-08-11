@@ -366,9 +366,6 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   delete(name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
-    if (!this.documentIsAccessible) {
-      return;
-    }
     const expiresDate = new Date('Thu, 01 Jan 1970 00:00:01 GMT');
     this.set(name, '', { expires: expiresDate, path, domain, secure, sameSite });
   }
@@ -385,10 +382,6 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   deleteAll(path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
-    if (!this.documentIsAccessible) {
-      return;
-    }
-
     const cookies: any = this.getAll();
 
     for (const cookieName in cookies) {
