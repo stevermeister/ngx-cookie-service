@@ -131,9 +131,16 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   check(name: string): boolean {
-    name = encodeURIComponent(name);
-    const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-    return regExp.test(this.documentIsAccessible ? this.document.cookie : this.request?.headers.cookie);
+    if (this.documentIsAccessible) {
+      // Client-side cookie check
+      name = encodeURIComponent(name);
+      const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
+      return regExp.test(this.document.cookie);
+    } else {
+      // Server-side cookie check considering incoming cookies from the request and already set cookies on the response
+      const allCookies = this.getCombinedCookies();
+      return allCookies.has(name);
+    }
   }
 
   /**
@@ -147,12 +154,19 @@ export class SsrCookieService {
    */
   get(name: string): string {
     if (this.check(name)) {
-      name = encodeURIComponent(name);
+      if (this.documentIsAccessible) {
+        // Client-side cookie getter
+        name = encodeURIComponent(name);
 
-      const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-      const result: RegExpExecArray = regExp.exec(this.documentIsAccessible ? this.document.cookie : this.request?.headers.cookie);
+        const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
+        const result: RegExpExecArray = regExp.exec(this.document.cookie);
 
-      return result[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
+        return result[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
+      } else {
+        // Server-side cookie getter including preset cookies from request and new cookies from response
+        const allCookies = this.getCombinedCookies();
+        return (allCookies.get(name) || '');
+      }
     } else {
       return '';
     }
@@ -168,12 +182,22 @@ export class SsrCookieService {
    */
   getAll(): { [key: string]: string } {
     const cookies: { [key: string]: string } = {};
-    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.request?.headers.cookie;
 
-    if (cookieString && cookieString !== '') {
-      cookieString.split(';').forEach((currentCookie) => {
-        const [cookieName, cookieValue] = currentCookie.split('=');
-        cookies[SsrCookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = SsrCookieService.safeDecodeURIComponent(cookieValue);
+    if (this.documentIsAccessible) {
+      // Client-side cookie getter based on cookie strings
+      const cookieString: any = this.document?.cookie;
+
+      if (cookieString && cookieString !== '') {
+        cookieString.split(';').forEach((currentCookie) => {
+          const [cookieName, cookieValue] = currentCookie.split('=');
+          cookies[SsrCookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = SsrCookieService.safeDecodeURIComponent(cookieValue);
+        });
+      }
+    } else {
+      // Server-side cookie getter including preset cookies from request and new cookies from response
+      const allCookies = this.getCombinedCookies();
+      allCookies.forEach((cookieValue, cookieName) => {
+        cookies[cookieName] = cookieValue;
       });
     }
 
