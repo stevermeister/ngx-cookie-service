@@ -1,9 +1,10 @@
-import { Request } from 'express';
+import { CookieOptions, Request, Response } from 'express';
 import { Inject, Injectable, InjectionToken, Optional, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
-// Define the `Request` token
+// Define the `Request` and `Response` token
 export const REQUEST = new InjectionToken<Request>('REQUEST');
+export const RESPONSE = new InjectionToken<Response>('RESPONSE');
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +16,8 @@ export class SsrCookieService {
     @Inject(DOCUMENT) private document: Document,
     // Get the `PLATFORM_ID` so we can check if we're in a browser.
     @Inject(PLATFORM_ID) private platformId: any,
-    @Optional() @Inject(REQUEST) private request: Request
+    @Optional() @Inject(REQUEST) private request: Request,
+    @Optional() @Inject(RESPONSE) private response: Response
   ) {
     this.documentIsAccessible = isPlatformBrowser(this.platformId);
   }
@@ -55,6 +57,71 @@ export class SsrCookieService {
   }
 
   /**
+   * Converts the provided cookie string to a key-value representation.
+   *
+   * @param cookieString - A concatenated string of cookies
+   * @returns Map - Key-value pairs of the provided cookies
+   *
+   * @author: Blake Ballard (blakeoxx)
+   * @since: 18.1.0
+   */
+  static cookieStringToMap(cookieString: string): Map<string, string> {
+    const cookies = new Map<string, string>;
+
+    if (cookieString?.length < 1) {
+      return cookies;
+    }
+
+    cookieString.split(';').forEach((currentCookie) => {
+      let [cookieName, cookieValue] = currentCookie.split('=');
+
+      // Remove any extra spaces from the beginning of cookie names. These are a side effect of browser/express cookie concatenation
+      cookieName = cookieName.replace(/^ +/, '');
+
+      cookies.set(SsrCookieService.safeDecodeURIComponent(cookieName), SsrCookieService.safeDecodeURIComponent(cookieValue));
+    });
+
+    return cookies;
+  }
+
+  /**
+   * Gets the current state of all cookies based on the request and response. Cookies added or changed in the response
+   * override any old values provided in the response.
+   *
+   * Client-side will always just return the document's cookies.
+   *
+   * @private
+   * @returns Map - All cookies from the request and response (or document) in key-value form.
+   *
+   * @author: Blake Ballard (blakeoxx)
+   * @since: 18.1.0
+   */
+  private getCombinedCookies(): Map<string, string> {
+    if (this.documentIsAccessible) {
+      return SsrCookieService.cookieStringToMap(this.document.cookie);
+    }
+
+    const requestCookies = SsrCookieService.cookieStringToMap(this.request?.headers.cookie || '');
+
+    let responseCookies: string | string[] = (this.response?.get('Set-Cookie') || []);
+    if (!Array.isArray(responseCookies)) {
+      responseCookies = [responseCookies];
+    }
+
+    let allCookies = new Map(requestCookies);
+    // Parse and merge response cookies with request cookies
+    responseCookies.forEach((currentCookie) => {
+      // Response cookie headers represent individual cookies and their options, so we parse them similar to other cookie strings, but slightly different
+      let [cookieName, cookieValue] = currentCookie.split(';')[0].split('=');
+      if (cookieName !== '') {
+        allCookies.set(SsrCookieService.safeDecodeURIComponent(cookieName), SsrCookieService.safeDecodeURIComponent(cookieValue));
+      }
+    });
+
+    return allCookies;
+  }
+
+  /**
    * Return `true` if {@link Document} is accessible, otherwise return `false`
    *
    * @param name Cookie name
@@ -64,9 +131,16 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   check(name: string): boolean {
-    name = encodeURIComponent(name);
-    const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-    return regExp.test(this.documentIsAccessible ? this.document.cookie : this.request?.headers.cookie);
+    if (this.documentIsAccessible) {
+      // Client-side cookie check
+      name = encodeURIComponent(name);
+      const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
+      return regExp.test(this.document.cookie);
+    } else {
+      // Server-side cookie check considering incoming cookies from the request and already set cookies on the response
+      const allCookies = this.getCombinedCookies();
+      return allCookies.has(name);
+    }
   }
 
   /**
@@ -80,12 +154,19 @@ export class SsrCookieService {
    */
   get(name: string): string {
     if (this.check(name)) {
-      name = encodeURIComponent(name);
+      if (this.documentIsAccessible) {
+        // Client-side cookie getter
+        name = encodeURIComponent(name);
 
-      const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-      const result: RegExpExecArray = regExp.exec(this.documentIsAccessible ? this.document.cookie : this.request?.headers.cookie);
+        const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
+        const result: RegExpExecArray = regExp.exec(this.document.cookie);
 
-      return result[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
+        return result[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
+      } else {
+        // Server-side cookie getter including preset cookies from request and new cookies from response
+        const allCookies = this.getCombinedCookies();
+        return (allCookies.get(name) || '');
+      }
     } else {
       return '';
     }
@@ -101,12 +182,22 @@ export class SsrCookieService {
    */
   getAll(): { [key: string]: string } {
     const cookies: { [key: string]: string } = {};
-    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.request?.headers.cookie;
 
-    if (cookieString && cookieString !== '') {
-      cookieString.split(';').forEach((currentCookie) => {
-        const [cookieName, cookieValue] = currentCookie.split('=');
-        cookies[SsrCookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = SsrCookieService.safeDecodeURIComponent(cookieValue);
+    if (this.documentIsAccessible) {
+      // Client-side cookie getter based on cookie strings
+      const cookieString: any = this.document?.cookie;
+
+      if (cookieString && cookieString !== '') {
+        cookieString.split(';').forEach((currentCookie) => {
+          const [cookieName, cookieValue] = currentCookie.split('=');
+          cookies[SsrCookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = SsrCookieService.safeDecodeURIComponent(cookieValue);
+        });
+      }
+    } else {
+      // Server-side cookie getter including preset cookies from request and new cookies from response
+      const allCookies = this.getCombinedCookies();
+      allCookies.forEach((cookieValue, cookieName) => {
+        cookies[cookieName] = cookieValue;
       });
     }
 
@@ -181,10 +272,6 @@ export class SsrCookieService {
     sameSite?: 'Lax' | 'None' | 'Strict',
     partitioned?: boolean
   ): void {
-    if (!this.documentIsAccessible) {
-      return;
-    }
-
     if (typeof expiresOrOptions === 'number' || expiresOrOptions instanceof Date || path || domain || secure || sameSite) {
       const optionsBody = {
         expires: expiresOrOptions,
@@ -199,26 +286,25 @@ export class SsrCookieService {
       return;
     }
 
-    let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
-
     const options = expiresOrOptions ? expiresOrOptions : {};
+    const outputOptions: CookieOptions = {};
 
     if (options.expires) {
       if (typeof options.expires === 'number') {
         const dateExpires: Date = new Date(new Date().getTime() + options.expires * 1000 * 60 * 60 * 24);
 
-        cookieString += 'expires=' + dateExpires.toUTCString() + ';';
+        outputOptions.expires = dateExpires;
       } else {
-        cookieString += 'expires=' + options.expires.toUTCString() + ';';
+        outputOptions.expires = options.expires;
       }
     }
 
     if (options.path) {
-      cookieString += 'path=' + options.path + ';';
+      outputOptions.path = options.path;
     }
 
     if (options.domain) {
-      cookieString += 'domain=' + options.domain + ';';
+      outputOptions.domain = options.domain;
     }
 
     if (options.secure === false && options.sameSite === 'None') {
@@ -229,20 +315,42 @@ export class SsrCookieService {
       );
     }
     if (options.secure) {
-      cookieString += 'secure;';
+      outputOptions.secure = options.secure;
     }
 
     if (!options.sameSite) {
       options.sameSite = 'Lax';
     }
 
-    cookieString += 'sameSite=' + options.sameSite + ';';
+    outputOptions.sameSite = options.sameSite.toLowerCase() as ('lax' | 'none' | 'strict');
 
     if (options.partitioned) {
-      cookieString += 'Partitioned;';
+      outputOptions.partitioned = options.partitioned;
     }
 
-    this.document.cookie = cookieString;
+    if (this.documentIsAccessible) {
+      // Set the client-side cookie (a string of the form `cookieName=cookieValue;opt1=optValue;opt2=optValue;`)
+      let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
+
+      // Step through each option, appending it to the cookie string depending on it's type
+      for (const optionName of Object.keys(outputOptions)) {
+        const optionValue: unknown = outputOptions[optionName];
+        if (optionValue instanceof Date) {
+          cookieString += `${optionName}=${optionValue.toUTCString()};`;
+        } else if (typeof optionValue === 'boolean') {
+          if (optionValue) {
+            cookieString += `${optionName};`;
+          }
+        } else if (typeof optionValue === 'string' || typeof optionValue === 'number') {
+          cookieString += `${optionName}=${optionValue};`;
+        }
+      }
+
+      this.document.cookie = cookieString;
+    } else {
+      // Set the server-side cookie (on the response, to be picked up by the client)
+      this.response?.cookie(name, value, outputOptions);
+    }
   }
 
   /**
@@ -258,9 +366,6 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   delete(name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
-    if (!this.documentIsAccessible) {
-      return;
-    }
     const expiresDate = new Date('Thu, 01 Jan 1970 00:00:01 GMT');
     this.set(name, '', { expires: expiresDate, path, domain, secure, sameSite });
   }
@@ -277,10 +382,6 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   deleteAll(path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
-    if (!this.documentIsAccessible) {
-      return;
-    }
-
     const cookies: any = this.getAll();
 
     for (const cookieName in cookies) {

@@ -71,6 +71,9 @@
     },
     {
       "name": "IceBreakerG"
+    },
+    {
+      "name": "Blake Ballard (blakeoxx)"
     }
   ],
   "repository": {
@@ -96,5 +99,8 @@
       "stream": false,
       "util": false
     }
+  },
+  "overrides": {
+    "cookie": ">=0.6.0"
   }
 }
