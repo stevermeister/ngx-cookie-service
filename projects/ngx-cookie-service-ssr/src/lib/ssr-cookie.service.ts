@@ -108,7 +108,7 @@ export class SsrCookieService {
       responseCookies = [responseCookies];
     }
 
-    let allCookies = new Map(requestCookies);
+    let allCookies = requestCookies;
     // Parse and merge response cookies with request cookies
     responseCookies.forEach((currentCookie) => {
       // Response cookie headers represent individual cookies and their options, so we parse them similar to other cookie strings, but slightly different
