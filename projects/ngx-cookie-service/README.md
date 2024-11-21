@@ -314,6 +314,7 @@ Thanks to all contributors:
 - [IceBreakerG](https://github.com/IceBreakerG)
 - [rojedalopez](https://github.com/rojedalopez)
 - [Nikel163](https://github.com/Nikel163)
+- [blakeoxx](https://github.com/blakeoxx)
 
 # License
 
