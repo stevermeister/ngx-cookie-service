@@ -76,7 +76,7 @@ export class SsrCookieService {
       let [cookieName, cookieValue] = currentCookie.split('=');
 
       // Remove any extra spaces from the beginning of cookie names. These are a side effect of browser/express cookie concatenation
-      cookieName = cookieName.replace(/^ +/, '');
+      cookieName = cookieName.trimStart();
 
       cookies.set(SsrCookieService.safeDecodeURIComponent(cookieName), SsrCookieService.safeDecodeURIComponent(cookieValue));
     });
@@ -182,7 +182,7 @@ export class SsrCookieService {
       if (cookieString && cookieString !== '') {
         cookieString.split(';').forEach((currentCookie) => {
           const [cookieName, cookieValue] = currentCookie.split('=');
-          cookies[SsrCookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = SsrCookieService.safeDecodeURIComponent(cookieValue);
+          cookies[SsrCookieService.safeDecodeURIComponent(cookieName.trimStart())] = SsrCookieService.safeDecodeURIComponent(cookieValue);
         });
       }
     } else {
