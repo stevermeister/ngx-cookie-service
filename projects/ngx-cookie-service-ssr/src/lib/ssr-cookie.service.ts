@@ -131,16 +131,8 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   check(name: string): boolean {
-    if (this.documentIsAccessible) {
-      // Client-side cookie check
-      name = encodeURIComponent(name);
-      const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-      return regExp.test(this.document.cookie);
-    } else {
-      // Server-side cookie check considering incoming cookies from the request and already set cookies on the response
-      const allCookies = this.getCombinedCookies();
-      return allCookies.has(name);
-    }
+    const allCookies = this.getCombinedCookies();
+    return allCookies.has(name);
   }
 
   /**
