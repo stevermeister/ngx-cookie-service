@@ -92,7 +92,7 @@ export class CookieService {
    * @since: 1.0.0
    */
   get(name: string): string {
-    if (this.documentIsAccessible && this.check(name)) {
+    if (this.check(name)) {
       name = encodeURIComponent(name);
 
       const regExp: RegExp = CookieService.getCookieRegExp(name);
