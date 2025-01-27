@@ -57,9 +57,7 @@ export class SsrCookieService {
   check(name: string): boolean {
     name = encodeURIComponent(name);
     const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-    const cookieString = this.documentIsAccessible
-      ? this.document.cookie
-      : this.request?.headers.get('cookie');
+    const cookieString = this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie');
     return regExp.test(cookieString ?? '');
   }
 
@@ -77,9 +75,7 @@ export class SsrCookieService {
       name = encodeURIComponent(name);
 
       const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-      const cookieString = this.documentIsAccessible
-        ? this.document.cookie
-        : this.request?.headers.get('cookie');
+      const cookieString = this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie');
       const result = regExp.exec(cookieString ?? '');
       const value = result && result[1] ? result[1] : '';
 
