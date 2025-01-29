@@ -1,4 +1,4 @@
-import { Injectable, PLATFORM_ID, REQUEST, inject } from '@angular/core';
+import { inject, Injectable, PLATFORM_ID, REQUEST } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 
 @Injectable({
@@ -6,7 +6,6 @@ import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 })
 export class SsrCookieService {
   private readonly document = inject(DOCUMENT);
-  // Get the `PLATFORM_ID` so we can check if we're in a browser.
   private readonly platformId = inject(PLATFORM_ID);
   private readonly request = inject(REQUEST, { optional: true });
   private readonly documentIsAccessible: boolean = isPlatformBrowser(this.platformId);
@@ -57,8 +56,7 @@ export class SsrCookieService {
   check(name: string): boolean {
     name = encodeURIComponent(name);
     const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-    const cookieString = this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie');
-    return regExp.test(cookieString ?? '');
+    return regExp.test(this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie'));
   }
 
   /**
@@ -73,16 +71,11 @@ export class SsrCookieService {
   get(name: string): string {
     if (this.check(name)) {
       name = encodeURIComponent(name);
-
       const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-      const cookieString = this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie');
-      const result = regExp.exec(cookieString ?? '');
-      const value = result && result[1] ? result[1] : '';
-
-      return SsrCookieService.safeDecodeURIComponent(value);
-    } else {
-      return '';
+      const result: RegExpExecArray = regExp.exec(this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie'));
+      return result[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
     }
+    return '';
   }
 
   /**
