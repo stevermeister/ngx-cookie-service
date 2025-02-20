@@ -23,9 +23,8 @@ export class CookieService {
   private readonly documentIsAccessible: boolean;
 
   constructor(
-    @Inject(DOCUMENT) private document: Document,
-    // Get the `PLATFORM_ID` so we can check if we're in a browser.
-    @Inject(PLATFORM_ID) private platformId
+    @Inject(DOCUMENT) private document: Document, // Get the `PLATFORM_ID` so we can check if we're in a browser.
+    @Inject(PLATFORM_ID) private platformId: Object
   ) {
     this.documentIsAccessible = isPlatformBrowser(this.platformId);
   }
@@ -46,11 +45,11 @@ export class CookieService {
   }
 
   /**
-   * Gets the unencoded version of an encoded component of a Uniform Resource Identifier (URI).
+   * Gets the decoded version of an encoded component of a Uniform Resource Identifier (URI).
    *
    * @param encodedURIComponent A value representing an encoded URI component.
    *
-   * @returns The unencoded version of an encoded component of a Uniform Resource Identifier (URI).
+   * @returns The decoded version of an encoded component of a Uniform Resource Identifier (URI).
    *
    * @author: Stepan Suvorov
    * @since: 1.0.0
@@ -78,7 +77,7 @@ export class CookieService {
       return false;
     }
     name = encodeURIComponent(name);
-    const regExp: RegExp = CookieService.getCookieRegExp(name);
+    const regExp = CookieService.getCookieRegExp(name);
     return regExp.test(this.document.cookie);
   }
 
@@ -94,10 +93,8 @@ export class CookieService {
   get(name: string): string {
     if (this.check(name)) {
       name = encodeURIComponent(name);
-
       const regExp: RegExp = CookieService.getCookieRegExp(name);
       const result: RegExpExecArray = regExp.exec(this.document.cookie);
-
       return result[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
     } else {
       return '';
@@ -121,7 +118,7 @@ export class CookieService {
     const document: any = this.document;
 
     if (document.cookie && document.cookie !== '') {
-      document.cookie.split(';').forEach((currentCookie) => {
+      document.cookie.split(';').forEach((currentCookie: string) => {
         const [cookieName, cookieValue] = currentCookie.split('=');
         cookies[CookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = CookieService.safeDecodeURIComponent(cookieValue);
       });
@@ -252,7 +249,7 @@ export class CookieService {
   }
 
   /**
-   * Delete cookie by name
+   * Delete cookie by name at given path and domain. If not path is not specified, cookie at '/' path will be deleted.
    *
    * @param name   Cookie name
    * @param path   Cookie path
@@ -272,7 +269,7 @@ export class CookieService {
   }
 
   /**
-   * Delete all cookies
+   * Delete all cookies at given path and domain. If not path is not specified, all cookies at '/' path will be deleted.
    *
    * @param path   Cookie path
    * @param domain Cookie domain
