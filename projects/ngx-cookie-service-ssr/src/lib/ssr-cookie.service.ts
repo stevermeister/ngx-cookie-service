@@ -20,7 +20,7 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   static getCookieRegExp(name: string): RegExp {
-    const escapedName: string = name.replace(/([\[\]\{\}\(\)\|\=\;\+\?\,\.\*\^\$])/gi, '\\$1');
+    const escapedName: string = name.replace(/([\[\]{}()|=;+?,.*^$])/gi, '\\$1');
 
     return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
   }
@@ -91,7 +91,7 @@ export class SsrCookieService {
     const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.request?.headers.get('cookie');
 
     if (cookieString && cookieString !== '') {
-      cookieString.split(';').forEach((currentCookie) => {
+      cookieString.split(';').forEach((currentCookie: string) => {
         const [cookieName, cookieValue] = currentCookie.split('=');
         cookies[SsrCookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = SsrCookieService.safeDecodeURIComponent(cookieValue);
       });
@@ -233,7 +233,7 @@ export class SsrCookieService {
   }
 
   /**
-   * Delete cookie by name
+   * Delete cookie by name at given path and domain. If not path is not specified, cookie at '/' path will be deleted.
    *
    * @param name   Cookie name
    * @param path   Cookie path
@@ -253,7 +253,7 @@ export class SsrCookieService {
   }
 
   /**
-   * Delete all cookies
+   * Delete all cookies at given path and domain. If not path is not specified, all cookies at '/' path will be deleted.
    *
    * @param path   Cookie path
    * @param domain Cookie domain
