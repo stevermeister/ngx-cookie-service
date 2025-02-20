@@ -24,7 +24,7 @@ export class CookieService {
 
   constructor(
     @Inject(DOCUMENT) private document: Document, // Get the `PLATFORM_ID` so we can check if we're in a browser.
-    @Inject(PLATFORM_ID) private platformId: Object
+    @Inject(PLATFORM_ID) private platformId: object
   ) {
     this.documentIsAccessible = isPlatformBrowser(this.platformId);
   }
