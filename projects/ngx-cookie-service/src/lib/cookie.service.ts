@@ -2,8 +2,8 @@
 // not use `DOCUMENT` injection and therefore doesn't work well with AoT production builds.
 // Package: https://github.com/BCJTI/ng2-cookies
 
-import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 
 export type SameSite = 'Lax' | 'None' | 'Strict';
 
@@ -94,8 +94,8 @@ export class CookieService {
     if (this.check(name)) {
       name = encodeURIComponent(name);
       const regExp: RegExp = CookieService.getCookieRegExp(name);
-      const result: RegExpExecArray = regExp.exec(this.document.cookie);
-      return result[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
+      const result = regExp.exec(this.document.cookie);
+      return result && result[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
     } else {
       return '';
     }
