@@ -1,5 +1,5 @@
-import { inject, Injectable, PLATFORM_ID, REQUEST } from '@angular/core';
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID, REQUEST } from '@angular/core';
 
 @Injectable({
   providedIn: 'root',
@@ -72,8 +72,8 @@ export class SsrCookieService {
     if (this.check(name)) {
       name = encodeURIComponent(name);
       const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-      const result: RegExpExecArray = regExp.exec(this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie'));
-      return result[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
+      const result = regExp.exec(this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie'));
+      return result && result[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
     }
     return '';
   }
