@@ -318,6 +318,7 @@ Thanks to all contributors:
 - [IceBreakerG](https://github.com/IceBreakerG)
 - [rojedalopez](https://github.com/rojedalopez)
 - [Nikel163](https://github.com/Nikel163)
+- [Martin Evtimov](https://github.com/mmart1n)
 
 # License
 
