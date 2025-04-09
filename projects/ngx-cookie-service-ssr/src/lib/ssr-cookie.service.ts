@@ -88,7 +88,7 @@ export class SsrCookieService {
    */
   getAll(): { [key: string]: string } {
     const cookies: { [key: string]: string } = {};
-    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.request?.headers.cookie;
+    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : (this.request?.headers.cookie ?? this.request?.headers.get('cookie'));
 
     if (cookieString && cookieString !== '') {
       cookieString.split(';').forEach((currentCookie: string) => {
