@@ -132,14 +132,13 @@ Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) fo
 with this
 
 ```typescript
-import { REQUEST } from '@angular/core';
-
 server.get('*', (req, res) => {
   res.render(indexHtml, {
     req,
     providers: [
       { provide: APP_BASE_HREF, useValue: req.baseUrl },
-      { provide: REQUEST, useValue: req }
+      { provide: 'REQUEST', useValue: req },
+      { provide: 'RESPONSE', useValue: res },
     ],
   });
 });
@@ -318,7 +317,6 @@ Thanks to all contributors:
 - [IceBreakerG](https://github.com/IceBreakerG)
 - [rojedalopez](https://github.com/rojedalopez)
 - [Nikel163](https://github.com/Nikel163)
-- [Martin Evtimov](https://github.com/mmart1n)
 
 # License
 
