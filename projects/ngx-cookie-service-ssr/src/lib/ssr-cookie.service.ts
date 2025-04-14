@@ -58,7 +58,7 @@ export class SsrCookieService {
     const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
     return regExp.test(this.documentIsAccessible ?
       this.document.cookie :
-      (this.request?.headers.cookie ?? this.request?.headers.get('cookie'))
+      (this.request?.headers['cookie'] ?? this.request?.headers.get('cookie'))
     );
   }
 
@@ -77,7 +77,7 @@ export class SsrCookieService {
       const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
       const result = regExp.exec(this.documentIsAccessible ?
         this.document.cookie :
-        (this.request?.headers.cookie ?? this.request?.headers.get('cookie'))
+        (this.request?.headers['cookie'] ?? this.request?.headers.get('cookie'))
       );
       return result && result[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
     }
@@ -96,7 +96,7 @@ export class SsrCookieService {
     const cookies: { [key: string]: string } = {};
     const cookieString: any = this.documentIsAccessible ?
       this.document?.cookie :
-      (this.request?.headers.cookie ?? this.request?.headers.get('cookie'));
+      (this.request?.headers['cookie'] ?? this.request?.headers.get('cookie'));
 
     if (cookieString && cookieString !== '') {
       cookieString.split(';').forEach((currentCookie: string) => {
