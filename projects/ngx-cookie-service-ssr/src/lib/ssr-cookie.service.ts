@@ -7,114 +7,82 @@ import { inject, Injectable, PLATFORM_ID, REQUEST } from '@angular/core';
 export class SsrCookieService {
   private readonly document = inject(DOCUMENT);
   private readonly platformId = inject(PLATFORM_ID);
-  private readonly request = inject(REQUEST, { optional: true });
+  private readonly request: any = inject(REQUEST, { optional: true }); // Use 'any' for flexibility
   private readonly documentIsAccessible: boolean = isPlatformBrowser(this.platformId);
 
-  /**
-   * Get cookie Regular Expression
-   *
-   * @param name Cookie name
-   * @returns property RegExp
-   *
-   * @author: Stepan Suvorov
-   * @since: 1.0.0
-   */
+  /** Get cookie RegExp */
   static getCookieRegExp(name: string): RegExp {
     const escapedName: string = name.replace(/([\[\]{}()|=;+?,.*^$])/gi, '\\$1');
-
     return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
   }
 
-  /**
-   * Gets the unencoded version of an encoded component of a Uniform Resource Identifier (URI).
-   *
-   * @param encodedURIComponent A value representing an encoded URI component.
-   *
-   * @returns The unencoded version of an encoded component of a Uniform Resource Identifier (URI).
-   *
-   * @author: Stepan Suvorov
-   * @since: 1.0.0
-   */
+  /** Safely decode URI component */
   static safeDecodeURIComponent(encodedURIComponent: string): string {
     try {
       return decodeURIComponent(encodedURIComponent);
     } catch {
-      // probably it is not uri encoded. return as is
-      return encodedURIComponent;
+      return encodedURIComponent; // Not URI encoded
     }
   }
 
-  /**
-   * Return `true` if {@link Document} is accessible, otherwise return `false`
-   *
-   * @param name Cookie name
-   * @returns boolean - whether cookie with specified name exists
-   *
-   * @author: Stepan Suvorov
-   * @since: 1.0.0
-   */
+  /** Safely gets cookie string from SSR request headers */
+  private _getCookieStringFromSsrRequest(): string | null {
+    if (!this.request || !this.request.headers) {
+      return null;
+    }
+    const headers = this.request.headers;
+    // Check for Headers object with .get()
+    if (typeof headers.get === 'function') {
+      return headers.get('cookie');
+    }
+    // Check for plain object with 'cookie' or 'Cookie' key
+    if (typeof headers === 'object' && headers !== null) {
+        return headers['cookie'] || headers['Cookie'] || null;
+    }
+    return null; // Unexpected headers format
+  }
+
+  /** Check if cookie exists */
   check(name: string): boolean {
     name = encodeURIComponent(name);
     const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-    return regExp.test(this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie'));
+    const cookieString = this.documentIsAccessible ? this.document.cookie : this._getCookieStringFromSsrRequest();
+    return cookieString ? regExp.test(cookieString) : false;
   }
 
-  /**
-   * Get cookies by name
-   *
-   * @param name Cookie name
-   * @returns property value
-   *
-   * @author: Stepan Suvorov
-   * @since: 1.0.0
-   */
+  /** Get cookie by name */
   get(name: string): string {
     if (this.check(name)) {
       name = encodeURIComponent(name);
       const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-      const result = regExp.exec(this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie'));
+      const cookieString = this.documentIsAccessible ? this.document.cookie : this._getCookieStringFromSsrRequest();
+      const result = cookieString ? regExp.exec(cookieString) : null;
       return result && result[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
     }
     return '';
   }
 
-  /**
-   * Get all cookies in JSON format
-   *
-   * @returns all the cookies in json
-   *
-   * @author: Stepan Suvorov
-   * @since: 1.0.0
-   */
+  /** Get all cookies as object */
   getAll(): { [key: string]: string } {
     const cookies: { [key: string]: string } = {};
-    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.request?.headers.get('cookie');
+    const cookieString: string | null = this.documentIsAccessible ? this.document?.cookie : this._getCookieStringFromSsrRequest();
 
     if (cookieString && cookieString !== '') {
       cookieString.split(';').forEach((currentCookie: string) => {
-        const [cookieName, cookieValue] = currentCookie.split('=');
-        cookies[SsrCookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = SsrCookieService.safeDecodeURIComponent(cookieValue);
+        const index = currentCookie.indexOf('=');
+        if (index > 0) {
+            const cookieName = currentCookie.substring(0, index);
+            const cookieValue = currentCookie.substring(index + 1);
+            cookies[SsrCookieService.safeDecodeURIComponent(cookieName.trim())] = SsrCookieService.safeDecodeURIComponent(cookieValue);
+        } else if (currentCookie.trim() !== '') {
+            cookies[SsrCookieService.safeDecodeURIComponent(currentCookie.trim())] = ''; // Handle flags
+        }
       });
     }
-
     return cookies;
   }
 
-  /**
-   * Set cookie based on provided information
-   *
-   * @param name     Cookie name
-   * @param value    Cookie value
-   * @param expires  Number of days until the cookies expires or an actual `Date`
-   * @param path     Cookie path
-   * @param domain   Cookie domain
-   * @param secure   Secure flag
-   * @param sameSite OWASP same site token `Lax`, `None`, or `Strict`. Defaults to `Lax`
-   * @param partitioned Partitioned flag
-   *
-   * @author: Stepan Suvorov
-   * @since: 1.0.0
-   */
+  /** Set cookie (Browser only for this implementation) */
   set(
     name: string,
     value: string,
@@ -125,26 +93,6 @@ export class SsrCookieService {
     sameSite?: 'Lax' | 'None' | 'Strict',
     partitioned?: boolean
   ): void;
-
-  /**
-   * Set cookie based on provided information
-   *
-   * Cookie's parameters:
-   * <pre>
-   * expires  Number of days until the cookies expires or an actual `Date`
-   * path     Cookie path
-   * domain   Cookie domain
-   * secure Cookie secure flag
-   * sameSite OWASP same site token `Lax`, `None`, or `Strict`. Defaults to `Lax`
-   * </pre>
-   *
-   * @param name     Cookie name
-   * @param value    Cookie value
-   * @param options  Body with cookie's params
-   *
-   * @author: Stepan Suvorov
-   * @since: 1.0.0
-   */
   set(
     name: string,
     value: string,
@@ -157,7 +105,6 @@ export class SsrCookieService {
       partitioned?: boolean;
     }
   ): void;
-
   set(
     name: string,
     value: string,
@@ -169,109 +116,77 @@ export class SsrCookieService {
     partitioned?: boolean
   ): void {
     if (!this.documentIsAccessible) {
-      return;
+      return; // No SSR set implementation needed for this fix
     }
 
-    if (typeof expiresOrOptions === 'number' || expiresOrOptions instanceof Date || path || domain || secure || sameSite) {
-      const optionsBody = {
+    // Normalize arguments
+    let options = {};
+    if (typeof expiresOrOptions === 'object' && expiresOrOptions !== null && !(expiresOrOptions instanceof Date)) {
+      options = expiresOrOptions;
+    } else {
+      options = {
         expires: expiresOrOptions,
-        path,
-        domain,
-        secure,
-        sameSite: sameSite ? sameSite : 'Lax',
-        partitioned,
+        path: path,
+        domain: domain,
+        secure: secure,
+        sameSite: sameSite || 'Lax', // Default to Lax
+        partitioned: partitioned
       };
-
-      this.set(name, value, optionsBody);
-      return;
     }
 
     let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
 
-    const options = expiresOrOptions ? expiresOrOptions : {};
-
-    if (options.expires) {
-      if (typeof options.expires === 'number') {
-        const dateExpires: Date = new Date(new Date().getTime() + options.expires * 1000 * 60 * 60 * 24);
-
+    if (options['expires']) {
+      if (typeof options['expires'] === 'number') {
+        const dateExpires: Date = new Date(new Date().getTime() + options['expires'] * 1000 * 60 * 60 * 24);
         cookieString += 'expires=' + dateExpires.toUTCString() + ';';
       } else {
-        cookieString += 'expires=' + options.expires.toUTCString() + ';';
+        cookieString += 'expires=' + options['expires'].toUTCString() + ';';
       }
     }
+    if (options['path']) { cookieString += 'path=' + options['path'] + ';'; }
+    if (options['domain']) { cookieString += 'domain=' + options['domain'] + ';'; }
 
-    if (options.path) {
-      cookieString += 'path=' + options.path + ';';
-    }
+    // Ensure sameSite is set, default to Lax
+    options['sameSite'] = options['sameSite'] || 'Lax';
 
-    if (options.domain) {
-      cookieString += 'domain=' + options.domain + ';';
-    }
-
-    if (options.secure === false && options.sameSite === 'None') {
-      options.secure = true;
+    // Force secure if SameSite=None
+    if (options['secure'] === false && options['sameSite'] === 'None') {
+      options['secure'] = true;
       console.warn(
-        `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
-          `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
+        `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.`
       );
     }
-    if (options.secure) {
-      cookieString += 'secure;';
-    }
+    if (options['secure']) { cookieString += 'secure;'; }
 
-    if (!options.sameSite) {
-      options.sameSite = 'Lax';
-    }
+    cookieString += 'sameSite=' + options['sameSite'] + ';';
 
-    cookieString += 'sameSite=' + options.sameSite + ';';
-
-    if (options.partitioned) {
+    if (options['partitioned']) {
       cookieString += 'Partitioned;';
     }
 
     this.document.cookie = cookieString;
   }
 
-  /**
-   * Delete cookie by name at given path and domain. If not path is not specified, cookie at '/' path will be deleted.
-   *
-   * @param name   Cookie name
-   * @param path   Cookie path
-   * @param domain Cookie domain
-   * @param secure Cookie secure flag
-   * @param sameSite Cookie sameSite flag - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie/SameSite
-   *
-   * @author: Stepan Suvorov
-   * @since: 1.0.0
-   */
+  /** Delete cookie (Browser only) */
   delete(name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
     if (!this.documentIsAccessible) {
       return;
     }
     const expiresDate = new Date('Thu, 01 Jan 1970 00:00:01 GMT');
+    // Use the object overload of set for options
     this.set(name, '', { expires: expiresDate, path, domain, secure, sameSite });
   }
 
-  /**
-   * Delete all cookies at given path and domain. If not path is not specified, all cookies at '/' path will be deleted.
-   *
-   * @param path   Cookie path
-   * @param domain Cookie domain
-   * @param secure Is the Cookie secure
-   * @param sameSite Is the cookie same site
-   *
-   * @author: Stepan Suvorov
-   * @since: 1.0.0
-   */
+  /** Delete all cookies (Browser only) */
   deleteAll(path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
     if (!this.documentIsAccessible) {
       return;
     }
-
-    const cookies: any = this.getAll();
-
+    const cookies: any = this.getAll(); // getAll uses the safe SSR logic
     for (const cookieName in cookies) {
-      if (cookies.hasOwnProperty(cookieName)) {
+      // Check if cookieName is a real property before deleting
+      if (Object.prototype.hasOwnProperty.call(cookies, cookieName)) {
         this.delete(cookieName, path, domain, secure, sameSite);
       }
     }
