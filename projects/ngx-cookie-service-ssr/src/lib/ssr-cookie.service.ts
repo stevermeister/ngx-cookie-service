@@ -153,7 +153,7 @@ export class SsrCookieService {
         path,
         domain,
         secure,
-        sameSite: sameSite || 'Lax',
+        sameSite: sameSite ?? 'Lax',
         partitioned,
       };
 
