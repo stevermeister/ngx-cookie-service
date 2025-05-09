@@ -2,18 +2,18 @@ import { TestBed } from '@angular/core/testing';
 import { CookieService } from './cookie.service';
 import { PLATFORM_ID } from '@angular/core';
 import { DOCUMENT, ɵPLATFORM_BROWSER_ID, ɵPLATFORM_SERVER_ID } from '@angular/common';
-import SpyInstance = jest.SpyInstance;
+import Spy = jasmine.Spy;
 
 describe('NgxCookieServiceService', () => {
   let cookieService: CookieService;
   let platformId: string;
   const documentMock: Document = document;
-  let documentCookieGetterSpy: SpyInstance;
-  let documentCookieSetterSpy: SpyInstance;
+  let documentCookieGetterSpy: Spy;
+  let documentCookieSetterSpy: Spy;
 
   beforeEach(() => {
-    documentCookieGetterSpy = jest.spyOn(documentMock, 'cookie', 'get');
-    documentCookieSetterSpy = jest.spyOn(documentMock, 'cookie', 'set');
+    documentCookieGetterSpy = spyOnProperty(documentMock, 'cookie', 'get').and.callThrough();
+    documentCookieSetterSpy = spyOnProperty(documentMock, 'cookie', 'set').and.callThrough();
 
     TestBed.configureTestingModule({
       providers: [
@@ -26,8 +26,8 @@ describe('NgxCookieServiceService', () => {
 
   afterEach(() => {
     cookieService.deleteAll();
-    documentCookieGetterSpy.mockReset();
-    documentCookieSetterSpy.mockReset();
+    documentCookieGetterSpy.calls.reset();
+    documentCookieSetterSpy.calls.reset();
   });
 
   it('should be created', () => {
@@ -40,23 +40,22 @@ describe('NgxCookieServiceService', () => {
     });
     describe('#check', () => {
       it('should return true if cookie exists on document', () => {
-        documentCookieGetterSpy.mockReturnValue('foo=bar;');
-        //documentCookieGetterSpy.mockReturnValue('foo=bar;');
+        documentCookieGetterSpy.and.returnValue('foo=bar;');
 
         expect(cookieService.check('foo')).toEqual(true);
       });
       it('should look up cookie by encoded name', () => {
-        documentCookieGetterSpy.mockReturnValue('%3B%2C%2F%3F%3A%40%26%3D%2B%24=exists;');
+        documentCookieGetterSpy.and.returnValue('%3B%2C%2F%3F%3A%40%26%3D%2B%24=exists;');
 
         expect(cookieService.check(';,/?:@&=+$')).toEqual(true);
       });
       it('should return false if cookie does not exist on document', () => {
-        documentCookieGetterSpy.mockReturnValue('foo=bar;');
+        documentCookieGetterSpy.and.returnValue('foo=bar;');
 
         expect(cookieService.check('bar')).toEqual(false);
       });
       it('should check for values and not for keys', () => {
-        documentCookieGetterSpy.mockReturnValue('foo=bar; test1=test123;');
+        documentCookieGetterSpy.and.returnValue('foo=bar; test1=test123;');
 
         expect(cookieService.check('foo')).toEqual(true);
         expect(cookieService.check('bar')).toEqual(false);
@@ -66,7 +65,7 @@ describe('NgxCookieServiceService', () => {
     });
     describe('#get', () => {
       it('should return value of cookie', () => {
-        documentCookieGetterSpy.mockReturnValue('foo=bar;');
+        documentCookieGetterSpy.and.returnValue('foo=bar;');
 
         expect(cookieService.get('foo')).toEqual('bar');
       });
@@ -82,7 +81,7 @@ describe('NgxCookieServiceService', () => {
           'Hello%3DWorld%3B=Hello%3DWorld%3B',
           '%5Bfoo-_*.%5Dbar=%5Bfoo-_*.%5Dbar',
         ].join('; ');
-        documentCookieGetterSpy.mockReturnValue(cookieString);
+        documentCookieGetterSpy.and.returnValue(cookieString);
 
         expect(cookieService.get(';,/?:@&=+$')).toEqual(';,/?:@&=+$');
         expect(cookieService.get('-H@llö_ Wörld-')).toEqual('-H@llö_ Wörld-');
@@ -95,29 +94,29 @@ describe('NgxCookieServiceService', () => {
         expect(cookieService.get('[foo-_*.]bar')).toEqual('[foo-_*.]bar');
       });
       it('should fallback to original value if decoding fails', () => {
-        documentCookieGetterSpy.mockReturnValue('foo=%E0%A4%A');
+        documentCookieGetterSpy.and.returnValue('foo=%E0%A4%A');
 
         expect(cookieService.get('foo')).toEqual('%E0%A4%A');
       });
       it('should return empty string for not set cookie', () => {
-        documentCookieGetterSpy.mockReturnValue('foo=bar;');
+        documentCookieGetterSpy.and.returnValue('foo=bar;');
 
         expect(cookieService.get('bar')).toEqual('');
       });
     });
     describe('#getAll', () => {
       it('should return empty object if cookies not set', () => {
-        documentCookieGetterSpy.mockReturnValue('');
+        documentCookieGetterSpy.and.returnValue('');
 
         expect(cookieService.getAll()).toEqual({});
       });
       it('should return object with decoded cookie names and values', () => {
-        documentCookieGetterSpy.mockReturnValue('foo=bar; Hello=World; %3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24');
+        documentCookieGetterSpy.and.returnValue('foo=bar; Hello=World; %3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24');
 
         expect(cookieService.getAll()).toEqual({ foo: 'bar', Hello: 'World', ';,/?:@&=+$': ';,/?:@&=+$' });
       });
       it('should return object with safely decoded cookie names and values', () => {
-        documentCookieGetterSpy.mockReturnValue('foo=%E0%A4%A; %E0%A4%A=%E0%A4%A; Hello=World; %3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24');
+        documentCookieGetterSpy.and.returnValue('foo=%E0%A4%A; %E0%A4%A=%E0%A4%A; Hello=World; %3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24');
 
         expect(cookieService.getAll()).toEqual({
           foo: '%E0%A4%A',
@@ -154,30 +153,30 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('Hello%3DWorld%3B=Hello%3DWorld%3B;sameSite=Lax;');
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('%5Bfoo-_*.%5Dbar=%5Bfoo-_*.%5Dbar;sameSite=Lax;');
       });
-
-      /*it('should set cookie with expires options in days', () => {
-        jest.spyOn(global, 'Date').mockImplementation(() => new Date('Sun, 15 Mar 2020 10:00:00 GMT'));
+      it('should set cookie with expires options in days', () => {
+        jasmine.clock().uninstall();
+        jasmine.clock().install();
+        jasmine.clock().mockDate(new Date('Sun, 15 Mar 2020 10:00:00 GMT'));
         cookieService.set('foo', 'bar', 2);
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;expires=Tue, 17 Mar 2020 10:00:00 GMT;sameSite=Lax;');
-        jest.spyOn(global, 'Date').mockImplementation(() => new Date());
+        jasmine.clock().uninstall();
       });
-
       it('should set cookie with expires option in options body', () => {
-        jest.spyOn(global, 'Date').mockImplementation(() => new Date('Sun, 30 Aug 2020 10:00:00 GMT'));
+        jasmine.clock().uninstall();
+        jasmine.clock().install();
+        jasmine.clock().mockDate(new Date('Sun, 30 Aug 2020 10:00:00 GMT'));
         cookieService.set('foo', 'bar', { expires: 2 });
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;expires=Tue, 01 Sep 2020 10:00:00 GMT;sameSite=Lax;');
-        jest.spyOn(global, 'Date').mockImplementation(() => new Date());
-      });*/
-
+        jasmine.clock().uninstall();
+      });
       it('should set cookie with expires option from Date object', () => {
         const expiresDate = new Date('Mon, 15 Mar 2021 10:00:00 GMT');
         cookieService.set('foo', 'bar', expiresDate);
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;sameSite=Lax;');
       });
-
       it('should set cookie with expires option from Date object in options body', () => {
         const expires = new Date('Mon, 15 Mar 2021 10:00:00 GMT');
         cookieService.set('foo', 'bar', { expires });
@@ -205,7 +204,7 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;domain=example.com;sameSite=Lax;');
       });
       it('should set cookie with secure option', () => {
-        cookieService.set('foo', 'bar', undefined, undefined, undefined, true, 'Lax', false);
+        cookieService.set('foo', 'bar', undefined, undefined, undefined, true, 'Lax');
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=Lax;');
       });
@@ -215,7 +214,7 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=Lax;');
       });
       it('should set cookie with forced secure flag when SameSite option is "None"', () => {
-        cookieService.set('foo', 'bar', undefined, undefined, undefined, false, 'None', false);
+        cookieService.set('foo', 'bar', undefined, undefined, undefined, false, 'None');
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=None;');
       });
@@ -225,7 +224,7 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;secure;sameSite=None;');
       });
       it('should set cookie with SameSite option', () => {
-        cookieService.set('foo', 'bar', undefined, undefined, undefined, false, 'Strict', false);
+        cookieService.set('foo', 'bar', undefined, undefined, undefined, false, 'Strict');
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;sameSite=Strict;');
       });
@@ -236,21 +235,12 @@ describe('NgxCookieServiceService', () => {
       });
       it('should set cookie with all options', () => {
         const expiresDate = new Date('Mon, 15 Mar 2021 10:00:00 GMT');
-        cookieService.set('foo', 'bar', expiresDate, '/test', 'example.com', true, 'Strict', false);
+        cookieService.set('foo', 'bar', expiresDate, '/test', 'example.com', true, 'Strict');
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith(
           'foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;path=/test;domain=example.com;secure;sameSite=Strict;'
         );
       });
-      it('should set cookie with partitioned', () => {
-        const expiresDate = new Date('Mon, 15 Mar 2021 10:00:00 GMT');
-        cookieService.set('foo', 'bar', expiresDate, '/test', 'example.com', true, 'Strict', true);
-
-        expect(documentCookieSetterSpy).toHaveBeenCalledWith(
-          'foo=bar;expires=Mon, 15 Mar 2021 10:00:00 GMT;path=/test;domain=example.com;secure;sameSite=Strict;Partitioned;'
-        );
-      });
-
       it('should set cookie with all options in options body', () => {
         const expiresDate = new Date('Mon, 15 Mar 2021 10:00:00 GMT');
 
@@ -268,15 +258,15 @@ describe('NgxCookieServiceService', () => {
       });
     });
     describe('#delete', () => {
-      /*it('should delete cookie', () => {
+      it('should delete cookie', () => {
         documentMock.cookie = 'foo=bar';
         expect(documentMock.cookie).toContain('foo=bar');
         cookieService.delete('foo');
 
         expect(documentMock.cookie).not.toContain('foo=bar');
-      });*/
+      });
       it('should invoke set method with fixed date and and pass other params through', () => {
-        jest.spyOn(cookieService, 'set');
+        spyOn(cookieService, 'set');
         cookieService.delete('foo', '/test', 'example.com', true, 'Lax');
 
         const expiresDate = new Date('Thu, 01 Jan 1970 00:00:01 GMT');
@@ -289,7 +279,7 @@ describe('NgxCookieServiceService', () => {
         });
       });
     });
-    /*describe('#deleteAll', () => {
+    describe('#deleteAll', () => {
       it('should delete all cookies', () => {
         documentMock.cookie = 'foo=bar';
         documentMock.cookie = 'test=test123';
@@ -299,7 +289,7 @@ describe('NgxCookieServiceService', () => {
         expect(documentMock.cookie).toEqual('');
       });
       it('should invoke delete method for each cookie and path params through', () => {
-        jest.spyOn(cookieService, 'delete');
+        spyOn(cookieService, 'delete');
         documentMock.cookie = 'foo=bar';
         documentMock.cookie = 'test=test123';
         expect(documentMock.cookie).toEqual('foo=bar; test=test123');
@@ -308,7 +298,7 @@ describe('NgxCookieServiceService', () => {
         expect(cookieService.delete).toHaveBeenCalledWith('foo', '/test', 'example.com', true, 'Lax');
         expect(cookieService.delete).toHaveBeenCalledWith('test', '/test', 'example.com', true, 'Lax');
       });
-    });*/
+    });
   });
   describe('Platform server', () => {
     beforeAll(() => {

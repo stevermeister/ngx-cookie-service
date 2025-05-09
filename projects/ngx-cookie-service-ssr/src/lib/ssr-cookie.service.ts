@@ -1,5 +1,6 @@
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { inject, Injectable, PLATFORM_ID, REQUEST } from '@angular/core';
+import { SameSite } from 'ngx-cookie-service';
 
 @Injectable({
   providedIn: 'root',
@@ -20,7 +21,7 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   static getCookieRegExp(name: string): RegExp {
-    const escapedName: string = name.replace(/([\[\]{}()|=;+?,.*^$])/gi, '\\$1');
+    const escapedName: string = name.replace(/([[\]{}()|=;+?,.*^$\\])/gi, '\\$1');
 
     return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
   }
@@ -73,7 +74,7 @@ export class SsrCookieService {
       name = encodeURIComponent(name);
       const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
       const result = regExp.exec(this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie'));
-      return result && result[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
+      return result?.[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
     }
     return '';
   }
@@ -103,32 +104,6 @@ export class SsrCookieService {
   /**
    * Set cookie based on provided information
    *
-   * @param name     Cookie name
-   * @param value    Cookie value
-   * @param expires  Number of days until the cookies expires or an actual `Date`
-   * @param path     Cookie path
-   * @param domain   Cookie domain
-   * @param secure   Secure flag
-   * @param sameSite OWASP same site token `Lax`, `None`, or `Strict`. Defaults to `Lax`
-   * @param partitioned Partitioned flag
-   *
-   * @author: Stepan Suvorov
-   * @since: 1.0.0
-   */
-  set(
-    name: string,
-    value: string,
-    expires?: number | Date,
-    path?: string,
-    domain?: string,
-    secure?: boolean,
-    sameSite?: 'Lax' | 'None' | 'Strict',
-    partitioned?: boolean
-  ): void;
-
-  /**
-   * Set cookie based on provided information
-   *
    * Cookie's parameters:
    * <pre>
    * expires  Number of days until the cookies expires or an actual `Date`
@@ -153,7 +128,7 @@ export class SsrCookieService {
       path?: string;
       domain?: string;
       secure?: boolean;
-      sameSite?: 'Lax' | 'None' | 'Strict';
+      sameSite?: SameSite;
       partitioned?: boolean;
     }
   ): void;
@@ -165,7 +140,7 @@ export class SsrCookieService {
     path?: string,
     domain?: string,
     secure?: boolean,
-    sameSite?: 'Lax' | 'None' | 'Strict',
+    sameSite?: SameSite,
     partitioned?: boolean
   ): void {
     if (!this.documentIsAccessible) {
@@ -178,7 +153,7 @@ export class SsrCookieService {
         path,
         domain,
         secure,
-        sameSite: sameSite ? sameSite : 'Lax',
+        sameSite: sameSite ?? 'Lax',
         partitioned,
       };
 
@@ -188,7 +163,7 @@ export class SsrCookieService {
 
     let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
 
-    const options = expiresOrOptions ? expiresOrOptions : {};
+    const options = expiresOrOptions ?? {};
 
     if (options.expires) {
       if (typeof options.expires === 'number') {
@@ -219,10 +194,7 @@ export class SsrCookieService {
       cookieString += 'secure;';
     }
 
-    if (!options.sameSite) {
-      options.sameSite = 'Lax';
-    }
-
+    options.sameSite ??= 'Lax';
     cookieString += 'sameSite=' + options.sameSite + ';';
 
     if (options.partitioned) {

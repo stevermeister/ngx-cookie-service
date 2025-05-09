@@ -22,10 +22,11 @@
           }
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:jest",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "polyfills": ["zone.js", "zone.js/testing"],
-            "tsConfig": "projects/ngx-cookie-service/tsconfig.spec.json"
+            "tsConfig": "projects/ngx-cookie-service/tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js"
           }
         },
         "lint": {
@@ -58,9 +59,10 @@
           "defaultConfiguration": "production"
         },
         "test": {
-          "builder": "@angular-devkit/build-angular:jest",
+          "builder": "@angular-devkit/build-angular:karma",
           "options": {
-            "tsConfig": "projects/ngx-cookie-service-ssr/tsconfig.spec.json"
+            "tsConfig": "projects/ngx-cookie-service-ssr/tsconfig.spec.json",
+            "karmaConfig": "karma.conf.js"
           }
         }
       }

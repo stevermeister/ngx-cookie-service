@@ -1,7 +1,3 @@
-// This service is based on the `ng2-cookies` package which sadly is not a service and does
-// not use `DOCUMENT` injection and therefore doesn't work well with AoT production builds.
-// Package: https://github.com/BCJTI/ng2-cookies
-
 import { DOCUMENT, isPlatformBrowser } from '@angular/common';
 import { Inject, Injectable, PLATFORM_ID } from '@angular/core';
 
@@ -23,8 +19,8 @@ export class CookieService {
   private readonly documentIsAccessible: boolean;
 
   constructor(
-    @Inject(DOCUMENT) private document: Document, // Get the `PLATFORM_ID` so we can check if we're in a browser.
-    @Inject(PLATFORM_ID) private platformId: object
+    @Inject(DOCUMENT) private readonly document: Document, // Get the `PLATFORM_ID` so we can check if we're in a browser.
+    @Inject(PLATFORM_ID) private readonly platformId: object
   ) {
     this.documentIsAccessible = isPlatformBrowser(this.platformId);
   }
@@ -39,7 +35,7 @@ export class CookieService {
    * @since: 1.0.0
    */
   private static getCookieRegExp(name: string): RegExp {
-    const escapedName: string = name.replace(/([\[\]{}()|=;+?,.*^$])/gi, '\\$1');
+    const escapedName: string = name.replace(/([[\]{}()|=;+?,.*^$\\])/gi, '\\$1');
 
     return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
   }
@@ -95,7 +91,7 @@ export class CookieService {
       name = encodeURIComponent(name);
       const regExp: RegExp = CookieService.getCookieRegExp(name);
       const result = regExp.exec(this.document.cookie);
-      return result && result[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
+      return result?.[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
     } else {
       return '';
     }
@@ -194,7 +190,7 @@ export class CookieService {
         path,
         domain,
         secure,
-        sameSite: sameSite ? sameSite : 'Lax',
+        sameSite: sameSite || 'Lax',
         partitioned,
       };
 
