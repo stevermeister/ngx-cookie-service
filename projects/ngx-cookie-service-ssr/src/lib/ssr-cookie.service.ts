@@ -1,5 +1,5 @@
-import { isPlatformBrowser } from '@angular/common';
-import { DOCUMENT, inject, Injectable, PLATFORM_ID, REQUEST } from '@angular/core';
+import { DOCUMENT, isPlatformBrowser } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID, REQUEST } from '@angular/core';
 import { SameSite } from 'ngx-cookie-service';
 
 @Injectable({
@@ -21,7 +21,7 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   static getCookieRegExp(name: string): RegExp {
-    const escapedName: string = name.replace(/([[\]{}()|=;+?,.*^$])/gi, '\\$1');
+    const escapedName: string = name.replace(/([[\]{}()|=;+?,.*^$\\])/gi, '\\$1');
 
     return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
   }
