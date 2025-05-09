@@ -6,7 +6,7 @@
     "start": "ng serve",
     "build": "ng build ngx-cookie-service",
     "build:ngx-cookie-service-ssr": "ng build ngx-cookie-service-ssr",
-    "test": "ng test ngx-cookie-service --browsers=ChromeHeadless",
+    "test": "ng test ngx-cookie-service",
     "test:ngx-cookie-service-ssr": "ng test ngx-cookie-service-ssr",
     "lint": "ng lint ngx-cookie-service",
     "lint:ngx-cookie-service-ssr": "ng lint ngx-cookie-service-ssr",
