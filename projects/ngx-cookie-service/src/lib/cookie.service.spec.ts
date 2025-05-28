@@ -1,7 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { CookieService } from './cookie.service';
-import { PLATFORM_ID } from '@angular/core';
-import { DOCUMENT, ɵPLATFORM_BROWSER_ID, ɵPLATFORM_SERVER_ID } from '@angular/common';
+import { PLATFORM_ID, DOCUMENT } from '@angular/core';
+import { ɵPLATFORM_BROWSER_ID, ɵPLATFORM_SERVER_ID } from '@angular/common';
 import Spy = jasmine.Spy;
 
 describe('NgxCookieServiceService', () => {
