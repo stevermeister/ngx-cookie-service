@@ -7,7 +7,7 @@
     "esModuleInterop": true,
     "declaration": false,
     "experimentalDecorators": true,
-    "module": "es2020",
+    "module": "ES2022",
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
@@ -15,7 +15,7 @@
       "node_modules/@types"
     ],
     "lib": [
-      "es2020",
+      "ES2022",
       "dom"
     ],
     "paths": {
@@ -23,9 +23,6 @@
         "dist/ngx-cookie-service/ngx-cookie-service",
         "dist/ngx-cookie-service"
       ],
-      "ngx-cookie-service-ssr": [
-        "dist/ngx-cookie-service-ssr"
-      ]
     },
     "useDefineForClassFields": false
   },

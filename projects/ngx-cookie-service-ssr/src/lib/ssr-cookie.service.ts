@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { inject, Injectable, PLATFORM_ID, REQUEST, DOCUMENT } from '@angular/core';
+import { DOCUMENT, inject, Injectable, PLATFORM_ID, REQUEST } from '@angular/core';
 import { SameSite } from 'ngx-cookie-service';
 
 @Injectable({
@@ -10,6 +10,35 @@ export class SsrCookieService {
   private readonly platformId = inject(PLATFORM_ID);
   private readonly request = inject(REQUEST, { optional: true });
   private readonly documentIsAccessible: boolean = isPlatformBrowser(this.platformId);
+
+  /**
+   * Helper method to safely get cookies from request object
+   * Handles both Angular's REQUEST interface and Express's req interface
+   */
+  private getRequestCookies(): string | null {
+    if (!this.request) {
+      return null;
+    }
+
+    // Handle Angular REQUEST object (has headers.get method)
+    if (this.request.headers && typeof this.request.headers.get === 'function') {
+      return this.request.headers.get('cookie');
+    }
+
+    // Handle Express request object (has headers object and get method)
+    const reqAny = this.request as any;
+    if (typeof reqAny.get === 'function') {
+      return reqAny.get('cookie') || reqAny.get('Cookie');
+    }
+
+    // Handle direct headers object access
+    const headers = this.request.headers as any;
+    if (headers && headers != null && typeof headers === 'object') {
+      return headers['cookie'] || headers['Cookie'];
+    }
+
+    return null;
+  }
 
   /**
    * Get cookie Regular Expression
@@ -57,7 +86,7 @@ export class SsrCookieService {
   check(name: string): boolean {
     name = encodeURIComponent(name);
     const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-    return regExp.test(this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie'));
+    return regExp.test(this.documentIsAccessible ? this.document.cookie : this.getRequestCookies());
   }
 
   /**
@@ -73,7 +102,7 @@ export class SsrCookieService {
     if (this.check(name)) {
       name = encodeURIComponent(name);
       const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-      const result = regExp.exec(this.documentIsAccessible ? this.document.cookie : this.request?.headers.get('cookie'));
+      const result = regExp.exec(this.documentIsAccessible ? this.document.cookie : this.getRequestCookies());
       return result?.[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
     }
     return '';
@@ -89,7 +118,7 @@ export class SsrCookieService {
    */
   getAll(): { [key: string]: string } {
     const cookies: { [key: string]: string } = {};
-    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.request?.headers.get('cookie');
+    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.getRequestCookies();
 
     if (cookieString && cookieString !== '') {
       cookieString.split(';').forEach((currentCookie: string) => {
