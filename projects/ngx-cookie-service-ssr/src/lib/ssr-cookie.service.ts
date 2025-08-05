@@ -1,5 +1,5 @@
-import { isPlatformBrowser } from '@angular/common';
-import { inject, Injectable, PLATFORM_ID, REQUEST, DOCUMENT } from '@angular/core';
+import { isPlatformBrowser, DOCUMENT } from '@angular/common';
+import { inject, Injectable, PLATFORM_ID, REQUEST } from '@angular/core';
 import { SameSite } from 'ngx-cookie-service';
 
 @Injectable({
