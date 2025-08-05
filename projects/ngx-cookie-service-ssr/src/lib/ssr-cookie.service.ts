@@ -26,13 +26,15 @@ export class SsrCookieService {
     }
 
     // Handle Express request object (has headers object and get method)
-    if (typeof (this.request as any).get === 'function') {
-      return (this.request as any).get('cookie') || (this.request as any).get('Cookie');
+    const reqAny = this.request as any;
+    if (typeof reqAny.get === 'function') {
+      return reqAny.get('cookie') || reqAny.get('Cookie');
     }
 
     // Handle direct headers object access
-    if (this.request.headers && typeof this.request.headers === 'object') {
-      return (this.request.headers as any)['cookie'] || (this.request.headers as any)['Cookie'];
+    const headers = this.request.headers as any;
+    if (headers && headers != null && typeof headers === 'object') {
+      return headers['cookie'] || headers['Cookie'];
     }
 
     return null;
