@@ -12,35 +12,6 @@ export class SsrCookieService {
   private readonly documentIsAccessible: boolean = isPlatformBrowser(this.platformId);
 
   /**
-   * Helper method to safely get cookies from request object
-   * Handles both Angular's REQUEST interface and Express's req interface
-   */
-  private getRequestCookies(): string | null {
-    if (!this.request) {
-      return null;
-    }
-
-    // Handle Angular REQUEST object (has headers.get method)
-    if (this.request.headers && typeof this.request.headers.get === 'function') {
-      return this.request.headers.get('cookie');
-    }
-
-    // Handle Express request object (has headers object and get method)
-    const reqAny = this.request as any;
-    if (typeof reqAny.get === 'function') {
-      return reqAny.get('cookie') || reqAny.get('Cookie');
-    }
-
-    // Handle direct headers object access
-    const headers = this.request.headers as any;
-    if (headers && headers != null && typeof headers === 'object') {
-      return headers['cookie'] || headers['Cookie'];
-    }
-
-    return null;
-  }
-
-  /**
    * Get cookie Regular Expression
    *
    * @param name Cookie name
@@ -276,5 +247,33 @@ export class SsrCookieService {
         this.delete(cookieName, path, domain, secure, sameSite);
       }
     }
+  }
+
+  /**
+   * Helper method to safely get cookies from request object
+   * Handles both Angular's REQUEST interface and Express's req interface
+   */
+  private getRequestCookies(): string | null {
+    if (!this.request) {
+      return null;
+    }
+
+    // Handle Angular REQUEST object (has headers.get method)
+    if (this.request.headers && typeof this.request.headers.get === 'function') {
+      return this.request.headers.get('cookie');
+    }
+
+    // Handle Express request object (has headers object and get method)
+    const reqAny = this.request as any;
+    if (typeof reqAny.get === 'function') {
+      return reqAny.get('cookie') || reqAny.get('Cookie');
+    }
+
+    // Handle direct headers object access
+    const headers = this.request.headers as any;
+    if (headers && typeof headers === 'object') {
+      return headers['cookie'] || headers['Cookie'];
+    }
+    return null;
   }
 }
