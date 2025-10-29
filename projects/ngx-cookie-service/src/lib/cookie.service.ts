@@ -1,5 +1,5 @@
 import { isPlatformBrowser } from '@angular/common';
-import { Inject, Injectable, PLATFORM_ID, DOCUMENT } from '@angular/core';
+import { DOCUMENT, inject, Injectable, PLATFORM_ID } from '@angular/core';
 
 export type SameSite = 'Lax' | 'None' | 'Strict';
 
@@ -17,11 +17,10 @@ export interface CookieOptions {
 })
 export class CookieService {
   private readonly documentIsAccessible: boolean;
+  private readonly document = inject<Document>(DOCUMENT);
+  private readonly platformId = inject<object>(PLATFORM_ID);
 
-  constructor(
-    @Inject(DOCUMENT) private readonly document: Document, // Get the `PLATFORM_ID` so we can check if we're in a browser.
-    @Inject(PLATFORM_ID) private readonly platformId: object
-  ) {
+  constructor() {
     this.documentIsAccessible = isPlatformBrowser(this.platformId);
   }
 
@@ -105,12 +104,12 @@ export class CookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  getAll(): { [key: string]: string } {
+  getAll(): Record<string, string> {
     if (!this.documentIsAccessible) {
       return {};
     }
 
-    const cookies: { [key: string]: string } = {};
+    const cookies: Record<string, string> = {};
     const document: any = this.document;
 
     if (document.cookie && document.cookie !== '') {
