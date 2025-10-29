@@ -1,6 +1,7 @@
 import { isPlatformBrowser } from '@angular/common';
 import { DOCUMENT, inject, Injectable, PLATFORM_ID, REQUEST } from '@angular/core';
-import { SameSite } from 'ngx-cookie-service';
+
+export type SameSite = 'Lax' | 'None' | 'Strict';
 
 @Injectable({
   providedIn: 'root',
