@@ -270,7 +270,7 @@ export class SsrCookieService {
     }
 
     // Handle direct headers object access
-    const headers = this.request.headers as any;
+    const headers = this.request.headers;
     if (headers && typeof headers === 'object') {
       return headers['cookie'] || headers['Cookie'];
     }

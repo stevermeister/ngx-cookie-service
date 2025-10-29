@@ -110,7 +110,7 @@ export class CookieService {
     }
 
     const cookies: Record<string, string> = {};
-    const document: any = this.document;
+    const document: Document = this.document;
 
     if (document.cookie && document.cookie !== '') {
       document.cookie.split(';').forEach((currentCookie: string) => {
