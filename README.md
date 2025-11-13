@@ -33,7 +33,8 @@ yarn add ngx-cookie-service
 
 Cooke Service Demo: https://stackblitz.com/~/github.com/pavankjadda/ngx-cookie-service-demo
 
-SSR Cooki Service Demo: https://stackblitz.com/~/github.com/pj-labs/angular-ssr-docker?file=package.json
+SSR Cooki Service Demo (AngularNodeAppEngine): https://stackblitz.com/~/github.com/pj-labs/ngx-cookie-service-ssr-demo
+SSR Cooki Service Demo (CommonEngine): https://stackblitz.com/~/github.com/pj-labs/angular-ssr-docker?file=package.json
 
 
 ## Usage
