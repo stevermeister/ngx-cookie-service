@@ -27,6 +27,7 @@
     "angular-18",
     "angular-19",
     "angular-20",
+    "angular-21",
     "ivy",
     "ivy-compatible",
     "ivy-compilation",
@@ -84,12 +85,12 @@
     "email": "stepan@studytube.nl"
   },
   "peerDependencies": {
-    "@angular/common": "^20.0.0",
-    "@angular/core": "^20.0.0",
-    "@angular/ssr": "^20.0.0"
+    "@angular/common": "^21.0.0",
+    "@angular/core": "^21.0.0",
+    "@angular/ssr": "^21.0.0"
   },
   "dependencies": {
-    "tslib": "^2.8.0"
+    "tslib": "^2.8.1"
   },
   "resolve": {
     "fallback": {
