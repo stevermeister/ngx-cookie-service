@@ -14,7 +14,7 @@
     "format": "prettier ./projects/**/*.{ts,json}",
     "format:write": "npm run format -- --write",
     "format:check": "npm run format -- --check",
-    "package": "ng build ngx-cookie-service --prod && cp ./README.md ./dist/ngx-cookie-service && cd dist/ngx-cookie-service && npm pack"
+    "package": "ng build ngx-cookie-service --configuration=production && cp ./README.md ./dist/ngx-cookie-service && cd dist/ngx-cookie-service && npm pack"
   },
   "private": true,
   "overrides": {
