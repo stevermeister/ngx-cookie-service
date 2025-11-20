@@ -17,10 +17,8 @@
     "package": "ng build ngx-cookie-service --prod && cp ./README.md ./dist/ngx-cookie-service && cd dist/ngx-cookie-service && npm pack"
   },
   "private": true,
-  "pnpm": {
-    "overrides": {
-      "esbuild": "0.27.0"
-    }
+  "overrides": {
+    "esbuild": "0.27.0"
   },
   "dependencies": {
     "@angular/animations": "^21.0.0",
