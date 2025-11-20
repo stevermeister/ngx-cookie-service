@@ -3,7 +3,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "../../out-tsc/spec",
-    "types": ["node", "jasmine"]
+    "types": ["node", "vitest/globals"]
   },
   "include": ["**/*.spec.ts", "**/*.d.ts"]
 }

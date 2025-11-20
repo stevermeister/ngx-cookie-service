@@ -40,7 +40,7 @@
 
 10. **Testing**
   - All code examples should include unit test snippets where applicable.
-  - Use Angular’s karma, jasmine testing APIs.
+  - Use Angular’s vitest testing APIs.
 
 11. **Accessibility**
   - Ensure all code examples follow WCAG guidelines and Angular’s accessibility best practices.
