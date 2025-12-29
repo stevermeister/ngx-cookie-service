@@ -21,10 +21,11 @@ export class SsrCookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  static getCookieRegExp(name: string): RegExp {
-    const escapedName: string = name.replace(/([[\]{}()|=;+?,.*^$\\])/gi, '\\$1');
+  private static getCookieRegExp(name: string): RegExp {
+    const escapedName = name.replace(/([[\]{}()|=;+?,.*^$\\])/gi, '\\$1');
 
-    return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
+    // No "g" flag => no lastIndex statefulness.
+    return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)');
   }
 
   /**

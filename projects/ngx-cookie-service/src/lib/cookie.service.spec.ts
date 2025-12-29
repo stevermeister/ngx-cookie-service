@@ -300,6 +300,36 @@ describe('NgxCookieServiceService', () => {
         expect(cookieService.delete).toHaveBeenCalledWith('test', '/test', 'example.com', true, 'Lax');
       });
     });
+    describe('Regex parsing (regression)', () => {
+      // Intentionally tests the regex generator itself, because /g makes RegExp instances stateful via lastIndex.
+      // This should fail with the current implementation (because getCookieRegExp uses the "g" flag),
+      // and pass once the "g" flag is removed.
+
+      it('getCookieRegExp should not be stateful across repeated test() calls', () => {
+        const re: RegExp = (CookieService as any).getCookieRegExp(encodeURIComponent('foo')) as RegExp;
+
+        expect(re.test('foo=bar;')).toBe(true);
+        // With /g this becomes false on the second call (lastIndex advanced).
+        expect(re.test('foo=bar;')).toBe(true);
+      });
+
+      it('getCookieRegExp should not be stateful across repeated exec() calls', () => {
+        const re: RegExp = (CookieService as any).getCookieRegExp(encodeURIComponent('foo')) as RegExp;
+
+        expect(re.exec('foo=bar;')?.[1]).toBe('bar');
+        // With /g this becomes null on the second call (lastIndex advanced).
+        expect(re.exec('foo=bar;')?.[1]).toBe('bar');
+      });
+
+      it('should not match cookie-name substrings (foo should not match foobar)', () => {
+        documentCookieGetterSpy.mockReturnValue('foobar=baz; foo=bar;');
+
+        expect(cookieService.check('foo')).toBe(true);
+        expect(cookieService.get('foo')).toBe('bar');
+        expect(cookieService.check('foobar')).toBe(true);
+        expect(cookieService.get('foobar')).toBe('baz');
+      });
+    });
   });
   describe('Platform server', () => {
     beforeAll(() => {
