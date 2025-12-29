@@ -283,12 +283,10 @@ export class CookieService {
       return;
     }
 
-    const cookies: any = this.getAll();
+    const cookies = this.getAll();
 
-    for (const cookieName in cookies) {
-      if (cookies.hasOwnProperty(cookieName)) {
-        this.delete(cookieName, path, domain, secure, sameSite);
-      }
+    for (const cookieName of Object.keys(cookies)) {
+      this.delete(cookieName, path, domain, secure, sameSite);
     }
   }
 }
