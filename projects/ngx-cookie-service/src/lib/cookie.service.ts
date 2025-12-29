@@ -114,8 +114,12 @@ export class CookieService {
 
     if (document.cookie && document.cookie !== '') {
       document.cookie.split(';').forEach((currentCookie: string) => {
-        const [cookieName, cookieValue] = currentCookie.split('=');
-        cookies[CookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = CookieService.safeDecodeURIComponent(cookieValue);
+        const separatorIndex = currentCookie.indexOf('=');
+        if (separatorIndex > 0) {
+          const cookieName = currentCookie.substring(0, separatorIndex).replace(/^ /, '');
+          const cookieValue = currentCookie.substring(separatorIndex + 1);
+          cookies[CookieService.safeDecodeURIComponent(cookieName)] = CookieService.safeDecodeURIComponent(cookieValue);
+        }
       });
     }
 

@@ -88,14 +88,18 @@ export class SsrCookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  getAll(): { [key: string]: string } {
-    const cookies: { [key: string]: string } = {};
-    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.getRequestCookies();
+  getAll(): Record<string, string> {
+    const cookies: Record<string, string> = {};
+    const cookieString = this.documentIsAccessible ? this.document?.cookie : this.getRequestCookies();
 
     if (cookieString && cookieString !== '') {
       cookieString.split(';').forEach((currentCookie: string) => {
-        const [cookieName, cookieValue] = currentCookie.split('=');
-        cookies[SsrCookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = SsrCookieService.safeDecodeURIComponent(cookieValue);
+        const separatorIndex = currentCookie.indexOf('=');
+        if (separatorIndex > 0) {
+          const cookieName = currentCookie.substring(0, separatorIndex).replace(/^ /, '');
+          const cookieValue = currentCookie.substring(separatorIndex + 1);
+          cookies[SsrCookieService.safeDecodeURIComponent(cookieName)] = SsrCookieService.safeDecodeURIComponent(cookieValue);
+        }
       });
     }
 

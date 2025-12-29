@@ -114,9 +114,11 @@ describe('NgxCookieServiceService', () => {
         expect(cookieService.getAll()).toEqual({});
       });
       it('should return object with decoded cookie names and values', () => {
-        documentCookieGetterSpy.mockReturnValue('foo=bar; Hello=World; %3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24');
+        documentCookieGetterSpy.mockReturnValue(
+          'foo=bar; Hello=World; %3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24; valueHasEqualSign=value=true=='
+        );
 
-        expect(cookieService.getAll()).toEqual({ foo: 'bar', Hello: 'World', ';,/?:@&=+$': ';,/?:@&=+$' });
+        expect(cookieService.getAll()).toEqual({ foo: 'bar', Hello: 'World', ';,/?:@&=+$': ';,/?:@&=+$', valueHasEqualSign: 'value=true==' });
       });
       it('should return object with safely decoded cookie names and values', () => {
         documentCookieGetterSpy.mockReturnValue('foo=%E0%A4%A; %E0%A4%A=%E0%A4%A; Hello=World; %3B%2C%2F%3F%3A%40%26%3D%2B%24=%3B%2C%2F%3F%3A%40%26%3D%2B%24');
