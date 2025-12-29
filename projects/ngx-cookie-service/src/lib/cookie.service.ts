@@ -237,7 +237,7 @@ export class CookieService {
     cookieString += 'SameSite=' + options.sameSite + ';';
 
     if (options.partitioned) {
-      cookieString += 'Partitioned';
+      cookieString += 'Partitioned;';
     }
 
     this.document.cookie = cookieString;
