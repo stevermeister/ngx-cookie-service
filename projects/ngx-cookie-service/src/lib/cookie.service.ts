@@ -36,7 +36,7 @@ export class CookieService {
   private static getCookieRegExp(name: string): RegExp {
     const escapedName: string = name.replace(/([[\]{}()|=;+?,.*^$\\])/gi, '\\$1');
 
-    return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
+    return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)');
   }
 
   /**
@@ -205,18 +205,18 @@ export class CookieService {
       if (typeof options.expires === 'number') {
         const dateExpires: Date = new Date(new Date().getTime() + options.expires * 1000 * 60 * 60 * 24);
 
-        cookieString += 'expires=' + dateExpires.toUTCString() + ';';
+        cookieString += 'Expires=' + dateExpires.toUTCString() + ';';
       } else {
-        cookieString += 'expires=' + options.expires.toUTCString() + ';';
+        cookieString += 'Expires=' + options.expires.toUTCString() + ';';
       }
     }
 
     if (options.path) {
-      cookieString += 'path=' + options.path + ';';
+      cookieString += 'Path=' + options.path + ';';
     }
 
     if (options.domain) {
-      cookieString += 'domain=' + options.domain + ';';
+      cookieString += 'Domain=' + options.domain + ';';
     }
 
     if (options.secure === false && options.sameSite === 'None') {
@@ -227,14 +227,14 @@ export class CookieService {
       );
     }
     if (options.secure) {
-      cookieString += 'secure;';
+      cookieString += 'Secure;';
     }
 
     if (!options.sameSite) {
       options.sameSite = 'Lax';
     }
 
-    cookieString += 'sameSite=' + options.sameSite + ';';
+    cookieString += 'SameSite=' + options.sameSite + ';';
 
     if (options.partitioned) {
       cookieString += 'Partitioned;';

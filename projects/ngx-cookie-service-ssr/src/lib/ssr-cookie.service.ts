@@ -24,7 +24,7 @@ export class SsrCookieService {
   static getCookieRegExp(name: string): RegExp {
     const escapedName: string = name.replace(/([[\]{}()|=;+?,.*^$\\])/gi, '\\$1');
 
-    return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)', 'g');
+    return new RegExp('(?:^' + escapedName + '|;\\s*' + escapedName + ')=(.*?)(?:;|$)');
   }
 
   /**
@@ -88,8 +88,8 @@ export class SsrCookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  getAll(): { [key: string]: string } {
-    const cookies: { [key: string]: string } = {};
+  getAll(): Record<string, string> {
+    const cookies: Record<string, string> = {};
     const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.getRequestCookies();
 
     if (cookieString && cookieString !== '') {
@@ -170,33 +170,33 @@ export class SsrCookieService {
       if (typeof options.expires === 'number') {
         const dateExpires: Date = new Date(new Date().getTime() + options.expires * 1000 * 60 * 60 * 24);
 
-        cookieString += 'expires=' + dateExpires.toUTCString() + ';';
+        cookieString += 'Expires=' + dateExpires.toUTCString() + ';';
       } else {
-        cookieString += 'expires=' + options.expires.toUTCString() + ';';
+        cookieString += 'Expires=' + options.expires.toUTCString() + ';';
       }
     }
 
     if (options.path) {
-      cookieString += 'path=' + options.path + ';';
+      cookieString += 'Path=' + options.path + ';';
     }
 
     if (options.domain) {
-      cookieString += 'domain=' + options.domain + ';';
+      cookieString += 'Domain=' + options.domain + ';';
     }
 
     if (options.secure === false && options.sameSite === 'None') {
       options.secure = true;
       console.warn(
-        `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
+        `[ngx-cookie-service] Cookie ${name} was forced with secure flag because SameSite=None.` +
           `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
       );
     }
     if (options.secure) {
-      cookieString += 'secure;';
+      cookieString += 'Secure;';
     }
 
     options.sameSite ??= 'Lax';
-    cookieString += 'sameSite=' + options.sameSite + ';';
+    cookieString += 'SameSite=' + options.sameSite + ';';
 
     if (options.partitioned) {
       cookieString += 'Partitioned;';
