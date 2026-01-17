@@ -17,7 +17,7 @@ jobs:
         with:
           node-version: latest
       - name: Install NPM Dependencies
-        run: pnpm i
+        run: pnpm i --no-frozen-lockfile
       - name: Build project
         run: pnpm build --configuration=production
       - name: Publish to NPM
