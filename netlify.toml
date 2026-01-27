@@ -1,0 +1,6 @@
+[build]
+  command = "npm run build:ssr-demo"
+  publish = "dist/ngx-cookie-service-ssr-demo/browser"
+
+[[plugins]]
+  package = "@netlify/angular-runtime"
