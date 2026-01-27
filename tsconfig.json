@@ -36,5 +36,13 @@
     "enableResourceInlining": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  }
+  },
+  "references": [
+    {
+      "path": "./projects/ngx-cookie-service-ssr-demo/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/ngx-cookie-service-ssr-demo/tsconfig.spec.json"
+    }
+  ]
 }

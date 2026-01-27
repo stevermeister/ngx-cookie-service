@@ -4,6 +4,7 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start:ssr": "ng serve ngx-cookie-service-ssr-demo",
     "build": "ng build ngx-cookie-service",
     "build:ngx-cookie-service-ssr": "ng build ngx-cookie-service-ssr",
     "test": "ng test ngx-cookie-service --watch=false",
@@ -14,7 +15,8 @@
     "format": "prettier ./projects/**/*.{ts,json}",
     "format:write": "npm run format -- --write",
     "format:check": "npm run format -- --check",
-    "package": "ng build ngx-cookie-service --configuration=production && cp ./README.md ./dist/ngx-cookie-service && cd dist/ngx-cookie-service && npm pack"
+    "package": "ng build ngx-cookie-service --configuration=production && cp ./README.md ./dist/ngx-cookie-service && cd dist/ngx-cookie-service && npm pack",
+    "serve:ssr:ngx-cookie-service-ssr-demo": "node dist/ngx-cookie-service-ssr-demo/server/server.mjs"
   },
   "private": true,
   "overrides": {
@@ -28,8 +30,10 @@
     "@angular/forms": "^21.0.6",
     "@angular/platform-browser": "^21.0.6",
     "@angular/platform-browser-dynamic": "^21.0.6",
+    "@angular/platform-server": "^21.0.6",
     "@angular/router": "^21.0.6",
     "@angular/ssr": "^21.0.4",
+    "express": "^5.1.0",
     "rxjs": "^7.8.2",
     "tslib": "^2.8.0"
   },
@@ -38,7 +42,8 @@
     "@angular/cli": "^21.0.4",
     "@angular/compiler-cli": "^21.0.6",
     "@angular/language-service": "^21.0.6",
-    "@types/node": "25.0.3",
+    "@types/express": "^5.0.1",
+    "@types/node": "^20.17.19",
     "@vitest/browser-playwright": "^4.0.16",
     "angular-eslint": "21.1.0",
     "eslint": "^9.39.2",
