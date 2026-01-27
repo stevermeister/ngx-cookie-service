@@ -46,6 +46,7 @@
     "@angular/compiler-cli": "^21.0.6",
     "@angular/language-service": "^21.0.6",
     "@angular/material": "21.1.1",
+    "@netlify/angular-runtime": "^3.0.1",
     "@types/express": "^5.0.1",
     "@types/node": "^20.17.19",
     "@vitest/browser-playwright": "^4.0.16",
