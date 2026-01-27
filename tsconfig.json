@@ -11,18 +11,11 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "typeRoots": [
-      "node_modules/@types"
-    ],
-    "lib": [
-      "ES2022",
-      "dom"
-    ],
+    "typeRoots": ["node_modules/@types"],
+    "lib": ["ES2022", "dom"],
     "paths": {
-      "ngx-cookie-service": [
-        "dist/ngx-cookie-service/ngx-cookie-service",
-        "dist/ngx-cookie-service"
-      ],
+      "ngx-cookie-service": ["dist/ngx-cookie-service/ngx-cookie-service", "dist/ngx-cookie-service"],
+      "ngx-cookie-service-ssr": ["dist/ngx-cookie-service-ssr/ngx-cookie-service-ssr", "dist/ngx-cookie-service-ssr"]
     },
     "useDefineForClassFields": false
   },
