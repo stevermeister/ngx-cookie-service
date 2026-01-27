@@ -14,8 +14,8 @@
     "typeRoots": ["node_modules/@types"],
     "lib": ["ES2022", "dom"],
     "paths": {
-      "ngx-cookie-service": ["dist/ngx-cookie-service/ngx-cookie-service", "dist/ngx-cookie-service"],
-      "ngx-cookie-service-ssr": ["dist/ngx-cookie-service-ssr/ngx-cookie-service-ssr", "dist/ngx-cookie-service-ssr"]
+      "ngx-cookie-service": ["projects/ngx-cookie-service/src/public-api.ts"],
+      "ngx-cookie-service-ssr": ["projects/ngx-cookie-service-ssr/src/public-api.ts"]
     },
     "useDefineForClassFields": false
   },
@@ -29,13 +29,5 @@
     "enableResourceInlining": true,
     "strictInputAccessModifiers": true,
     "strictTemplates": true
-  },
-  "references": [
-    {
-      "path": "./projects/ngx-cookie-service-ssr-demo/tsconfig.app.json"
-    },
-    {
-      "path": "./projects/ngx-cookie-service-ssr-demo/tsconfig.spec.json"
-    }
-  ]
+  }
 }

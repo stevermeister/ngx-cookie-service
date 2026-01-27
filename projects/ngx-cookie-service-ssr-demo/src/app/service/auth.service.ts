@@ -1,9 +1,9 @@
-import { inject, Injectable } from '@angular/core';
+import { SsrCookieService } from 'ngx-cookie-service-ssr';
 import { HttpClient } from '@angular/common/http';
+import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
 import { API_BASE_URL } from '../constants/app.constants';
-import { SsrCookieService } from '../../../../ngx-cookie-service-ssr/src/lib/ssr-cookie.service';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +14,7 @@ export class AuthService {
   cookieService = inject(SsrCookieService);
 
   public isUserLoggedIn(): boolean {
+    console.log('token:', this.cookieService.get('token'));
     return this.cookieService.check('token');
   }
 

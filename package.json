@@ -7,6 +7,7 @@
     "start:ssr": "ng serve ngx-cookie-service-ssr-demo --port=4203",
     "build": "ng build ngx-cookie-service",
     "build:ngx-cookie-service-ssr": "ng build ngx-cookie-service-ssr",
+    "build:ssr-demo": "ng build ngx-cookie-service-ssr-demo",
     "test": "ng test ngx-cookie-service --watch=false",
     "test:ngx-cookie-service-ssr": "ng test ngx-cookie-service-ssr",
     "lint": "ng lint ngx-cookie-service",
