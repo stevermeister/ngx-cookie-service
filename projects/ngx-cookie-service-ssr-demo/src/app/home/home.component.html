@@ -1,0 +1,13 @@
+<div style="display: flex; margin: 20px">
+  <div style="margin-left: auto; margin-right: auto">
+    <h2>Welcome Home, {{ user.value()?.firstName }} {{ user.value()?.lastName }}</h2>
+    <br />
+
+    <div>
+      Cookie created with value: <strong>{{ token }}</strong>
+    </div>
+    <br />
+
+    <button (click)="logout()" color="warn" matButton="filled" style="margin-top: 20px" type="submit">Logout</button>
+  </div>
+</div>

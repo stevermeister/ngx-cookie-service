@@ -94,8 +94,19 @@ export class SsrCookieService {
 
     if (cookieString && cookieString !== '') {
       cookieString.split(';').forEach((currentCookie: string) => {
-        const [cookieName, cookieValue] = currentCookie.split('=');
-        cookies[SsrCookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = SsrCookieService.safeDecodeURIComponent(cookieValue);
+        const trimmedCookie = currentCookie.trim();
+        if (!trimmedCookie) {
+          return;
+        }
+        // Find the first '=' to handle cookie values that contain '='
+        const equalIndex = trimmedCookie.indexOf('=');
+        if (equalIndex === -1) {
+          // Cookie without value (invalid, but handle gracefully)
+          return;
+        }
+        const cookieName = trimmedCookie.substring(0, equalIndex);
+        const cookieValue = trimmedCookie.substring(equalIndex + 1);
+        cookies[SsrCookieService.safeDecodeURIComponent(cookieName)] = SsrCookieService.safeDecodeURIComponent(cookieValue);
       });
     }
 
@@ -252,28 +263,38 @@ export class SsrCookieService {
 
   /**
    * Helper method to safely get cookies from request object
-   * Handles both Angular's REQUEST interface and Express's req interface
+   * Handles both Angular's REQUEST interface (Web API Request) and Express's req interface
    */
   private getRequestCookies(): string | null {
     if (!this.request) {
       return null;
     }
 
-    // Handle Angular REQUEST object (has headers.get method)
+    // Handle Web API Request object (Angular 19+ with AngularNodeAppEngine)
+    // The REQUEST token provides a standard Web API Request object
     if (this.request.headers && typeof this.request.headers.get === 'function') {
       return this.request.headers.get('cookie');
     }
 
-    // Handle Express request object (has headers object and get method)
+    // Handle Express request object (for backward compatibility or custom setups)
     const reqAny = this.request as any;
     if (typeof reqAny.get === 'function') {
-      return reqAny.get('cookie') || reqAny.get('Cookie');
+      const cookie = reqAny.get('cookie') || reqAny.get('Cookie');
+      if (cookie) {
+        return cookie;
+      }
     }
 
-    // Handle direct headers object access
+    // Handle direct headers object access (Express typically uses lowercase 'cookie')
     const headers = this.request.headers;
     if (headers && typeof headers === 'object') {
-      return headers['cookie'] || headers['Cookie'];
+      // Check both lowercase and capitalized versions
+      if ((headers as any)['cookie']) {
+        return (headers as any)['cookie'];
+      }
+      if ((headers as any)['Cookie']) {
+        return (headers as any)['Cookie'];
+      }
     }
     return null;
   }
