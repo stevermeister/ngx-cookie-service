@@ -85,9 +85,7 @@
                 "input": "projects/ngx-cookie-service-ssr-demo/public"
               }
             ],
-            "styles": [
-              "projects/ngx-cookie-service-ssr-demo/src/styles.scss"
-            ],
+            "styles": ["projects/ngx-cookie-service-ssr-demo/src/styles.scss"],
             "server": "projects/ngx-cookie-service-ssr-demo/src/main.server.ts",
             "outputMode": "server",
             "ssr": {
