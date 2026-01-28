@@ -11,15 +11,15 @@ describe('SsrCookieService', () => {
   const documentMock: Document = document;
   let documentCookieGetterSpy: ReturnType<typeof vi.spyOn>;
   let documentCookieSetterSpy: ReturnType<typeof vi.spyOn>;
-  
+
   // Mock RESPONSE_INIT
   const responseInitMock: { headers: Headers | string[][] | Record<string, any> } = {
-    headers: new Headers()
+    headers: new Headers(),
   };
 
   // Mock REQUEST
   const requestMock = {
-    headers: new Headers()
+    headers: new Headers(),
   };
 
   beforeEach(() => {
@@ -54,9 +54,9 @@ describe('SsrCookieService', () => {
     beforeAll(() => {
       platformId = ɵPLATFORM_BROWSER_ID;
     });
-    
+
     beforeEach(() => {
-         cookieService = TestBed.inject(SsrCookieService);
+      cookieService = TestBed.inject(SsrCookieService);
     });
 
     it('should be created', () => {
@@ -70,12 +70,12 @@ describe('SsrCookieService', () => {
       });
       // Additional browser tests can be added here similar to cookie.service.spec.ts
     });
-    
+
     describe('#set', () => {
-        it('should set cookie on document in browser', () => {
-            cookieService.set('foo', 'bar');
-            expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;SameSite=Lax;');
-        });
+      it('should set cookie on document in browser', () => {
+        cookieService.set('foo', 'bar');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;SameSite=Lax;');
+      });
     });
   });
 
@@ -85,12 +85,12 @@ describe('SsrCookieService', () => {
     });
 
     beforeEach(() => {
-        cookieService = TestBed.inject(SsrCookieService);
-        // Reset headers for each test
-        if (responseInitMock.headers instanceof Headers) {
-             // Re-create to clear
-             responseInitMock.headers = new Headers();
-        }
+      cookieService = TestBed.inject(SsrCookieService);
+      // Reset headers for each test
+      if (responseInitMock.headers instanceof Headers) {
+        // Re-create to clear
+        responseInitMock.headers = new Headers();
+      }
     });
 
     describe('#check', () => {
@@ -98,7 +98,7 @@ describe('SsrCookieService', () => {
         requestMock.headers.set('cookie', 'foo=bar;');
         expect(cookieService.check('foo')).toEqual(true);
       });
-      
+
       it('should return false if cookie missing in request headers', () => {
         requestMock.headers.delete('cookie');
         expect(cookieService.check('bar')).toEqual(false);
@@ -111,34 +111,34 @@ describe('SsrCookieService', () => {
         const headers = responseInitMock.headers as Headers;
         expect(headers.get('Set-Cookie')).toContain('foo=bar;SameSite=Lax;');
       });
-      
+
       it('should append multiple Set-Cookie headers', () => {
         cookieService.set('foo', 'bar');
         cookieService.set('baz', 'qux');
-        
+
         const headers = responseInitMock.headers as Headers;
         // In some environments, get('Set-Cookie') joins with comma, which is invalid for Set-Cookie
         // But we rely on the implementation calling append.
-        
+
         // We can't easily check internal state of Headers object via get() for multiple Set-Cookie in all envs.
         // A better check would be spying on append if we mocked Headers, but we used real Headers.
-        // For now, let's assume if we call it twice, it works. 
+        // For now, let's assume if we call it twice, it works.
         // Or check if the combined string contains both.
         const headerValue = headers.get('Set-Cookie');
         if (headerValue) {
-            expect(headerValue).toContain('foo=bar');
-            expect(headerValue).toContain('baz=qux');
+          expect(headerValue).toContain('foo=bar');
+          expect(headerValue).toContain('baz=qux');
         }
       });
     });
-    
+
     describe('#delete', () => {
-        it('should set expiration cookie in RESPONSE_INIT', () => {
-            cookieService.delete('foo');
-            const headers = responseInitMock.headers as Headers;
-            const cookie = headers.get('Set-Cookie');
-            expect(cookie).toContain('foo=;Expires=Thu, 01 Jan 1970 00:00:01 GMT');
-        });
+      it('should set expiration cookie in RESPONSE_INIT', () => {
+        cookieService.delete('foo');
+        const headers = responseInitMock.headers as Headers;
+        const cookie = headers.get('Set-Cookie');
+        expect(cookie).toContain('foo=;Expires=Thu, 01 Jan 1970 00:00:01 GMT');
+      });
     });
   });
 });

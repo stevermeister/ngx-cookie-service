@@ -24,7 +24,7 @@ export class HomeComponent implements OnInit {
 
   ngOnInit(): void {
     if (isPlatformServer(this.platformId)) {
-        this.cookieService.set('server-cookie', crypto.randomUUID());
+      this.cookieService.set('server-cookie', crypto.randomUUID());
     }
 
     this.token = this.cookieService.get('token');

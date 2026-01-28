@@ -406,9 +406,7 @@ export class SsrCookieService {
       const headersObj = headers as Record<string, string | string[]>;
       const existing = headersObj['Set-Cookie'];
       if (existing) {
-        headersObj['Set-Cookie'] = Array.isArray(existing)
-          ? [...existing, cookieString]
-          : [existing, cookieString];
+        headersObj['Set-Cookie'] = Array.isArray(existing) ? [...existing, cookieString] : [existing, cookieString];
       } else {
         headersObj['Set-Cookie'] = cookieString;
       }
