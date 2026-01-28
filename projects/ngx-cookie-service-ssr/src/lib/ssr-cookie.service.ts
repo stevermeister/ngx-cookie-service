@@ -1,7 +1,18 @@
 import { isPlatformBrowser } from '@angular/common';
-import { DOCUMENT, inject, Injectable, PLATFORM_ID, REQUEST } from '@angular/core';
+import { DOCUMENT, inject, Injectable, PLATFORM_ID, REQUEST, RESPONSE_INIT } from '@angular/core';
 
 export type SameSite = 'Lax' | 'None' | 'Strict';
+
+export interface CookieOptions {
+  expires?: number | Date;
+  path?: string;
+  domain?: string;
+  secure?: boolean;
+  sameSite?: SameSite;
+  partitioned?: boolean;
+  httpOnly?: boolean;
+  maxAge?: number;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -10,6 +21,7 @@ export class SsrCookieService {
   private readonly document = inject(DOCUMENT);
   private readonly platformId = inject(PLATFORM_ID);
   private readonly request = inject(REQUEST, { optional: true });
+  private readonly responseInit = inject(RESPONSE_INIT, { optional: true });
   private readonly documentIsAccessible: boolean = isPlatformBrowser(this.platformId);
 
   /**
@@ -132,87 +144,37 @@ export class SsrCookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  set(
-    name: string,
-    value: string,
-    options?: {
-      expires?: number | Date;
-      path?: string;
-      domain?: string;
-      secure?: boolean;
-      sameSite?: SameSite;
-      partitioned?: boolean;
-    }
-  ): void;
+  set(name: string, value: string, options?: CookieOptions): void;
 
   set(
     name: string,
     value: string,
-    expiresOrOptions?: number | Date | any,
+    expiresOrOptions?: number | Date | CookieOptions,
     path?: string,
     domain?: string,
     secure?: boolean,
     sameSite?: SameSite,
     partitioned?: boolean
   ): void {
+    const options = this.normalizeOptions(expiresOrOptions, path, domain, secure, sameSite, partitioned);
+
     if (!this.documentIsAccessible) {
-      return;
-    }
-
-    if (typeof expiresOrOptions === 'number' || expiresOrOptions instanceof Date || path || domain || secure || sameSite) {
-      const optionsBody = {
-        expires: expiresOrOptions,
-        path,
-        domain,
-        secure,
-        sameSite: sameSite ?? 'Lax',
-        partitioned,
-      };
-
-      this.set(name, value, optionsBody);
-      return;
-    }
-
-    let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
-
-    const options = expiresOrOptions ?? {};
-
-    if (options.expires) {
-      if (typeof options.expires === 'number') {
-        const dateExpires: Date = new Date(new Date().getTime() + options.expires * 1000 * 60 * 60 * 24);
-
-        cookieString += 'Expires=' + dateExpires.toUTCString() + ';';
-      } else {
-        cookieString += 'Expires=' + options.expires.toUTCString() + ';';
+      if (this.responseInit) {
+        this.setServerCookie(name, value, options);
       }
+      return;
     }
 
-    if (options.path) {
-      cookieString += 'Path=' + options.path + ';';
-    }
-
-    if (options.domain) {
-      cookieString += 'Domain=' + options.domain + ';';
-    }
-
-    if (options.secure === false && options.sameSite === 'None') {
+    // Warn if SameSite=None without Secure on browser
+    if (options.sameSite === 'None' && !options.secure) {
       options.secure = true;
       console.warn(
         `[ngx-cookie-service] Cookie ${name} was forced with secure flag because SameSite=None.` +
           `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
       );
     }
-    if (options.secure) {
-      cookieString += 'Secure;';
-    }
 
-    options.sameSite ??= 'Lax';
-    cookieString += 'SameSite=' + options.sameSite + ';';
-
-    if (options.partitioned) {
-      cookieString += 'Partitioned;';
-    }
-
+    const cookieString = this.buildCookieString(name, value, options);
     this.document.cookie = cookieString;
   }
 
@@ -229,7 +191,7 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   delete(name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
-    if (!this.documentIsAccessible) {
+    if (!this.documentIsAccessible && !this.responseInit) {
       return;
     }
     const expiresDate = new Date('Thu, 01 Jan 1970 00:00:01 GMT');
@@ -248,7 +210,7 @@ export class SsrCookieService {
    * @since: 1.0.0
    */
   deleteAll(path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
-    if (!this.documentIsAccessible) {
+    if (!this.documentIsAccessible && !this.responseInit) {
       return;
     }
 
@@ -297,5 +259,159 @@ export class SsrCookieService {
       }
     }
     return null;
+  }
+
+  /**
+   * Helper method to set cookies on the server response
+   *
+   * @param name     Cookie name
+   * @param value    Cookie value
+   * @param options  Cookie options
+   *
+   * @author: Pavankumar Jadda
+   * @since: 21.2.0
+   */
+  private setServerCookie(name: string, value: string, options: CookieOptions = {}): void {
+    if (!this.responseInit) {
+      return;
+    }
+
+    // SameSite=None requires Secure
+    if (options.sameSite === 'None' && !options.secure) {
+      options.secure = true;
+    }
+
+    const cookieString = this.buildCookieString(name, value, options);
+    this.appendSetCookieHeader(cookieString);
+  }
+
+  /**
+   * Normalizes cookie options from either an options object or individual parameters
+   *
+   * @param expiresOrOptions  Either a CookieOptions object, expiration (number of days or Date), or undefined
+   * @param path     Cookie path
+   * @param domain   Cookie domain
+   * @param secure   Cookie secure flag
+   * @param sameSite Cookie sameSite flag
+   * @param partitioned Cookie partitioned flag
+   * @returns Normalized CookieOptions object
+   *
+   * @author: Pavankumar Jadda
+   * @since: 21.2.0
+   */
+  private normalizeOptions(
+    expiresOrOptions?: number | Date | CookieOptions,
+    path?: string,
+    domain?: string,
+    secure?: boolean,
+    sameSite?: SameSite,
+    partitioned?: boolean
+  ): CookieOptions {
+    // If it's an object but not a Date, treat it as CookieOptions
+    if (typeof expiresOrOptions === 'object' && !(expiresOrOptions instanceof Date)) {
+      return { ...expiresOrOptions };
+    }
+
+    // Otherwise, it's either a number, Date, or undefined - build options from individual params
+    return {
+      expires: expiresOrOptions,
+      path,
+      domain,
+      secure,
+      sameSite,
+      partitioned,
+    };
+  }
+
+  /**
+   * Builds a cookie string from name, value, and options
+   *
+   * @param name    Cookie name
+   * @param value   Cookie value
+   * @param options Cookie options
+   * @returns Formatted cookie string
+   *
+   * @author: Pavankumar Jadda
+   * @since: 21.2.0
+   */
+  private buildCookieString(name: string, value: string, options: CookieOptions = {}): string {
+    let cookieString = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
+
+    if (options.expires) {
+      if (typeof options.expires === 'number') {
+        const dateExpires = new Date(Date.now() + options.expires * 1000 * 60 * 60 * 24);
+        cookieString += 'Expires=' + dateExpires.toUTCString() + ';';
+      } else {
+        cookieString += 'Expires=' + options.expires.toUTCString() + ';';
+      }
+    }
+
+    if (options.maxAge !== undefined) {
+      cookieString += 'Max-Age=' + options.maxAge + ';';
+    }
+
+    if (options.path) {
+      cookieString += 'Path=' + options.path + ';';
+    }
+
+    if (options.domain) {
+      cookieString += 'Domain=' + options.domain + ';';
+    }
+
+    if (options.secure) {
+      cookieString += 'Secure;';
+    }
+
+    cookieString += 'SameSite=' + (options.sameSite ?? 'Lax') + ';';
+
+    if (options.partitioned) {
+      cookieString += 'Partitioned;';
+    }
+
+    if (options.httpOnly) {
+      cookieString += 'HttpOnly;';
+    }
+
+    return cookieString;
+  }
+
+  /**
+   * Appends a Set-Cookie header to the response
+   * Handles different header formats (Headers object, array, or plain object)
+   *
+   * @param cookieString The formatted cookie string to append
+   *
+   * @author: Pavankumar Jadda
+   * @since: 21.2.0
+   */
+  private appendSetCookieHeader(cookieString: string): void {
+    if (!this.responseInit) {
+      return;
+    }
+
+    // Initialize headers if missing
+    if (!this.responseInit.headers) {
+      this.responseInit.headers = new Headers();
+    }
+
+    const headers = this.responseInit.headers;
+
+    if (headers instanceof Headers) {
+      headers.append('Set-Cookie', cookieString);
+    } else if (Array.isArray(headers)) {
+      // If it's an array (sequence of sequences), push new header
+      (headers as string[][]).push(['Set-Cookie', cookieString]);
+    } else {
+      // Handle plain object format
+      const headersObj = headers as Record<string, string | string[]>;
+      const existing = headersObj['Set-Cookie'];
+      if (existing) {
+        headersObj['Set-Cookie'] = Array.isArray(existing)
+          ? [...existing, cookieString]
+          : [existing, cookieString];
+      } else {
+        headersObj['Set-Cookie'] = cookieString;
+      }
+    }
   }
 }
