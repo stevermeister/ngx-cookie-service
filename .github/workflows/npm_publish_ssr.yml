@@ -4,6 +4,11 @@ on:
     ### Publish on new tag release
     tags:
       - v*
+
+permissions:
+  id-token: write   # Required for npm trusted publishing (OIDC)
+  contents: write  # Required for semantic-release to push tags/commits
+
 jobs:
   publish:
     runs-on: ubuntu-latest
