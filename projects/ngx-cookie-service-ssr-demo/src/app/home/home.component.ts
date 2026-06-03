@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, inject, OnInit, PLATFORM_ID, ChangeDetectionStrategy } from '@angular/core';
 import { AuthService } from '../service/auth.service';
 import { SsrCookieService } from 'ngx-cookie-service-ssr';
 import { MatButtonModule } from '@angular/material/button';
@@ -11,6 +11,7 @@ import { isPlatformServer } from '@angular/common';
   selector: 'app-home',
   templateUrl: './home.component.html',
   standalone: true,
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [MatButtonModule],
 })
 export class HomeComponent implements OnInit {

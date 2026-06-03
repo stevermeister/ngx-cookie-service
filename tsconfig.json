@@ -1,7 +1,6 @@
 {
   "compileOnSave": false,
   "compilerOptions": {
-    "baseUrl": "./",
     "outDir": "./dist/out-tsc",
     "sourceMap": true,
     "esModuleInterop": true,
@@ -11,23 +10,26 @@
     "moduleResolution": "bundler",
     "importHelpers": true,
     "target": "ES2022",
-    "typeRoots": ["node_modules/@types"],
-    "lib": ["ES2022", "dom"],
+    "typeRoots": [
+      "node_modules/@types"
+    ],
+    "lib": [
+      "ES2022",
+      "dom"
+    ],
     "paths": {
-      "ngx-cookie-service": ["projects/ngx-cookie-service/src/public-api.ts"],
-      "ngx-cookie-service-ssr": ["projects/ngx-cookie-service-ssr/src/public-api.ts"]
+      "ngx-cookie-service": [
+        "./projects/ngx-cookie-service/src/public-api.ts"
+      ],
+      "ngx-cookie-service-ssr": [
+        "./projects/ngx-cookie-service-ssr/src/public-api.ts"
+      ]
     },
     "useDefineForClassFields": false
   },
   "angularCompilerOptions": {
-    "compilationMode": "partial",
-    "enableIvy": false,
-    "skipTemplateCodegen": true,
-    "strictMetadataEmit": true,
-    "fullTemplateTypeCheck": true,
+    "enableI18nLegacyMessageIdFormat": false,
     "strictInjectionParameters": true,
-    "enableResourceInlining": true,
-    "strictInputAccessModifiers": true,
-    "strictTemplates": true
+    "strictInputAccessModifiers": true
   }
 }

@@ -24,3 +24,5 @@ minimumReleaseAgeExclude:
   - '@angular/ssr@22.0.0'
   - '@schematics/angular@22.0.0'
   - ng-packagr@22.0.0
+  - '@angular/cdk@22.0.0'
+  - '@angular/material@22.0.0'
