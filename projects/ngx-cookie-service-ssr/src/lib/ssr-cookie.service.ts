@@ -70,7 +70,7 @@ export class SsrCookieService {
   check(name: string): boolean {
     name = encodeURIComponent(name);
     const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-    return regExp.test(this.documentIsAccessible ? this.document.cookie : this.getRequestCookies());
+    return regExp.test((this.documentIsAccessible ? this.document.cookie : this.getRequestCookies()) ?? '');
   }
 
   /**
@@ -86,7 +86,7 @@ export class SsrCookieService {
     if (this.check(name)) {
       name = encodeURIComponent(name);
       const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-      const result = regExp.exec(this.documentIsAccessible ? this.document.cookie : this.getRequestCookies());
+      const result = regExp.exec((this.documentIsAccessible ? this.document.cookie : this.getRequestCookies()) ?? '');
       return result?.[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
     }
     return '';

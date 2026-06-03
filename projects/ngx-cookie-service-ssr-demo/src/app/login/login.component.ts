@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, ChangeDetectionStrategy } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from '../service/auth.service';
 import { Router } from '@angular/router';
@@ -24,6 +24,7 @@ import { form, FormField, required } from '@angular/forms/signals';
       }
     `,
   ],
+  changeDetection: ChangeDetectionStrategy.Eager,
   imports: [ReactiveFormsModule, MatInputModule, MatButtonModule, MatFormFieldModule, FormField],
 })
 export class LoginComponent {
