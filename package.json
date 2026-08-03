@@ -30,7 +30,7 @@
     "@angular/material": "~22.0.0",
     "@angular/platform-browser": "^22.0.0",
     "@angular/platform-browser-dynamic": "^22.0.0",
-    "@angular/platform-server": "^22.0.0",
+    "@angular/platform-server": "^22.0.7",
     "@angular/router": "^22.0.0",
     "@angular/ssr": "^22.0.0",
     "rxjs": "^7.8.2",
