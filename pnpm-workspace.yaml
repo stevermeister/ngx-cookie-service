@@ -5,3 +5,22 @@ allowBuilds:
   lmdb: false
   msgpackr-extract: false
 minimumReleaseAge: 0
+
+# Security pins for transitive dependencies whose upstream ranges still resolve to
+# versions with known advisories (see GHSA reports for brace-expansion, minimatch,
+# fast-uri, browserslist, immutable, @humanfs/node).
+overrides:
+  '@humanfs/node': '^0.16.8'
+  'baseline-browser-mapping': '^2.11.27'
+  'brace-expansion@1': '^1.1.21'
+  'browserslist': '^4.29.3'
+  'fast-uri@3': '^3.1.8'
+  'immutable@5': '^5.1.9'
+  'minimatch@3': '^3.1.5'
+  'minimatch@10': '^10.2.6'
+
+# eslint-plugin-import 2.32.0 (latest) hasn't widened its ESLint peer range to v10 yet.
+# The only rule it contributes here (`import/order`) is turned off, so it works fine.
+peerDependencyRules:
+  allowedVersions:
+    'eslint-plugin-import>eslint': '10'
