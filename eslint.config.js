@@ -15,7 +15,6 @@ module.exports = defineConfig([
       'no-prototype-builtins': 'off',
       '@typescript-eslint/explicit-member-accessibility': ['off', { accessibility: 'explicit' }],
       'arrow-parens': ['off', 'always'],
-      'import/order': 'off',
       'max-len': ['error', { code: 160 }],
     },
   },
