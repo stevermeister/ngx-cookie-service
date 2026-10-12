@@ -18,9 +18,3 @@ overrides:
   'immutable@5': '^5.1.9'
   'minimatch@3': '^3.1.5'
   'minimatch@10': '^10.2.6'
-
-# eslint-plugin-import 2.32.0 (latest) hasn't widened its ESLint peer range to v10 yet.
-# The only rule it contributes here (`import/order`) is turned off, so it works fine.
-peerDependencyRules:
-  allowedVersions:
-    'eslint-plugin-import>eslint': '10'
