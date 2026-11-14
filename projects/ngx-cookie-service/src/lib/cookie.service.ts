@@ -114,8 +114,19 @@ export class CookieService {
 
     if (document.cookie && document.cookie !== '') {
       document.cookie.split(';').forEach((currentCookie: string) => {
-        const [cookieName, cookieValue] = currentCookie.split('=');
-        cookies[CookieService.safeDecodeURIComponent(cookieName.replace(/^ /, ''))] = CookieService.safeDecodeURIComponent(cookieValue);
+        const trimmedCookie = currentCookie.trim();
+        if (!trimmedCookie) {
+          return;
+        }
+        // Split on the first '=' only, so values containing '=' (e.g. base64 padding) are preserved
+        const equalIndex = trimmedCookie.indexOf('=');
+        if (equalIndex === -1) {
+          // Cookie without value (invalid, but handle gracefully)
+          return;
+        }
+        const cookieName = trimmedCookie.substring(0, equalIndex);
+        const cookieValue = trimmedCookie.substring(equalIndex + 1);
+        cookies[CookieService.safeDecodeURIComponent(cookieName)] = CookieService.safeDecodeURIComponent(cookieValue);
       });
     }
 

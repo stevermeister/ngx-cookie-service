@@ -128,6 +128,16 @@ describe('NgxCookieServiceService', () => {
           ';,/?:@&=+$': ';,/?:@&=+$',
         });
       });
+      it('should preserve cookie values that contain "="', () => {
+        documentCookieGetterSpy.mockReturnValue('token=YWJj==; q=x=1&y=2');
+
+        expect(cookieService.getAll()).toEqual({ token: 'YWJj==', q: 'x=1&y=2' });
+      });
+      it('should skip cookie entries without "="', () => {
+        documentCookieGetterSpy.mockReturnValue('token=YWJj==; flag; foo=bar');
+
+        expect(cookieService.getAll()).toEqual({ token: 'YWJj==', foo: 'bar' });
+      });
     });
     describe('#set', () => {
       it('should set cookie with default SameSite option', () => {
