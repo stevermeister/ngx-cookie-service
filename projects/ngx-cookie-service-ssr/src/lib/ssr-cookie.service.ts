@@ -116,9 +116,12 @@ export class SsrCookieService {
           // Cookie without value (invalid, but handle gracefully)
           return;
         }
-        const cookieName = trimmedCookie.substring(0, equalIndex);
-        const cookieValue = trimmedCookie.substring(equalIndex + 1);
-        cookies[SsrCookieService.safeDecodeURIComponent(cookieName)] = SsrCookieService.safeDecodeURIComponent(cookieValue);
+        const cookieName = SsrCookieService.safeDecodeURIComponent(trimmedCookie.substring(0, equalIndex));
+        // Browsers list the most specific cookie first when several share a name. Keep that one, as get() does.
+        if (Object.hasOwn(cookies, cookieName)) {
+          return;
+        }
+        cookies[cookieName] = SsrCookieService.safeDecodeURIComponent(trimmedCookie.substring(equalIndex + 1));
       });
     }
 

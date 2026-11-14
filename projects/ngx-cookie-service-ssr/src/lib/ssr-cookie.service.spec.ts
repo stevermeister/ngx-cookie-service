@@ -114,6 +114,15 @@ describe('SsrCookieService', () => {
       });
     });
 
+    describe('#getAll', () => {
+      it('should keep the first cookie when several share a name, like get()', () => {
+        requestMock.headers.set('cookie', 'foo=specific; bar=baz; foo=root');
+
+        expect(cookieService.getAll()).toEqual({ foo: 'specific', bar: 'baz' });
+        expect(cookieService.get('foo')).toEqual('specific');
+      });
+    });
+
     describe('#set', () => {
       it('should set Set-Cookie header in RESPONSE_INIT', () => {
         cookieService.set('foo', 'bar');

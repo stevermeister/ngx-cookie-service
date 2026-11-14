@@ -138,6 +138,12 @@ describe('NgxCookieServiceService', () => {
 
         expect(cookieService.getAll()).toEqual({ token: 'YWJj==', foo: 'bar' });
       });
+      it('should keep the first cookie when several share a name, like get()', () => {
+        documentCookieGetterSpy.mockReturnValue('foo=specific; bar=baz; foo=root');
+
+        expect(cookieService.getAll()).toEqual({ foo: 'specific', bar: 'baz' });
+        expect(cookieService.get('foo')).toEqual('specific');
+      });
     });
     describe('#set', () => {
       it('should set cookie with default SameSite option', () => {
