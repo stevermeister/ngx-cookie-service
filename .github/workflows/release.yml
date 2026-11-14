@@ -1,0 +1,45 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+
+permissions:
+  id-token: write # Required for npm trusted publishing (OIDC)
+  contents: write # Required for semantic-release to push tags/commits
+  issues: write # Required for semantic-release to comment on released issues
+  pull-requests: write # Required for semantic-release to comment on released PRs
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version: 26
+          cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Test
+        run: pnpm test
+
+      - name: Build packages
+        run: pnpm build:all
+
+      - name: Semantic release
+        run: pnpm exec semantic-release
