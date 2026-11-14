@@ -77,6 +77,15 @@ describe('SsrCookieService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;SameSite=Lax;');
       });
 
+      it('should not write HttpOnly cookies in browser and warn instead', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('foo', 'bar', { httpOnly: true, path: '/' });
+
+        expect(documentCookieSetterSpy).not.toHaveBeenCalled();
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        warnSpy.mockRestore();
+      });
+
       it('should skip the whole write when path contains ";" in browser', () => {
         const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
         cookieService.set('foo', 'bar', { path: '/; Max-Age=999999' });
@@ -241,6 +250,12 @@ describe('SsrCookieService', () => {
 
         expect(options).toStrictEqual(snapshot);
         warnSpy.mockRestore();
+      });
+
+      it('should write HttpOnly cookies on server', () => {
+        cookieService.set('foo', 'bar', { httpOnly: true, path: '/' });
+
+        expect((responseInitMock.headers as Headers).getSetCookie()).toEqual(['foo=bar;Path=/;SameSite=Lax;HttpOnly;']);
       });
 
       it('should keep valid maxAge, path and domain values', () => {

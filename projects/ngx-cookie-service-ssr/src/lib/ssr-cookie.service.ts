@@ -192,6 +192,12 @@ export class SsrCookieService {
       return;
     }
 
+    // Browsers drop any cookie set from script with HttpOnly, so skip it instead of failing silently
+    if (options.httpOnly) {
+      console.warn(`[ngx-cookie-service] Cookie ${name} was not set because HttpOnly cookies can only be set by the server.`);
+      return;
+    }
+
     // Warn if SameSite=None without Secure on browser
     if (options.sameSite === 'None' && !options.secure) {
       options.secure = true;
