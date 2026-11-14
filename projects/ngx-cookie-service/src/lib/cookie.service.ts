@@ -210,7 +210,8 @@ export class CookieService {
 
     let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
 
-    const options = expiresOrOptions ? expiresOrOptions : {};
+    // Copy the caller's options so the defaults applied below don't leak back into their object
+    const options: CookieOptions = { ...expiresOrOptions };
 
     if (options.expires) {
       if (typeof options.expires === 'number') {

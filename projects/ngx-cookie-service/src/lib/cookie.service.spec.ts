@@ -3,7 +3,7 @@ import { ɵPLATFORM_BROWSER_ID, ɵPLATFORM_SERVER_ID } from '@angular/common';
 import { DOCUMENT, PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
-import { CookieService } from './cookie.service';
+import { CookieOptions, CookieService } from './cookie.service';
 
 describe('NgxCookieServiceService', () => {
   let cookieService: CookieService;
@@ -242,6 +242,19 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Secure;SameSite=None;');
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('baz=qux;Path=/;Secure;SameSite=None;');
         expect(warnSpy).toHaveBeenCalledTimes(2);
+        warnSpy.mockRestore();
+      });
+      it('should not modify the options object passed by the caller', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const options: CookieOptions = { path: '/' };
+        const sameSiteNone: CookieOptions = { sameSite: 'None', secure: false };
+        cookieService.set('foo', 'bar', options);
+        cookieService.set('baz', 'qux', sameSiteNone);
+
+        expect(options).toStrictEqual({ path: '/' });
+        expect(sameSiteNone).toStrictEqual({ sameSite: 'None', secure: false });
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Path=/;SameSite=Lax;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('baz=qux;Secure;SameSite=None;');
         warnSpy.mockRestore();
       });
       it('should set cookie with SameSite option', () => {
