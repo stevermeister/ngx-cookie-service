@@ -17,7 +17,8 @@
     "format:write": "pnpm format --write",
     "format:check": "pnpm format --check",
     "package": "ng build ngx-cookie-service --configuration=production && cp ./README.md ./dist/ngx-cookie-service && cd dist/ngx-cookie-service && npm pack",
-    "serve:ssr:ngx-cookie-service-ssr-demo": "node dist/ngx-cookie-service-ssr-demo/server/server.mjs"
+    "serve:ssr:ngx-cookie-service-ssr-demo": "node dist/ngx-cookie-service-ssr-demo/server/server.mjs",
+    "build:all": "ng build ngx-cookie-service --configuration=production && ng build ngx-cookie-service-ssr --configuration=production"
   },
   "private": true,
   "dependencies": {
@@ -41,14 +42,55 @@
     "@angular/compiler-cli": "^22.2.2",
     "@eslint/js": "^10.0.1",
     "@netlify/angular-runtime": "^4.0.0",
+    "@semantic-release/exec": "^7.1.0",
+    "@semantic-release/git": "^11.0.1",
     "@types/node": "^26.6.5",
     "angular-eslint": "22.6.0",
     "eslint": "^10.12.0",
     "jsdom": "^30.1.2",
     "ng-packagr": "^22.2.4",
     "prettier": "3.9.10",
+    "semantic-release": "^25.0.9",
     "typescript": "^6.0.3",
     "typescript-eslint": "8.71.2",
     "vitest": "^5.0.4"
+  },
+  "release": {
+    "branches": [
+      "master"
+    ],
+    "plugins": [
+      "@semantic-release/commit-analyzer",
+      "@semantic-release/release-notes-generator",
+      [
+        "@semantic-release/exec",
+        {
+          "prepareCmd": "bash release.sh ${nextRelease.version}"
+        }
+      ],
+      [
+        "@semantic-release/npm",
+        {
+          "pkgRoot": "dist/ngx-cookie-service"
+        }
+      ],
+      [
+        "@semantic-release/npm",
+        {
+          "pkgRoot": "dist/ngx-cookie-service-ssr"
+        }
+      ],
+      [
+        "@semantic-release/git",
+        {
+          "assets": [
+            "projects/ngx-cookie-service/package.json",
+            "projects/ngx-cookie-service-ssr/package.json"
+          ],
+          "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}"
+        }
+      ],
+      "@semantic-release/github"
+    ]
   }
 }
