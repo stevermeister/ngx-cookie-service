@@ -3,7 +3,7 @@ import { ɵPLATFORM_BROWSER_ID, ɵPLATFORM_SERVER_ID } from '@angular/common';
 import { DOCUMENT, PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
-import { CookieOptions, CookieService } from './cookie.service';
+import { CookieOptions, CookieService, SameSite } from './cookie.service';
 
 describe('NgxCookieServiceService', () => {
   let cookieService: CookieService;
@@ -303,6 +303,59 @@ describe('NgxCookieServiceService', () => {
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Secure;SameSite=None;Partitioned;');
         expect(warnSpy).not.toHaveBeenCalled();
+        warnSpy.mockRestore();
+      });
+      it('should skip the whole write when path or domain contains ";" or a control character', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('a', 'b', { path: '/; Domain=evil.example; Max-Age=999999' });
+        cookieService.set('c', 'd', { domain: 'example.com; Partitioned' });
+        cookieService.set('e', 'f', undefined, '/x;HttpOnly');
+        cookieService.set('g', 'h', { path: '/a\nb' });
+        cookieService.delete('i', '/; Max-Age=1');
+
+        expect(documentCookieSetterSpy).not.toHaveBeenCalled();
+        expect(warnSpy).toHaveBeenCalledTimes(5);
+        warnSpy.mockRestore();
+      });
+      it('should write unusual but harmless path and domain values as given', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('foo', 'bar', { path: '/café', domain: 'my_app.example.com' });
+        cookieService.set('baz', 'qux', { path: '/a-b/c_d.e', domain: '.sub.example.com.' });
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Path=/café;Domain=my_app.example.com;SameSite=Lax;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('baz=qux;Path=/a-b/c_d.e;Domain=.sub.example.com.;SameSite=Lax;');
+        expect(warnSpy).not.toHaveBeenCalled();
+        warnSpy.mockRestore();
+      });
+      it('should drop an invalid expires value with a warning', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('e', 'f', { expires: new Date('not a date') });
+        cookieService.set('g', 'h', '2030-01-01' as unknown as undefined, '/p');
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('e=f;SameSite=Lax;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('g=h;Path=/p;SameSite=Lax;');
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+        warnSpy.mockRestore();
+      });
+      it('should match sameSite case-insensitively and fall back to Lax for unknown values', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('a', 'b', { sameSite: 'strict' as SameSite });
+        cookieService.set('c', 'd', { sameSite: 'none' as SameSite });
+        cookieService.set('q', '1', { sameSite: 'Lax; Domain=evil.example' as SameSite });
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('a=b;SameSite=Strict;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('c=d;Secure;SameSite=None;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('q=1;SameSite=Lax;');
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+        warnSpy.mockRestore();
+      });
+      it('should leave the caller options unchanged when values are dropped', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const options: CookieOptions = { expires: new Date('not a date'), sameSite: 'bad' as SameSite, path: '/' };
+        const snapshot = { ...options };
+        cookieService.set('foo', 'bar', options);
+
+        expect(options).toStrictEqual(snapshot);
         warnSpy.mockRestore();
       });
       it('should set cookie with SameSite option', () => {

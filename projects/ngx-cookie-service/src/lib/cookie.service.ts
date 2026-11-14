@@ -17,6 +17,16 @@ export interface CookieOptions {
  */
 export type DeleteCookieOptions = Omit<CookieOptions, 'expires'>;
 
+/**
+ * Cookie options after validation: invalid values are removed and `expires` is always a `Date`.
+ */
+type ValidCookieOptions = Omit<CookieOptions, 'expires'> & { expires?: Date };
+
+/**
+ * The `SameSite` values browsers accept, in their canonical spelling.
+ */
+const SAME_SITE_VALUES: readonly SameSite[] = ['Lax', 'Strict', 'None'];
+
 @Injectable({
   providedIn: 'root',
 })
@@ -223,19 +233,16 @@ export class CookieService {
       return;
     }
 
+    // validateOptions() returns a copy, so the defaults applied below don't leak back into the caller's object
+    const options = CookieService.validateOptions(name, expiresOrOptions);
+    if (!options) {
+      return;
+    }
+
     let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
 
-    // Copy the caller's options so the defaults applied below don't leak back into their object
-    const options: CookieOptions = { ...expiresOrOptions };
-
     if (options.expires) {
-      if (typeof options.expires === 'number') {
-        const dateExpires: Date = new Date(new Date().getTime() + options.expires * 1000 * 60 * 60 * 24);
-
-        cookieString += 'Expires=' + dateExpires.toUTCString() + ';';
-      } else {
-        cookieString += 'Expires=' + options.expires.toUTCString() + ';';
-      }
+      cookieString += 'Expires=' + options.expires.toUTCString() + ';';
     }
 
     if (options.path) {
@@ -366,6 +373,69 @@ export class CookieService {
         this.delete(cookieName, pathOrOptions, domain, secure, sameSite);
       }
     }
+  }
+
+  /**
+   * Returns a validated copy of the options, or `undefined` if the cookie must not be written.
+   *
+   * A `path` or `domain` containing `;` or a control character could inject attributes or change the cookie's scope, so the
+   * whole write is skipped. An invalid `expires` is dropped, which makes a session cookie as browsers already did, and an
+   * unknown `sameSite` falls back to the `Lax` default. Each case logs a warning. A numeric `expires` (days
+   * from now) is converted to a `Date`, and `sameSite` is matched case-insensitively.
+   *
+   * @param name    Cookie name, used in warnings
+   * @param options Cookie options
+   * @returns A validated copy of the options, or `undefined` to skip the write
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.1.0
+   */
+  private static validateOptions(name: string, options: CookieOptions = {}): ValidCookieOptions | undefined {
+    const { expires, ...valid }: CookieOptions = options;
+    const result: ValidCookieOptions = valid;
+
+    for (const attribute of ['path', 'domain'] as const) {
+      const attributeValue = result[attribute];
+      if (typeof attributeValue === 'string' && CookieService.hasUnsafeCharacter(attributeValue)) {
+        console.warn(`[ngx-cookie-service] Cookie ${name} was skipped because its ${attribute} contains ";" or a control character.`);
+        return undefined;
+      }
+    }
+    if (expires) {
+      const date = typeof expires === 'number' ? new Date(Date.now() + expires * 1000 * 60 * 60 * 24) : expires;
+      if (date instanceof Date && Number.isFinite(date.getTime())) {
+        result.expires = date;
+      } else {
+        console.warn(`[ngx-cookie-service] Cookie ${name}: ignoring invalid expires value "${String(expires)}".`);
+      }
+    }
+    if (result.sameSite !== undefined && result.sameSite !== null) {
+      const sameSite = SAME_SITE_VALUES.find((value) => value.toLowerCase() === String(result.sameSite).toLowerCase());
+      if (sameSite) {
+        result.sameSite = sameSite;
+      } else {
+        console.warn(`[ngx-cookie-service] Cookie ${name}: ignoring invalid sameSite value "${String(result.sameSite)}".`);
+        delete result.sameSite;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Whether a cookie attribute value contains `;` or an ASCII control character, which would end the attribute early or
+   * corrupt the header.
+   *
+   * @param value Attribute value
+   * @returns `true` if the value is unsafe to write
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.1.0
+   */
+  private static hasUnsafeCharacter(value: string): boolean {
+    return [...value].some((character) => {
+      const code = character.charCodeAt(0);
+      return character === ';' || code < 0x20 || code === 0x7f;
+    });
   }
 
   /**

@@ -3,7 +3,7 @@ import { ɵPLATFORM_BROWSER_ID, ɵPLATFORM_SERVER_ID } from '@angular/common';
 import { DOCUMENT, PLATFORM_ID, REQUEST, RESPONSE_INIT } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
-import { SsrCookieService } from './ssr-cookie.service';
+import { CookieOptions, SameSite, SsrCookieService } from './ssr-cookie.service';
 
 describe('SsrCookieService', () => {
   let cookieService: SsrCookieService;
@@ -75,6 +75,15 @@ describe('SsrCookieService', () => {
       it('should set cookie on document in browser', () => {
         cookieService.set('foo', 'bar');
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;SameSite=Lax;');
+      });
+
+      it('should skip the whole write when path contains ";" in browser', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('foo', 'bar', { path: '/; Max-Age=999999' });
+
+        expect(documentCookieSetterSpy).not.toHaveBeenCalled();
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        warnSpy.mockRestore();
       });
 
       it('should force secure flag for Partitioned cookies in browser', () => {
@@ -195,6 +204,49 @@ describe('SsrCookieService', () => {
           expect(headerValue).toContain('foo=bar');
           expect(headerValue).toContain('baz=qux');
         }
+      });
+
+      it('should skip the whole write when path or domain contains ";" or a control character', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('a', 'b', { path: '/; Domain=evil.example; Max-Age=999999' });
+        cookieService.set('c', 'd', { domain: 'example.com\r\nX-Injected: 1' });
+
+        expect((responseInitMock.headers as Headers).getSetCookie()).toEqual([]);
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+        warnSpy.mockRestore();
+      });
+
+      it('should drop invalid expires, maxAge and sameSite values with a warning', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('c', 'd', { expires: new Date('not a date'), maxAge: 1.5 });
+        cookieService.set('e', 'f', { maxAge: 1e21 });
+        cookieService.set('g', 'h', { sameSite: 'Lax; Domain=evil.example' as SameSite });
+        cookieService.set('i', 'j', { maxAge: null as unknown as number });
+
+        expect((responseInitMock.headers as Headers).getSetCookie()).toEqual([
+          'c=d;SameSite=Lax;',
+          'e=f;SameSite=Lax;',
+          'g=h;SameSite=Lax;',
+          'i=j;SameSite=Lax;',
+        ]);
+        expect(warnSpy).toHaveBeenCalledTimes(4);
+        warnSpy.mockRestore();
+      });
+
+      it('should not modify the options object passed by the caller', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const options: CookieOptions = { sameSite: 'None', partitioned: true, maxAge: 1.5, expires: new Date('not a date') };
+        const snapshot = { ...options };
+        cookieService.set('foo', 'bar', options);
+
+        expect(options).toStrictEqual(snapshot);
+        warnSpy.mockRestore();
+      });
+
+      it('should keep valid maxAge, path and domain values', () => {
+        cookieService.set('foo', 'bar', { maxAge: 60, path: '/', domain: 'example.com' });
+
+        expect((responseInitMock.headers as Headers).getSetCookie()).toEqual(['foo=bar;Max-Age=60;Path=/;Domain=example.com;SameSite=Lax;']);
       });
 
       it('should force secure flag for Partitioned cookies on server', () => {
