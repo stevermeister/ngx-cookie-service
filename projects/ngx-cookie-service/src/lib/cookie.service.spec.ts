@@ -1,9 +1,9 @@
 /// <reference types="vitest/globals" />
 import { ɵPLATFORM_BROWSER_ID, ɵPLATFORM_SERVER_ID } from '@angular/common';
-import { DOCUMENT, PLATFORM_ID } from '@angular/core';
+import { DOCUMENT, EnvironmentProviders, PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
-import { provideCookieOptions } from './cookie.config';
+import { CookieEncoding, provideCookieEncoding, provideCookieOptions } from './cookie.config';
 import { CookieOptions, CookieService, SameSite } from './cookie.service';
 
 describe('NgxCookieServiceService', () => {
@@ -466,18 +466,16 @@ describe('NgxCookieServiceService', () => {
         expect(deleteSpy.mock.calls.map((call) => call[0])).toEqual(['hasOwnProperty', '__proto__', 'b']);
       });
     });
+    const configure = (provider: EnvironmentProviders): void => {
+      TestBed.resetTestingModule();
+      TestBed.configureTestingModule({
+        providers: [{ provide: PLATFORM_ID, useFactory: () => platformId }, { provide: DOCUMENT, useFactory: () => documentMock }, provider],
+      });
+      cookieService = TestBed.inject(CookieService);
+    };
+
     describe('with provideCookieOptions()', () => {
-      const useDefaults = (options: CookieOptions): void => {
-        TestBed.resetTestingModule();
-        TestBed.configureTestingModule({
-          providers: [
-            { provide: PLATFORM_ID, useFactory: () => platformId },
-            { provide: DOCUMENT, useFactory: () => documentMock },
-            provideCookieOptions(options),
-          ],
-        });
-        cookieService = TestBed.inject(CookieService);
-      };
+      const useDefaults = (options: CookieOptions): void => configure(provideCookieOptions(options));
 
       it('should apply the defaults to set()', () => {
         useDefaults({ path: '/', secure: true, sameSite: 'Strict' });
@@ -521,6 +519,60 @@ describe('NgxCookieServiceService', () => {
         expect(defaults).toStrictEqual({ sameSite: 'None' });
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('a=b;Secure;SameSite=None;');
         warnSpy.mockRestore();
+      });
+    });
+    describe('with provideCookieEncoding()', () => {
+      const useEncoding = (encoding: CookieEncoding): void => configure(provideCookieEncoding(encoding));
+
+      it("should write cookie-octet values as-is with 'minimal' and encode the rest", () => {
+        useEncoding('minimal');
+        cookieService.set('token', 'ab+/cd==:x@y');
+        cookieService.set('text', 'a b;c%');
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('token=ab+/cd==:x@y;SameSite=Lax;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('text=a%20b%3Bc%25;SameSite=Lax;');
+      });
+      it("should read values written with 'minimal' back unchanged", () => {
+        useEncoding('minimal');
+        documentCookieGetterSpy.mockReturnValue('token=ab+/cd==:x@y; text=a%20b%3Bc%25');
+
+        expect(cookieService.get('token')).toEqual('ab+/cd==:x@y');
+        expect(cookieService.get('text')).toEqual('a b;c%');
+        expect(cookieService.getAll()).toEqual({ token: 'ab+/cd==:x@y', text: 'a b;c%' });
+      });
+      it('should use a custom codec for set(), get() and getAll()', () => {
+        const codec = { encode: vi.fn((value: string) => btoa(value)), decode: vi.fn((value: string) => atob(value)) };
+        useEncoding(codec);
+        cookieService.set('greeting', 'hello');
+        documentCookieGetterSpy.mockReturnValue('greeting=aGVsbG8=');
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('greeting=aGVsbG8=;SameSite=Lax;');
+        expect(cookieService.get('greeting')).toEqual('hello');
+        expect(cookieService.getAll()).toEqual({ greeting: 'hello' });
+        expect(codec.encode).toHaveBeenCalledWith('hello', 'greeting');
+        expect(codec.decode).toHaveBeenCalledWith('aGVsbG8=', 'greeting');
+      });
+      it('should skip the write when a custom codec returns ";" or a control character', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        useEncoding({ encode: (value) => value, decode: (value) => value });
+        cookieService.set('a', 'x; Domain=evil.example');
+        cookieService.set('b', 'x\ny');
+
+        expect(documentCookieSetterSpy).not.toHaveBeenCalled();
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+        warnSpy.mockRestore();
+      });
+      it('should return the raw value when a custom decode throws', () => {
+        useEncoding({
+          encode: (value) => value,
+          decode: () => {
+            throw new Error('cannot decode');
+          },
+        });
+        documentCookieGetterSpy.mockReturnValue('a=raw');
+
+        expect(cookieService.get('a')).toEqual('raw');
+        expect(cookieService.getAll()).toEqual({ a: 'raw' });
       });
     });
   });

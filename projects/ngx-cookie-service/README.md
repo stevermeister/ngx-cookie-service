@@ -271,6 +271,27 @@ passed to a call win over the defaults, and `undefined` values don't override th
 Setting `path: '/'` here is recommended. Without a path, the browser uses the directory of the URL the page was loaded
 at, so the same code can read or delete different cookies depending on where the user landed.
 
+## provideCookieEncoding( encoding: 'uri' | 'minimal' | CookieCodec ): EnvironmentProviders;
+
+```typescript
+// app.config.ts
+import { provideCookieEncoding } from 'ngx-cookie-service'; // or 'ngx-cookie-service-ssr'
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideCookieEncoding('minimal')],
+};
+```
+
+Sets how cookie values are encoded when they are written and decoded when they are read. Cookie names keep the
+default encoding.
+
+- `'uri'` (default): values are encoded with `encodeURIComponent`, so `ab+/cd==` is stored as `ab%2B%2Fcd%3D%3D`.
+- `'minimal'`: values made only of characters allowed in a cookie value are stored as-is, so `ab+/cd==` stays
+  `ab+/cd==`. Other values fall back to `encodeURIComponent`. Use it when a server reads cookies without URL-decoding
+  them, for example JWT or base64 values. Express encodes cookie values the same way.
+- A custom `{ encode(value, name), decode(value, name) }` object for any other scheme. If the encoded value contains
+  `;` or a control character, the cookie is not written and a warning is logged.
+
 # FAQ
 
 ## General tips

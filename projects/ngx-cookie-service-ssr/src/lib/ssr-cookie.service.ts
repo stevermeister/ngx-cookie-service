@@ -1,6 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { DOCUMENT, inject, Injectable, PLATFORM_ID, REQUEST, RESPONSE_INIT } from '@angular/core';
-import { COOKIE_OPTIONS } from './ssr-cookie.config';
+import { COOKIE_ENCODING, COOKIE_OPTIONS, CookieCodec, CookieEncoding } from './ssr-cookie.config';
 
 export type SameSite = 'Lax' | 'None' | 'Strict';
 
@@ -30,6 +30,12 @@ type ValidCookieOptions = Omit<CookieOptions, 'expires'> & { expires?: Date };
  */
 const SAME_SITE_VALUES: readonly SameSite[] = ['Lax', 'Strict', 'None'];
 
+/**
+ * RFC 6265 cookie-octets except `%`: values made only of these are written as-is by the `'minimal'` encoding and still
+ * decode to themselves. Same pattern as the jshttp `cookie` package (2.x) used by Express.
+ */
+const COOKIE_OCTET_REGEXP = /^[!#$&'()*+\-./0-9:<=>?@A-Z[\]^_`a-z{|}~]*$/;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -44,6 +50,7 @@ export class SsrCookieService {
    */
   private readonly serverCookies = new Map<string, string | null>();
   private readonly defaultOptions: CookieOptions = inject(COOKIE_OPTIONS, { optional: true }) ?? {};
+  private readonly codec: CookieCodec = SsrCookieService.toCodec(inject(COOKIE_ENCODING, { optional: true }));
 
   /**
    * Get cookie Regular Expression
@@ -105,10 +112,9 @@ export class SsrCookieService {
    */
   get(name: string): string {
     if (this.check(name)) {
-      name = encodeURIComponent(name);
-      const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
+      const regExp: RegExp = SsrCookieService.getCookieRegExp(encodeURIComponent(name));
       const result = regExp.exec((this.documentIsAccessible ? this.document.cookie : this.getServerCookies()) ?? '');
-      return result?.[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
+      return result?.[1] ? this.decodeValue(result[1], name) : '';
     }
     return '';
   }
@@ -144,7 +150,7 @@ export class SsrCookieService {
         }
         // defineProperty stores names such as "__proto__" as normal entries instead of touching the object's prototype
         Object.defineProperty(cookies, cookieName, {
-          value: SsrCookieService.safeDecodeURIComponent(trimmedCookie.substring(equalIndex + 1)),
+          value: this.decodeValue(trimmedCookie.substring(equalIndex + 1), cookieName),
           enumerable: true,
           writable: true,
           configurable: true,
@@ -191,10 +197,14 @@ export class SsrCookieService {
     if (!options) {
       return;
     }
+    const encodedValue = this.encodeValue(name, value);
+    if (encodedValue === undefined) {
+      return;
+    }
 
     if (!this.documentIsAccessible) {
       if (this.responseInit) {
-        this.setServerCookie(name, value, options);
+        this.setServerCookie(name, encodedValue, options);
       }
       return;
     }
@@ -218,7 +228,7 @@ export class SsrCookieService {
       console.warn(`[ngx-cookie-service] Cookie ${name} was forced with secure flag because Partitioned cookies must be Secure.`);
     }
 
-    const cookieString = this.buildCookieString(name, value, options);
+    const cookieString = this.buildCookieString(name, encodedValue, options);
     this.document.cookie = cookieString;
   }
 
@@ -365,14 +375,14 @@ export class SsrCookieService {
   /**
    * Helper method to set cookies on the server response
    *
-   * @param name     Cookie name
-   * @param value    Cookie value
-   * @param options  Cookie options
+   * @param name         Cookie name
+   * @param encodedValue Cookie value, already encoded
+   * @param options      Cookie options
    *
    * @author: Pavankumar Jadda
    * @since: 21.2.0
    */
-  private setServerCookie(name: string, value: string, options: ValidCookieOptions = {}): void {
+  private setServerCookie(name: string, encodedValue: string, options: ValidCookieOptions = {}): void {
     if (!this.responseInit) {
       return;
     }
@@ -382,10 +392,10 @@ export class SsrCookieService {
       options.secure = true;
     }
 
-    const cookieString = this.buildCookieString(name, value, options);
+    const cookieString = this.buildCookieString(name, encodedValue, options);
     this.appendSetCookieHeader(cookieString);
     // Remember the write so later reads while rendering this request see it
-    this.serverCookies.set(encodeURIComponent(name), SsrCookieService.isExpired(options) ? null : encodeURIComponent(value));
+    this.serverCookies.set(encodeURIComponent(name), SsrCookieService.isExpired(options) ? null : encodedValue);
   }
 
   /**
@@ -428,6 +438,79 @@ export class SsrCookieService {
       return options.maxAge <= 0;
     }
     return options.expires !== undefined && options.expires.getTime() <= Date.now();
+  }
+
+  /**
+   * Built-in `'uri'` encoding: `encodeURIComponent`, decoded with {@link SsrCookieService.safeDecodeURIComponent}.
+   */
+  private static readonly uriCodec: CookieCodec = {
+    encode: (value) => encodeURIComponent(value),
+    decode: (value) => SsrCookieService.safeDecodeURIComponent(value),
+  };
+
+  /**
+   * Built-in `'minimal'` encoding: values made only of cookie-octets are written as-is, others use `encodeURIComponent`.
+   */
+  private static readonly minimalCodec: CookieCodec = {
+    encode: (value) => (COOKIE_OCTET_REGEXP.test(value) ? value : encodeURIComponent(value)),
+    decode: (value) => SsrCookieService.safeDecodeURIComponent(value),
+  };
+
+  /**
+   * Resolves the encoding provided with {@link provideCookieEncoding} to a codec, defaulting to `'uri'`.
+   *
+   * @param encoding Provided encoding, or `null` when none was provided
+   * @returns The codec to use
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.2.0
+   */
+  private static toCodec(encoding: CookieEncoding | null): CookieCodec {
+    if (encoding === 'minimal') {
+      return SsrCookieService.minimalCodec;
+    }
+    if (typeof encoding === 'object' && encoding !== null) {
+      return encoding;
+    }
+    return SsrCookieService.uriCodec;
+  }
+
+  /**
+   * Encodes a cookie value with the configured encoding. Returns `undefined`, with a warning, when the result can't be
+   * written safely because it isn't a string or contains `;` or a control character.
+   *
+   * @param name  Cookie name
+   * @param value Cookie value
+   * @returns The encoded value, or `undefined` to skip the write
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.2.0
+   */
+  private encodeValue(name: string, value: string): string | undefined {
+    const encodedValue = this.codec.encode(value, name);
+    if (typeof encodedValue !== 'string' || SsrCookieService.hasUnsafeCharacter(encodedValue)) {
+      console.warn(`[ngx-cookie-service] Cookie ${name} was skipped because its encoded value isn't a string without ";" or control characters.`);
+      return undefined;
+    }
+    return encodedValue;
+  }
+
+  /**
+   * Decodes a cookie value with the configured encoding. If a custom `decode` throws, the raw value is returned.
+   *
+   * @param value Raw cookie value
+   * @param name  Decoded cookie name
+   * @returns The decoded value
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.2.0
+   */
+  private decodeValue(value: string, name: string): string {
+    try {
+      return this.codec.decode(value, name);
+    } catch {
+      return value;
+    }
   }
 
   /**
@@ -569,16 +652,16 @@ export class SsrCookieService {
   /**
    * Builds a cookie string from name, value, and options
    *
-   * @param name    Cookie name
-   * @param value   Cookie value
-   * @param options Cookie options
+   * @param name         Cookie name
+   * @param encodedValue Cookie value, already encoded
+   * @param options      Cookie options
    * @returns Formatted cookie string
    *
    * @author: Pavankumar Jadda
    * @since: 21.2.0
    */
-  private buildCookieString(name: string, value: string, options: CookieOptions = {}): string {
-    let cookieString = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
+  private buildCookieString(name: string, encodedValue: string, options: CookieOptions = {}): string {
+    let cookieString = encodeURIComponent(name) + '=' + encodedValue + ';';
 
     if (options.expires) {
       if (typeof options.expires === 'number') {
