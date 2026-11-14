@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { DOCUMENT, inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { COOKIE_OPTIONS } from './cookie.config';
 
 export type SameSite = 'Lax' | 'None' | 'Strict';
 
@@ -34,6 +35,7 @@ export class CookieService {
   private readonly documentIsAccessible: boolean;
   private readonly document = inject<Document>(DOCUMENT);
   private readonly platformId = inject<object>(PLATFORM_ID);
+  private readonly defaultOptions: CookieOptions = inject(COOKIE_OPTIONS, { optional: true }) ?? {};
 
   constructor() {
     this.documentIsAccessible = isPlatformBrowser(this.platformId);
@@ -225,7 +227,7 @@ export class CookieService {
         path,
         domain,
         secure,
-        sameSite: sameSite || 'Lax',
+        sameSite,
         partitioned,
       };
 
@@ -234,7 +236,7 @@ export class CookieService {
     }
 
     // validateOptions() returns a copy, so the defaults applied below don't leak back into the caller's object
-    const options = CookieService.validateOptions(name, expiresOrOptions);
+    const options = CookieService.validateOptions(name, CookieService.withDefaults(this.defaultOptions, expiresOrOptions));
     if (!options) {
       return;
     }
@@ -318,7 +320,7 @@ export class CookieService {
     pathOrOptions?: CookieOptions['path'] | DeleteCookieOptions,
     domain?: CookieOptions['domain'],
     secure?: CookieOptions['secure'],
-    sameSite: SameSite = 'Lax'
+    sameSite?: SameSite
   ): void {
     if (!this.documentIsAccessible) {
       return;
@@ -358,7 +360,7 @@ export class CookieService {
     pathOrOptions?: CookieOptions['path'] | DeleteCookieOptions,
     domain?: CookieOptions['domain'],
     secure?: CookieOptions['secure'],
-    sameSite: SameSite = 'Lax'
+    sameSite?: SameSite
   ): void {
     if (!this.documentIsAccessible) {
       return;
@@ -373,6 +375,28 @@ export class CookieService {
         this.delete(cookieName, pathOrOptions, domain, secure, sameSite);
       }
     }
+  }
+
+  /**
+   * Merges the app-wide defaults from {@link provideCookieOptions} under the options of one call.
+   *
+   * Values passed to the call win, and `undefined` or `null` values don't override a default.
+   *
+   * @param defaults Default cookie options
+   * @param options  Options passed to the call
+   * @returns A new, merged CookieOptions object
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.2.0
+   */
+  private static withDefaults(defaults: CookieOptions, options: CookieOptions = {}): CookieOptions {
+    const merged: Record<string, unknown> = { ...defaults };
+    for (const [key, value] of Object.entries(options)) {
+      if (value !== undefined && value !== null) {
+        merged[key] = value;
+      }
+    }
+    return merged as CookieOptions;
   }
 
   /**

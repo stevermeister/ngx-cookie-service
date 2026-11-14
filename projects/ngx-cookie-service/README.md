@@ -253,6 +253,24 @@ cookieService.deleteAll({ path: '/' });
 Deletes all cookies that can currently be accessed, using the same attributes for each one. It is best practice to
 always define a path. If you are unsure about the path value, use `'/'`.
 
+## provideCookieOptions( options: CookieOptions ): EnvironmentProviders;
+
+```typescript
+// app.config.ts
+import { provideCookieOptions } from 'ngx-cookie-service'; // or 'ngx-cookie-service-ssr'
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideCookieOptions({ path: '/', secure: true, sameSite: 'Strict' })],
+};
+```
+
+Sets default options for every `set()`, `delete()` and `deleteAll()` call, so you don't have to repeat them. Options
+passed to a call win over the defaults, and `undefined` values don't override them. A call that passes its own `expires`
+(or `maxAge` in `ngx-cookie-service-ssr`) replaces the default lifetime, so `delete()` always expires the cookie.
+
+Setting `path: '/'` here is recommended. Without a path, the browser uses the directory of the URL the page was loaded
+at, so the same code can read or delete different cookies depending on where the user landed.
+
 # FAQ
 
 ## General tips

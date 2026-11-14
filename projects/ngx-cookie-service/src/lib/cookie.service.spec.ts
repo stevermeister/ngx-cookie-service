@@ -3,6 +3,7 @@ import { ɵPLATFORM_BROWSER_ID, ɵPLATFORM_SERVER_ID } from '@angular/common';
 import { DOCUMENT, PLATFORM_ID } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
+import { provideCookieOptions } from './cookie.config';
 import { CookieOptions, CookieService, SameSite } from './cookie.service';
 
 describe('NgxCookieServiceService', () => {
@@ -463,6 +464,63 @@ describe('NgxCookieServiceService', () => {
         cookieService.deleteAll();
 
         expect(deleteSpy.mock.calls.map((call) => call[0])).toEqual(['hasOwnProperty', '__proto__', 'b']);
+      });
+    });
+    describe('with provideCookieOptions()', () => {
+      const useDefaults = (options: CookieOptions): void => {
+        TestBed.resetTestingModule();
+        TestBed.configureTestingModule({
+          providers: [
+            { provide: PLATFORM_ID, useFactory: () => platformId },
+            { provide: DOCUMENT, useFactory: () => documentMock },
+            provideCookieOptions(options),
+          ],
+        });
+        cookieService = TestBed.inject(CookieService);
+      };
+
+      it('should apply the defaults to set()', () => {
+        useDefaults({ path: '/', secure: true, sameSite: 'Strict' });
+        cookieService.set('foo', 'bar');
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Path=/;Secure;SameSite=Strict;');
+      });
+      it('should let call options win and ignore undefined ones', () => {
+        useDefaults({ path: '/', domain: 'example.com' });
+        cookieService.set('a', 'b', { path: '/x', domain: undefined });
+        cookieService.set('c', 'd', undefined, undefined, 'sub.example.com');
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('a=b;Path=/x;Domain=example.com;SameSite=Lax;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('c=d;Path=/;Domain=sub.example.com;SameSite=Lax;');
+      });
+      it('should apply the defaults to delete() and deleteAll()', () => {
+        useDefaults({ path: '/', secure: true, sameSite: 'None', partitioned: true });
+        cookieService.delete('foo');
+        documentCookieGetterSpy.mockReturnValue('a=1');
+        cookieService.deleteAll();
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;Path=/;Secure;SameSite=None;Partitioned;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('a=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;Path=/;Secure;SameSite=None;Partitioned;');
+      });
+      it('should use a default expires for set() only', () => {
+        useDefaults({ expires: new Date('Tue, 01 Jan 2030 00:00:00 GMT') });
+        cookieService.set('a', 'b');
+        cookieService.set('c', 'd', { expires: 0 });
+        cookieService.delete('e');
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('a=b;Expires=Tue, 01 Jan 2030 00:00:00 GMT;SameSite=Lax;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('c=d;SameSite=Lax;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('e=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;SameSite=Lax;');
+      });
+      it('should not modify the defaults passed to provideCookieOptions()', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        const defaults: CookieOptions = { sameSite: 'None' };
+        useDefaults(defaults);
+        cookieService.set('a', 'b');
+
+        expect(defaults).toStrictEqual({ sameSite: 'None' });
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('a=b;Secure;SameSite=None;');
+        warnSpy.mockRestore();
       });
     });
   });

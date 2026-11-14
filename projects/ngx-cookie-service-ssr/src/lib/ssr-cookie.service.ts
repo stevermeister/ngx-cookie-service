@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { DOCUMENT, inject, Injectable, PLATFORM_ID, REQUEST, RESPONSE_INIT } from '@angular/core';
+import { COOKIE_OPTIONS } from './ssr-cookie.config';
 
 export type SameSite = 'Lax' | 'None' | 'Strict';
 
@@ -42,6 +43,7 @@ export class SsrCookieService {
    * Cookies set (encoded value) or deleted (`null`) on the server while rendering the current request, by encoded name.
    */
   private readonly serverCookies = new Map<string, string | null>();
+  private readonly defaultOptions: CookieOptions = inject(COOKIE_OPTIONS, { optional: true }) ?? {};
 
   /**
    * Get cookie Regular Expression
@@ -184,7 +186,8 @@ export class SsrCookieService {
     sameSite?: SameSite,
     partitioned?: boolean
   ): void {
-    const options = SsrCookieService.validateOptions(name, this.normalizeOptions(expiresOrOptions, path, domain, secure, sameSite, partitioned));
+    const callOptions = this.normalizeOptions(expiresOrOptions, path, domain, secure, sameSite, partitioned);
+    const options = SsrCookieService.validateOptions(name, SsrCookieService.withDefaults(this.defaultOptions, callOptions));
     if (!options) {
       return;
     }
@@ -251,7 +254,7 @@ export class SsrCookieService {
    */
   delete(name: string, options?: DeleteCookieOptions): void;
 
-  delete(name: string, pathOrOptions?: string | DeleteCookieOptions, domain?: string, secure?: boolean, sameSite: SameSite = 'Lax'): void {
+  delete(name: string, pathOrOptions?: string | DeleteCookieOptions, domain?: string, secure?: boolean, sameSite?: SameSite): void {
     if (!this.documentIsAccessible && !this.responseInit) {
       return;
     }
@@ -286,7 +289,7 @@ export class SsrCookieService {
    */
   deleteAll(options?: DeleteCookieOptions): void;
 
-  deleteAll(pathOrOptions?: string | DeleteCookieOptions, domain?: string, secure?: boolean, sameSite: SameSite = 'Lax'): void {
+  deleteAll(pathOrOptions?: string | DeleteCookieOptions, domain?: string, secure?: boolean, sameSite?: SameSite): void {
     if (!this.documentIsAccessible && !this.responseInit) {
       return;
     }
@@ -425,6 +428,35 @@ export class SsrCookieService {
       return options.maxAge <= 0;
     }
     return options.expires !== undefined && options.expires.getTime() <= Date.now();
+  }
+
+  /**
+   * Merges the app-wide defaults from {@link provideCookieOptions} under the options of one call.
+   *
+   * Values passed to the call win, and `undefined` or `null` values don't override a default. A call that sets its own
+   * `expires` or `maxAge` replaces the default lifetime, so `delete()` always expires the cookie.
+   *
+   * @param defaults Default cookie options
+   * @param options  Options passed to the call
+   * @returns A new, merged CookieOptions object
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.2.0
+   */
+  private static withDefaults(defaults: CookieOptions, options: CookieOptions): CookieOptions {
+    const isSet = (value: unknown): boolean => value !== undefined && value !== null;
+    const merged: Record<string, unknown> = { ...defaults };
+    // A call's own lifetime replaces the default one, so a default maxAge can't outlast the expiry that delete() sets
+    if (isSet(options.expires) || isSet(options.maxAge)) {
+      delete merged['expires'];
+      delete merged['maxAge'];
+    }
+    for (const [key, value] of Object.entries(options)) {
+      if (isSet(value)) {
+        merged[key] = value;
+      }
+    }
+    return merged as CookieOptions;
   }
 
   /**
