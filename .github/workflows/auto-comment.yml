@@ -1,7 +1,15 @@
 name: Auto Comment
-on: [issues, pull_request]
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
 jobs:
   run:
+    # Only greet outside contributors: skip maintainers (owner, members, collaborators) and bots such as Dependabot
+    if: >-
+      !contains(fromJSON('["OWNER", "MEMBER", "COLLABORATOR"]'), github.event.issue.author_association || github.event.pull_request.author_association)
+      && (github.event.issue.user.type || github.event.pull_request.user.type) != 'Bot'
     runs-on: ubuntu-latest
     steps:
       - uses: wow-actions/auto-comment@v1
