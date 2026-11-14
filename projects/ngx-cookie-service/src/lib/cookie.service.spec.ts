@@ -144,6 +144,14 @@ describe('NgxCookieServiceService', () => {
         expect(cookieService.getAll()).toEqual({ foo: 'specific', bar: 'baz' });
         expect(cookieService.get('foo')).toEqual('specific');
       });
+      it('should include cookies whose names match Object.prototype members', () => {
+        documentCookieGetterSpy.mockReturnValue('__proto__=x; hasOwnProperty=y; constructor=z; b=1');
+        const cookies = cookieService.getAll();
+
+        expect(Object.keys(cookies)).toEqual(['__proto__', 'hasOwnProperty', 'constructor', 'b']);
+        expect(Object.getOwnPropertyDescriptor(cookies, '__proto__')?.value).toEqual('x');
+        expect(Object.getPrototypeOf(cookies)).toBe(Object.prototype);
+      });
     });
     describe('#set', () => {
       it('should set cookie with default SameSite option', () => {
@@ -371,6 +379,13 @@ describe('NgxCookieServiceService', () => {
 
         expect(cookieService.delete).toHaveBeenCalledWith('foo', '/test', 'example.com', true, 'Lax');
         expect(cookieService.delete).toHaveBeenCalledWith('test', '/test', 'example.com', true, 'Lax');
+      });
+      it('should delete cookies named "hasOwnProperty" and "__proto__" too', () => {
+        const deleteSpy = vi.spyOn(cookieService, 'delete');
+        documentCookieGetterSpy.mockReturnValue('hasOwnProperty=x; __proto__=y; b=1');
+        cookieService.deleteAll();
+
+        expect(deleteSpy.mock.calls.map((call) => call[0])).toEqual(['hasOwnProperty', '__proto__', 'b']);
       });
     });
   });

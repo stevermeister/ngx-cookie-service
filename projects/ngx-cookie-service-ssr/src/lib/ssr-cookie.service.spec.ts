@@ -121,6 +121,23 @@ describe('SsrCookieService', () => {
         expect(cookieService.getAll()).toEqual({ foo: 'specific', bar: 'baz' });
         expect(cookieService.get('foo')).toEqual('specific');
       });
+
+      it('should include cookies whose names match Object.prototype members', () => {
+        requestMock.headers.set('cookie', '__proto__=x; hasOwnProperty=y; b=1');
+        const cookies = cookieService.getAll();
+
+        expect(Object.keys(cookies)).toEqual(['__proto__', 'hasOwnProperty', 'b']);
+        expect(Object.getOwnPropertyDescriptor(cookies, '__proto__')?.value).toEqual('x');
+      });
+    });
+
+    describe('#deleteAll', () => {
+      it('should delete cookies named "hasOwnProperty" and "__proto__" too', () => {
+        requestMock.headers.set('cookie', 'hasOwnProperty=x; __proto__=y; b=1');
+        cookieService.deleteAll();
+
+        expect((responseInitMock.headers as Headers).getSetCookie().map((cookie) => cookie.split('=')[0])).toEqual(['hasOwnProperty', '__proto__', 'b']);
+      });
     });
 
     describe('#set', () => {

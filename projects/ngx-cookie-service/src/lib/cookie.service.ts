@@ -129,7 +129,13 @@ export class CookieService {
         if (Object.hasOwn(cookies, cookieName)) {
           return;
         }
-        cookies[cookieName] = CookieService.safeDecodeURIComponent(trimmedCookie.substring(equalIndex + 1));
+        // defineProperty stores names such as "__proto__" as normal entries instead of touching the object's prototype
+        Object.defineProperty(cookies, cookieName, {
+          value: CookieService.safeDecodeURIComponent(trimmedCookie.substring(equalIndex + 1)),
+          enumerable: true,
+          writable: true,
+          configurable: true,
+        });
       });
     }
 
@@ -299,12 +305,9 @@ export class CookieService {
       return;
     }
 
-    const cookies: any = this.getAll();
-
-    for (const cookieName in cookies) {
-      if (cookies.hasOwnProperty(cookieName)) {
-        this.delete(cookieName, path, domain, secure, sameSite);
-      }
+    // Object.keys() rather than for...in with cookies.hasOwnProperty(): a cookie named "hasOwnProperty" would shadow that method
+    for (const cookieName of Object.keys(this.getAll())) {
+      this.delete(cookieName, path, domain, secure, sameSite);
     }
   }
 }
