@@ -12,6 +12,21 @@ export interface CookieOptions {
   partitioned?: boolean;
 }
 
+/**
+ * Attributes that identify the cookie to delete. They must match the attributes the cookie was set with.
+ */
+export type DeleteCookieOptions = Omit<CookieOptions, 'expires'>;
+
+/**
+ * Cookie options after validation: invalid values are removed and `expires` is always a `Date`.
+ */
+type ValidCookieOptions = Omit<CookieOptions, 'expires'> & { expires?: Date };
+
+/**
+ * The `SameSite` values browsers accept, in their canonical spelling.
+ */
+const SAME_SITE_VALUES: readonly SameSite[] = ['Lax', 'Strict', 'None'];
+
 @Injectable({
   providedIn: 'root',
 })
@@ -124,9 +139,18 @@ export class CookieService {
           // Cookie without value (invalid, but handle gracefully)
           return;
         }
-        const cookieName = trimmedCookie.substring(0, equalIndex);
-        const cookieValue = trimmedCookie.substring(equalIndex + 1);
-        cookies[CookieService.safeDecodeURIComponent(cookieName)] = CookieService.safeDecodeURIComponent(cookieValue);
+        const cookieName = CookieService.safeDecodeURIComponent(trimmedCookie.substring(0, equalIndex));
+        // Browsers list the most specific cookie first when several share a name. Keep that one, as get() does.
+        if (Object.hasOwn(cookies, cookieName)) {
+          return;
+        }
+        // defineProperty stores names such as "__proto__" as normal entries instead of touching the object's prototype
+        Object.defineProperty(cookies, cookieName, {
+          value: CookieService.safeDecodeURIComponent(trimmedCookie.substring(equalIndex + 1)),
+          enumerable: true,
+          writable: true,
+          configurable: true,
+        });
       });
     }
 
@@ -194,7 +218,8 @@ export class CookieService {
       return;
     }
 
-    if (typeof expiresOrOptions === 'number' || expiresOrOptions instanceof Date || path || domain || secure || sameSite) {
+    // Anything but an options object means the positional form, so no positional argument (e.g. a lone `partitioned`) is dropped
+    if (typeof expiresOrOptions !== 'object' || expiresOrOptions === null || expiresOrOptions instanceof Date) {
       const optionsBody = {
         expires: expiresOrOptions as CookieOptions['expires'],
         path,
@@ -208,18 +233,16 @@ export class CookieService {
       return;
     }
 
+    // validateOptions() returns a copy, so the defaults applied below don't leak back into the caller's object
+    const options = CookieService.validateOptions(name, expiresOrOptions);
+    if (!options) {
+      return;
+    }
+
     let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
 
-    const options = expiresOrOptions ? expiresOrOptions : {};
-
     if (options.expires) {
-      if (typeof options.expires === 'number') {
-        const dateExpires: Date = new Date(new Date().getTime() + options.expires * 1000 * 60 * 60 * 24);
-
-        cookieString += 'Expires=' + dateExpires.toUTCString() + ';';
-      } else {
-        cookieString += 'Expires=' + options.expires.toUTCString() + ';';
-      }
+      cookieString += 'Expires=' + options.expires.toUTCString() + ';';
     }
 
     if (options.path) {
@@ -230,12 +253,16 @@ export class CookieService {
       cookieString += 'Domain=' + options.domain + ';';
     }
 
-    if (options.secure === false && options.sameSite === 'None') {
+    if (options.sameSite === 'None' && !options.secure) {
       options.secure = true;
       console.warn(
         `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
           `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
       );
+    }
+    if (options.partitioned && !options.secure) {
+      options.secure = true;
+      console.warn(`[ngx-cookie-service] Cookie ${name} was forced with secure flag because Partitioned cookies must be Secure.`);
     }
     if (options.secure) {
       cookieString += 'Secure;';
@@ -255,7 +282,10 @@ export class CookieService {
   }
 
   /**
-   * Delete cookie by name at given path and domain. If not path is not specified, cookie at '/' path will be deleted.
+   * Delete cookie by name at given path and domain.
+   *
+   * If `path` is not specified, no `Path` attribute is written and the browser uses its default path: the directory of the URL
+   * the page was loaded at (not the current router URL). To delete a cookie that was set with `path: '/'`, pass `'/'` here too.
    *
    * @param name   Cookie name
    * @param path   Cookie path
@@ -266,16 +296,41 @@ export class CookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  delete(name: string, path?: CookieOptions['path'], domain?: CookieOptions['domain'], secure?: CookieOptions['secure'], sameSite: SameSite = 'Lax'): void {
+  delete(name: string, path?: CookieOptions['path'], domain?: CookieOptions['domain'], secure?: CookieOptions['secure'], sameSite?: SameSite): void;
+
+  /**
+   * Delete cookie by name. The options must match the attributes the cookie was set with: `path` and `domain` select the
+   * cookie, and `partitioned: true` is required to delete a Partitioned cookie.
+   *
+   * If `path` is not specified, no `Path` attribute is written and the browser uses its default path: the directory of the URL
+   * the page was loaded at (not the current router URL). To delete a cookie that was set with `path: '/'`, pass `'/'` here too.
+   *
+   * @param name    Cookie name
+   * @param options Cookie attributes: `path`, `domain`, `secure`, `sameSite` and `partitioned`
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.1.0
+   */
+  delete(name: string, options?: DeleteCookieOptions): void;
+
+  delete(
+    name: string,
+    pathOrOptions?: CookieOptions['path'] | DeleteCookieOptions,
+    domain?: CookieOptions['domain'],
+    secure?: CookieOptions['secure'],
+    sameSite: SameSite = 'Lax'
+  ): void {
     if (!this.documentIsAccessible) {
       return;
     }
-    const expiresDate = new Date('Thu, 01 Jan 1970 00:00:01 GMT');
-    this.set(name, '', { expires: expiresDate, path, domain, secure, sameSite });
+    const options = CookieService.toDeleteOptions(pathOrOptions, domain, secure, sameSite);
+    this.set(name, '', { ...options, expires: new Date('Thu, 01 Jan 1970 00:00:01 GMT') });
   }
 
   /**
-   * Delete all cookies at given path and domain. If not path is not specified, all cookies at '/' path will be deleted.
+   * Delete all cookies at given path and domain.
+   *
+   * If `path` is not specified, the browser's default path is used for each cookie, as described for {@link delete}.
    *
    * @param path   Cookie path
    * @param domain Cookie domain
@@ -285,17 +340,125 @@ export class CookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  deleteAll(path?: CookieOptions['path'], domain?: CookieOptions['domain'], secure?: CookieOptions['secure'], sameSite: SameSite = 'Lax'): void {
+  deleteAll(path?: CookieOptions['path'], domain?: CookieOptions['domain'], secure?: CookieOptions['secure'], sameSite?: SameSite): void;
+
+  /**
+   * Delete all cookies that can currently be accessed, using the same attributes for each one.
+   *
+   * If `path` is not specified, the browser's default path is used for each cookie, as described for {@link delete}.
+   *
+   * @param options Cookie attributes: `path`, `domain`, `secure`, `sameSite` and `partitioned`
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.1.0
+   */
+  deleteAll(options?: DeleteCookieOptions): void;
+
+  deleteAll(
+    pathOrOptions?: CookieOptions['path'] | DeleteCookieOptions,
+    domain?: CookieOptions['domain'],
+    secure?: CookieOptions['secure'],
+    sameSite: SameSite = 'Lax'
+  ): void {
     if (!this.documentIsAccessible) {
       return;
     }
 
-    const cookies: any = this.getAll();
-
-    for (const cookieName in cookies) {
-      if (cookies.hasOwnProperty(cookieName)) {
-        this.delete(cookieName, path, domain, secure, sameSite);
+    // Object.keys() rather than for...in with cookies.hasOwnProperty(): a cookie named "hasOwnProperty" would shadow that method
+    for (const cookieName of Object.keys(this.getAll())) {
+      // Call delete() the same way deleteAll() was called, so overrides and spies of the positional form keep working
+      if (typeof pathOrOptions === 'object' && pathOrOptions !== null) {
+        this.delete(cookieName, pathOrOptions);
+      } else {
+        this.delete(cookieName, pathOrOptions, domain, secure, sameSite);
       }
     }
+  }
+
+  /**
+   * Returns a validated copy of the options, or `undefined` if the cookie must not be written.
+   *
+   * A `path` or `domain` containing `;` or a control character could inject attributes or change the cookie's scope, so the
+   * whole write is skipped. An invalid `expires` is dropped, which makes a session cookie as browsers already did, and an
+   * unknown `sameSite` falls back to the `Lax` default. Each case logs a warning. A numeric `expires` (days
+   * from now) is converted to a `Date`, and `sameSite` is matched case-insensitively.
+   *
+   * @param name    Cookie name, used in warnings
+   * @param options Cookie options
+   * @returns A validated copy of the options, or `undefined` to skip the write
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.1.0
+   */
+  private static validateOptions(name: string, options: CookieOptions = {}): ValidCookieOptions | undefined {
+    const { expires, ...valid }: CookieOptions = options;
+    const result: ValidCookieOptions = valid;
+
+    for (const attribute of ['path', 'domain'] as const) {
+      const attributeValue = result[attribute];
+      if (typeof attributeValue === 'string' && CookieService.hasUnsafeCharacter(attributeValue)) {
+        console.warn(`[ngx-cookie-service] Cookie ${name} was skipped because its ${attribute} contains ";" or a control character.`);
+        return undefined;
+      }
+    }
+    if (expires) {
+      const date = typeof expires === 'number' ? new Date(Date.now() + expires * 1000 * 60 * 60 * 24) : expires;
+      if (date instanceof Date && Number.isFinite(date.getTime())) {
+        result.expires = date;
+      } else {
+        console.warn(`[ngx-cookie-service] Cookie ${name}: ignoring invalid expires value "${String(expires)}".`);
+      }
+    }
+    if (result.sameSite !== undefined && result.sameSite !== null) {
+      const sameSite = SAME_SITE_VALUES.find((value) => value.toLowerCase() === String(result.sameSite).toLowerCase());
+      if (sameSite) {
+        result.sameSite = sameSite;
+      } else {
+        console.warn(`[ngx-cookie-service] Cookie ${name}: ignoring invalid sameSite value "${String(result.sameSite)}".`);
+        delete result.sameSite;
+      }
+    }
+    return result;
+  }
+
+  /**
+   * Whether a cookie attribute value contains `;` or an ASCII control character, which would end the attribute early or
+   * corrupt the header.
+   *
+   * @param value Attribute value
+   * @returns `true` if the value is unsafe to write
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.1.0
+   */
+  private static hasUnsafeCharacter(value: string): boolean {
+    return [...value].some((character) => {
+      const code = character.charCodeAt(0);
+      return character === ';' || code < 0x20 || code === 0x7f;
+    });
+  }
+
+  /**
+   * Builds delete options from either an options object or the positional `path`, `domain`, `secure` and `sameSite` arguments.
+   *
+   * @param pathOrOptions Either a DeleteCookieOptions object or the cookie path
+   * @param domain   Cookie domain
+   * @param secure   Cookie secure flag
+   * @param sameSite Cookie sameSite flag
+   * @returns A new DeleteCookieOptions object
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.1.0
+   */
+  private static toDeleteOptions(
+    pathOrOptions?: CookieOptions['path'] | DeleteCookieOptions,
+    domain?: CookieOptions['domain'],
+    secure?: CookieOptions['secure'],
+    sameSite?: SameSite
+  ): DeleteCookieOptions {
+    if (typeof pathOrOptions === 'object' && pathOrOptions !== null) {
+      return { ...pathOrOptions };
+    }
+    return { path: pathOrOptions, domain, secure, sameSite };
   }
 }
