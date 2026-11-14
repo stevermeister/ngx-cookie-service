@@ -124,6 +124,9 @@ server.get('*', (req, res) => {
    use `REQUEST.cookies` to access the
    cookies in SSR. Then proceed to use `ngx-cookie-service` as usual.
 4. See the [sample repo](https://github.com/pavankjadda/angular-ssr-docker) for more details.
+5. On the server, `get()`, `check()` and `getAll()` also see cookies set or deleted earlier while rendering the same
+   request, whatever their `path` or `domain`. Cookies with `httpOnly: true` can only be set on the server; in the
+   browser the call is skipped with a console warning.
 
 ## Supported Versions
 We follow angular [LTS versions](https://angular.dev/reference/versions#actively-supported-versions). The latest version of the library supports Angular 22.x.x. Angular 14.x.x or below is not supported.
@@ -182,8 +185,11 @@ to `Lax`.
 Read [this](https://stackoverflow.com/a/1063760) and [this](https://stackoverflow.com/a/17777005/1007003) StackOverflow
 answer for a more in-depth explanation.
 
-**Important:** Browsers do not accept cookies flagged sameSite = 'None' if secure flag isn't set as well. CookieService
-will override the secure flag to true if sameSite='None'.
+**Important:** Browsers do not accept cookies flagged sameSite = 'None' or partitioned unless the secure flag is set as
+well. CookieService will override the secure flag to true if sameSite='None' or partitioned is true.
+
+If `path` or `domain` contains `;` or a control character, the cookie is not written or deleted, and a warning is
+logged to the console. An invalid `expires` or `sameSite` value is ignored with a warning.
 
 ## delete( name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void;
 
