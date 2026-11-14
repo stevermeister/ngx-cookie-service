@@ -360,6 +360,21 @@ describe('NgxCookieServiceService', () => {
           sameSite: 'Lax',
         });
       });
+      it('should not write a Path attribute when path is omitted', () => {
+        cookieService.delete('foo');
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;SameSite=Lax;');
+      });
+      it('should accept an options object', () => {
+        cookieService.delete('foo', { path: '/', domain: 'example.com', secure: true, sameSite: 'Strict' });
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;Path=/;Domain=example.com;Secure;SameSite=Strict;');
+      });
+      it('should delete Partitioned cookies', () => {
+        cookieService.delete('foo', { path: '/', secure: true, sameSite: 'None', partitioned: true });
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;Path=/;Secure;SameSite=None;Partitioned;');
+      });
     });
     describe('#deleteAll', () => {
       it('should delete all cookies', () => {
@@ -379,6 +394,15 @@ describe('NgxCookieServiceService', () => {
 
         expect(cookieService.delete).toHaveBeenCalledWith('foo', '/test', 'example.com', true, 'Lax');
         expect(cookieService.delete).toHaveBeenCalledWith('test', '/test', 'example.com', true, 'Lax');
+      });
+      it('should accept an options object, including partitioned', () => {
+        const deleteSpy = vi.spyOn(cookieService, 'delete');
+        documentCookieGetterSpy.mockReturnValue('foo=bar; test=test123');
+        cookieService.deleteAll({ path: '/', secure: true, sameSite: 'None', partitioned: true });
+
+        const options = { path: '/', secure: true, sameSite: 'None', partitioned: true };
+        expect(deleteSpy).toHaveBeenCalledWith('foo', options);
+        expect(deleteSpy).toHaveBeenCalledWith('test', options);
       });
       it('should delete cookies named "hasOwnProperty" and "__proto__" too', () => {
         const deleteSpy = vi.spyOn(cookieService, 'delete');

@@ -86,6 +86,27 @@ describe('SsrCookieService', () => {
         warnSpy.mockRestore();
       });
     });
+
+    describe('#delete', () => {
+      it('should accept an options object and delete Partitioned cookies in browser', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.delete('foo', { path: '/', partitioned: true });
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;Path=/;Secure;SameSite=Lax;Partitioned;');
+        warnSpy.mockRestore();
+      });
+    });
+
+    describe('#deleteAll', () => {
+      it('should pass an options object through to delete() in browser', () => {
+        const deleteSpy = vi.spyOn(cookieService, 'delete');
+        documentCookieGetterSpy.mockReturnValue('a=1; b=2');
+        cookieService.deleteAll({ path: '/' });
+
+        expect(deleteSpy).toHaveBeenCalledWith('a', { path: '/' });
+        expect(deleteSpy).toHaveBeenCalledWith('b', { path: '/' });
+      });
+    });
   });
 
   describe('Platform server', () => {
@@ -138,6 +159,16 @@ describe('SsrCookieService', () => {
 
         expect((responseInitMock.headers as Headers).getSetCookie().map((cookie) => cookie.split('=')[0])).toEqual(['hasOwnProperty', '__proto__', 'b']);
       });
+
+      it('should accept an options object', () => {
+        requestMock.headers.set('cookie', 'a=1; b=2');
+        cookieService.deleteAll({ path: '/' });
+
+        expect((responseInitMock.headers as Headers).getSetCookie()).toEqual([
+          'a=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;Path=/;SameSite=Lax;',
+          'b=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;Path=/;SameSite=Lax;',
+        ]);
+      });
     });
 
     describe('#set', () => {
@@ -186,6 +217,14 @@ describe('SsrCookieService', () => {
         const headers = responseInitMock.headers as Headers;
         const cookie = headers.get('Set-Cookie');
         expect(cookie).toContain('foo=;Expires=Thu, 01 Jan 1970 00:00:01 GMT');
+      });
+
+      it('should accept an options object and delete Partitioned cookies', () => {
+        cookieService.delete('foo', { path: '/', partitioned: true });
+
+        expect((responseInitMock.headers as Headers).getSetCookie()).toEqual([
+          'foo=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;Path=/;Secure;SameSite=Lax;Partitioned;',
+        ]);
       });
     });
   });

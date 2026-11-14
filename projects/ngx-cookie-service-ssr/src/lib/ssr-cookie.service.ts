@@ -14,6 +14,11 @@ export interface CookieOptions {
   maxAge?: number;
 }
 
+/**
+ * Attributes that identify the cookie to delete. They must match the attributes the cookie was set with.
+ */
+export type DeleteCookieOptions = Omit<CookieOptions, 'expires' | 'maxAge' | 'httpOnly'>;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -192,7 +197,10 @@ export class SsrCookieService {
   }
 
   /**
-   * Delete cookie by name at given path and domain. If not path is not specified, cookie at '/' path will be deleted.
+   * Delete cookie by name at given path and domain.
+   *
+   * If `path` is not specified, no `Path` attribute is written and the browser uses its default path: the directory of the URL
+   * the page was loaded at (not the current router URL). To delete a cookie that was set with `path: '/'`, pass `'/'` here too.
    *
    * @param name   Cookie name
    * @param path   Cookie path
@@ -203,16 +211,35 @@ export class SsrCookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  delete(name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
+  delete(name: string, path?: string, domain?: string, secure?: boolean, sameSite?: SameSite): void;
+
+  /**
+   * Delete cookie by name. The options must match the attributes the cookie was set with: `path` and `domain` select the
+   * cookie, and `partitioned: true` is required to delete a Partitioned cookie.
+   *
+   * If `path` is not specified, no `Path` attribute is written and the browser uses its default path: the directory of the URL
+   * the page was loaded at (not the current router URL). To delete a cookie that was set with `path: '/'`, pass `'/'` here too.
+   *
+   * @param name    Cookie name
+   * @param options Cookie attributes: `path`, `domain`, `secure`, `sameSite` and `partitioned`
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.1.0
+   */
+  delete(name: string, options?: DeleteCookieOptions): void;
+
+  delete(name: string, pathOrOptions?: string | DeleteCookieOptions, domain?: string, secure?: boolean, sameSite: SameSite = 'Lax'): void {
     if (!this.documentIsAccessible && !this.responseInit) {
       return;
     }
-    const expiresDate = new Date('Thu, 01 Jan 1970 00:00:01 GMT');
-    this.set(name, '', { expires: expiresDate, path, domain, secure, sameSite });
+    const options = SsrCookieService.toDeleteOptions(pathOrOptions, domain, secure, sameSite);
+    this.set(name, '', { ...options, expires: new Date('Thu, 01 Jan 1970 00:00:01 GMT') });
   }
 
   /**
-   * Delete all cookies at given path and domain. If not path is not specified, all cookies at '/' path will be deleted.
+   * Delete all cookies at given path and domain.
+   *
+   * If `path` is not specified, the browser's default path is used for each cookie, as described for {@link delete}.
    *
    * @param path   Cookie path
    * @param domain Cookie domain
@@ -222,15 +249,53 @@ export class SsrCookieService {
    * @author: Stepan Suvorov
    * @since: 1.0.0
    */
-  deleteAll(path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void {
+  deleteAll(path?: string, domain?: string, secure?: boolean, sameSite?: SameSite): void;
+
+  /**
+   * Delete all cookies that can currently be accessed, using the same attributes for each one.
+   *
+   * If `path` is not specified, the browser's default path is used for each cookie, as described for {@link delete}.
+   *
+   * @param options Cookie attributes: `path`, `domain`, `secure`, `sameSite` and `partitioned`
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.1.0
+   */
+  deleteAll(options?: DeleteCookieOptions): void;
+
+  deleteAll(pathOrOptions?: string | DeleteCookieOptions, domain?: string, secure?: boolean, sameSite: SameSite = 'Lax'): void {
     if (!this.documentIsAccessible && !this.responseInit) {
       return;
     }
 
     // Object.keys() rather than for...in with cookies.hasOwnProperty(): a cookie named "hasOwnProperty" would shadow that method
     for (const cookieName of Object.keys(this.getAll())) {
-      this.delete(cookieName, path, domain, secure, sameSite);
+      // Call delete() the same way deleteAll() was called, so overrides and spies of the positional form keep working
+      if (typeof pathOrOptions === 'object' && pathOrOptions !== null) {
+        this.delete(cookieName, pathOrOptions);
+      } else {
+        this.delete(cookieName, pathOrOptions, domain, secure, sameSite);
+      }
     }
+  }
+
+  /**
+   * Builds delete options from either an options object or the positional `path`, `domain`, `secure` and `sameSite` arguments.
+   *
+   * @param pathOrOptions Either a DeleteCookieOptions object or the cookie path
+   * @param domain   Cookie domain
+   * @param secure   Cookie secure flag
+   * @param sameSite Cookie sameSite flag
+   * @returns A new DeleteCookieOptions object
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.1.0
+   */
+  private static toDeleteOptions(pathOrOptions?: string | DeleteCookieOptions, domain?: string, secure?: boolean, sameSite?: SameSite): DeleteCookieOptions {
+    if (typeof pathOrOptions === 'object' && pathOrOptions !== null) {
+      return { ...pathOrOptions };
+    }
+    return { path: pathOrOptions, domain, secure, sameSite };
   }
 
   /**

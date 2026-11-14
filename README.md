@@ -187,12 +187,19 @@ will override the secure flag to true if sameSite='None'.
 
 ## delete( name: string, path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax'): void;
 
+## delete( name: string, options?: { path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'None' | 'Strict', partitioned?: boolean }): void;
+
 ```typescript
 cookieService.delete('test');
+cookieService.delete('test', { path: '/', secure: true, sameSite: 'None', partitioned: true });
 ```
 
-Deletes a cookie with the specified `name`. It is best practice to always define a path. If you are unsure about the
-path value, use `'/'`.
+Deletes a cookie with the specified `name`. The attributes must match the ones the cookie was set with: `path` and
+`domain` select the cookie, and `partitioned: true` is needed to delete a Partitioned cookie.
+
+It is best practice to always define a path. If you are unsure about the path value, use `'/'`. Without a path, the
+browser uses the directory of the URL the page was loaded at, so in a single-page app the result depends on the URL the
+user first landed on.
 
 **Important:** For security reasons, it is not possible to delete cookies for other domains. Browsers do not allow this.
 Read [this](https://stackoverflow.com/a/1063760) and [this](https://stackoverflow.com/a/17777005/1007003) StackOverflow
@@ -200,12 +207,15 @@ answer for a more in-depth explanation.
 
 ## deleteAll( path?: string, domain?: string, secure?: boolean, sameSite: 'Lax' | 'None' | 'Strict' = 'Lax' ): void;
 
+## deleteAll( options?: { path?: string, domain?: string, secure?: boolean, sameSite?: 'Lax' | 'None' | 'Strict', partitioned?: boolean }): void;
+
 ```typescript
 cookieService.deleteAll();
+cookieService.deleteAll({ path: '/' });
 ```
 
-Deletes all cookies that can currently be accessed. It is best practice to always define a path. If you are unsure about
-the path value, use `'/'`.
+Deletes all cookies that can currently be accessed, using the same attributes for each one. It is best practice to
+always define a path. If you are unsure about the path value, use `'/'`.
 
 # FAQ
 
