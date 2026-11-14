@@ -38,6 +38,10 @@ export class SsrCookieService {
   private readonly request = inject(REQUEST, { optional: true });
   private readonly responseInit = inject(RESPONSE_INIT, { optional: true });
   private readonly documentIsAccessible: boolean = isPlatformBrowser(this.platformId);
+  /**
+   * Cookies set (encoded value) or deleted (`null`) on the server while rendering the current request, by encoded name.
+   */
+  private readonly serverCookies = new Map<string, string | null>();
 
   /**
    * Get cookie Regular Expression
@@ -85,7 +89,7 @@ export class SsrCookieService {
   check(name: string): boolean {
     name = encodeURIComponent(name);
     const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-    return regExp.test((this.documentIsAccessible ? this.document.cookie : this.getRequestCookies()) ?? '');
+    return regExp.test((this.documentIsAccessible ? this.document.cookie : this.getServerCookies()) ?? '');
   }
 
   /**
@@ -101,7 +105,7 @@ export class SsrCookieService {
     if (this.check(name)) {
       name = encodeURIComponent(name);
       const regExp: RegExp = SsrCookieService.getCookieRegExp(name);
-      const result = regExp.exec((this.documentIsAccessible ? this.document.cookie : this.getRequestCookies()) ?? '');
+      const result = regExp.exec((this.documentIsAccessible ? this.document.cookie : this.getServerCookies()) ?? '');
       return result?.[1] ? SsrCookieService.safeDecodeURIComponent(result[1]) : '';
     }
     return '';
@@ -117,7 +121,7 @@ export class SsrCookieService {
    */
   getAll(): Record<string, string> {
     const cookies: Record<string, string> = {};
-    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.getRequestCookies();
+    const cookieString: any = this.documentIsAccessible ? this.document?.cookie : this.getServerCookies();
 
     if (cookieString && cookieString !== '') {
       cookieString.split(';').forEach((currentCookie: string) => {
@@ -365,7 +369,7 @@ export class SsrCookieService {
    * @author: Pavankumar Jadda
    * @since: 21.2.0
    */
-  private setServerCookie(name: string, value: string, options: CookieOptions = {}): void {
+  private setServerCookie(name: string, value: string, options: ValidCookieOptions = {}): void {
     if (!this.responseInit) {
       return;
     }
@@ -377,6 +381,50 @@ export class SsrCookieService {
 
     const cookieString = this.buildCookieString(name, value, options);
     this.appendSetCookieHeader(cookieString);
+    // Remember the write so later reads while rendering this request see it
+    this.serverCookies.set(encodeURIComponent(name), SsrCookieService.isExpired(options) ? null : encodeURIComponent(value));
+  }
+
+  /**
+   * Cookies visible on the server: the request's `Cookie` header, updated with the cookies set or deleted while rendering
+   * this request. Cookies written during the request come first, so they win over request cookies of the same name.
+   *
+   * @returns Cookie header string, or `null` if there is no request and nothing was set
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.1.0
+   */
+  private getServerCookies(): string | null {
+    const requestCookies = this.getRequestCookies();
+    if (this.serverCookies.size === 0) {
+      return requestCookies;
+    }
+
+    // Compare decoded names, so request cookies like "a:b" or "%61" match names written in encoded form
+    const writtenNames = new Set([...this.serverCookies.keys()].map((name) => SsrCookieService.safeDecodeURIComponent(name)));
+    const written = [...this.serverCookies].filter(([, value]) => value !== null).map(([name, value]) => `${name}=${value}`);
+    const unchanged = (requestCookies ?? '')
+      .split(';')
+      .map((cookie) => cookie.trim())
+      .filter((cookie) => cookie !== '' && !writtenNames.has(SsrCookieService.safeDecodeURIComponent(cookie.split('=')[0].trim())));
+    return [...written, ...unchanged].join('; ');
+  }
+
+  /**
+   * Whether the options tell the browser to delete the cookie: a `maxAge` of 0 or less, or an `expires` date in the past.
+   *
+   * @param options Validated cookie options
+   * @returns `true` if the cookie is expired
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.1.0
+   */
+  private static isExpired(options: ValidCookieOptions): boolean {
+    // Max-Age takes precedence over Expires (RFC 6265, section 5.3)
+    if (options.maxAge !== undefined) {
+      return options.maxAge <= 0;
+    }
+    return options.expires !== undefined && options.expires.getTime() <= Date.now();
   }
 
   /**

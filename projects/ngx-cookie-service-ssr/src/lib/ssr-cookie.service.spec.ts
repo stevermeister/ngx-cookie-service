@@ -153,6 +153,45 @@ describe('SsrCookieService', () => {
       });
     });
 
+    describe('reads after writes in the same request', () => {
+      it('should return values set earlier in the request', () => {
+        requestMock.headers.set('cookie', 'a=old; z=1');
+        cookieService.set('a', 'new');
+        cookieService.set('b', 'added');
+
+        expect(cookieService.get('a')).toEqual('new');
+        expect(cookieService.check('b')).toEqual(true);
+        expect(cookieService.getAll()).toEqual({ a: 'new', b: 'added', z: '1' });
+      });
+
+      it('should treat cookies deleted earlier in the request as missing', () => {
+        requestMock.headers.set('cookie', 'a=1; z=1');
+        cookieService.delete('z');
+        cookieService.set('a', 'gone', { maxAge: 0 });
+
+        expect(cookieService.check('z')).toEqual(false);
+        expect(cookieService.check('a')).toEqual(false);
+        expect(cookieService.getAll()).toEqual({});
+      });
+
+      it('should encode and decode names and values written during the request', () => {
+        cookieService.set('na me', 'va;lue', { expires: 1 });
+
+        expect(cookieService.get('na me')).toEqual('va;lue');
+        expect(cookieService.getAll()).toEqual({ 'na me': 'va;lue' });
+      });
+
+      it('should match request cookies whose names are not percent-encoded the same way', () => {
+        requestMock.headers.set('cookie', 'a:b=1; %61=2; z=3');
+        cookieService.delete('a:b');
+        cookieService.set('a', 'new');
+
+        expect(cookieService.getAll()).toEqual({ a: 'new', z: '3' });
+        cookieService.deleteAll();
+        expect(cookieService.getAll()).toEqual({});
+      });
+    });
+
     describe('#getAll', () => {
       it('should keep the first cookie when several share a name, like get()', () => {
         requestMock.headers.set('cookie', 'foo=specific; bar=baz; foo=root');
