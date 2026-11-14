@@ -1,8 +1,9 @@
 /// <reference types="vitest/globals" />
 import { ɵPLATFORM_BROWSER_ID, ɵPLATFORM_SERVER_ID } from '@angular/common';
-import { DOCUMENT, PLATFORM_ID, REQUEST, RESPONSE_INIT } from '@angular/core';
+import { DOCUMENT, EnvironmentProviders, PLATFORM_ID, REQUEST, RESPONSE_INIT } from '@angular/core';
 import { TestBed } from '@angular/core/testing';
 import { vi } from 'vitest';
+import { CookieEncoding, provideCookieEncoding, provideCookieOptions } from './ssr-cookie.config';
 import { CookieOptions, SameSite, SsrCookieService } from './ssr-cookie.service';
 
 describe('SsrCookieService', () => {
@@ -21,6 +22,23 @@ describe('SsrCookieService', () => {
   const requestMock = {
     headers: new Headers(),
   };
+
+  const configure = (provider: EnvironmentProviders): void => {
+    TestBed.resetTestingModule();
+    TestBed.configureTestingModule({
+      providers: [
+        SsrCookieService,
+        { provide: PLATFORM_ID, useFactory: () => platformId },
+        { provide: DOCUMENT, useFactory: () => documentMock },
+        { provide: RESPONSE_INIT, useValue: responseInitMock },
+        { provide: REQUEST, useValue: requestMock },
+        provider,
+      ],
+    });
+    cookieService = TestBed.inject(SsrCookieService);
+  };
+  const useDefaults = (options: CookieOptions): void => configure(provideCookieOptions(options));
+  const useEncoding = (encoding: CookieEncoding): void => configure(provideCookieEncoding(encoding));
 
   beforeEach(() => {
     // Store original descriptors to call through
@@ -123,6 +141,36 @@ describe('SsrCookieService', () => {
 
         expect(deleteSpy).toHaveBeenCalledWith('a', { path: '/' });
         expect(deleteSpy).toHaveBeenCalledWith('b', { path: '/' });
+      });
+    });
+
+    describe('with provideCookieOptions()', () => {
+      it('should apply the defaults in browser', () => {
+        useDefaults({ path: '/', sameSite: 'Strict' });
+        cookieService.set('foo', 'bar');
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Path=/;SameSite=Strict;');
+      });
+
+      it('should skip set() in browser when httpOnly is a default', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        useDefaults({ httpOnly: true });
+        cookieService.set('foo', 'bar');
+
+        expect(documentCookieSetterSpy).not.toHaveBeenCalled();
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        warnSpy.mockRestore();
+      });
+    });
+
+    describe('with provideCookieEncoding()', () => {
+      it('should use a custom codec in browser', () => {
+        useEncoding({ encode: (value) => btoa(value), decode: (value) => atob(value) });
+        cookieService.set('greeting', 'hello');
+        documentCookieGetterSpy.mockReturnValue('greeting=aGVsbG8=');
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('greeting=aGVsbG8=;SameSite=Lax;');
+        expect(cookieService.get('greeting')).toEqual('hello');
       });
     });
   });
@@ -331,6 +379,51 @@ describe('SsrCookieService', () => {
         expect((responseInitMock.headers as Headers).getSetCookie()).toEqual([
           'foo=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;Path=/;Secure;SameSite=Lax;Partitioned;',
         ]);
+      });
+    });
+
+    describe('with provideCookieOptions()', () => {
+      it('should apply the defaults on server', () => {
+        useDefaults({ path: '/', secure: true });
+        cookieService.set('foo', 'bar');
+
+        expect((responseInitMock.headers as Headers).getSetCookie()).toEqual(['foo=bar;Path=/;Secure;SameSite=Lax;']);
+      });
+
+      it('should use a default maxAge for set() but not for delete()', () => {
+        useDefaults({ maxAge: 3600, path: '/' });
+        cookieService.set('foo', 'bar');
+        cookieService.delete('foo');
+
+        expect((responseInitMock.headers as Headers).getSetCookie()).toEqual([
+          'foo=bar;Max-Age=3600;Path=/;SameSite=Lax;',
+          'foo=;Expires=Thu, 01 Jan 1970 00:00:01 GMT;Path=/;SameSite=Lax;',
+        ]);
+        expect(cookieService.check('foo')).toEqual(false);
+      });
+    });
+
+    describe('with provideCookieEncoding()', () => {
+      it("should write and read values with 'minimal' on server", () => {
+        useEncoding('minimal');
+        requestMock.headers.set('cookie', 'token=ab+/cd==');
+        cookieService.set('jwt', 'eyJhbGciOi.eyJzdWIiOi.c2ln-_');
+        cookieService.set('text', 'a b');
+
+        expect((responseInitMock.headers as Headers).getSetCookie()).toEqual(['jwt=eyJhbGciOi.eyJzdWIiOi.c2ln-_;SameSite=Lax;', 'text=a%20b;SameSite=Lax;']);
+        expect(cookieService.get('token')).toEqual('ab+/cd==');
+        expect(cookieService.getAll()).toEqual({ jwt: 'eyJhbGciOi.eyJzdWIiOi.c2ln-_', text: 'a b', token: 'ab+/cd==' });
+      });
+
+      it('should skip the write on server when a custom codec returns ";"', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        useEncoding({ encode: (value) => value, decode: (value) => value });
+        cookieService.set('a', 'x; Domain=evil.example');
+
+        expect((responseInitMock.headers as Headers).getSetCookie()).toEqual([]);
+        expect(cookieService.check('a')).toEqual(false);
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        warnSpy.mockRestore();
       });
     });
   });

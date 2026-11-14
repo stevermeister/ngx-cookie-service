@@ -223,6 +223,45 @@ cookieService.deleteAll({ path: '/' });
 Deletes all cookies that can currently be accessed, using the same attributes for each one. It is best practice to
 always define a path. If you are unsure about the path value, use `'/'`.
 
+## provideCookieOptions( options: CookieOptions ): EnvironmentProviders;
+
+```typescript
+// app.config.ts
+import { provideCookieOptions } from 'ngx-cookie-service'; // or 'ngx-cookie-service-ssr'
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideCookieOptions({ path: '/', secure: true, sameSite: 'Strict' })],
+};
+```
+
+Sets default options for every `set()`, `delete()` and `deleteAll()` call, so you don't have to repeat them. Options
+passed to a call win over the defaults, and `undefined` values don't override them. A call that passes its own `expires`
+(or `maxAge` in `ngx-cookie-service-ssr`) replaces the default lifetime, so `delete()` always expires the cookie.
+
+Setting `path: '/'` here is recommended. Without a path, the browser uses the directory of the URL the page was loaded
+at, so the same code can read or delete different cookies depending on where the user landed.
+
+## provideCookieEncoding( encoding: 'uri' | 'minimal' | CookieCodec ): EnvironmentProviders;
+
+```typescript
+// app.config.ts
+import { provideCookieEncoding } from 'ngx-cookie-service'; // or 'ngx-cookie-service-ssr'
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideCookieEncoding('minimal')],
+};
+```
+
+Sets how cookie values are encoded when they are written and decoded when they are read. Cookie names keep the
+default encoding.
+
+- `'uri'` (default): values are encoded with `encodeURIComponent`, so `ab+/cd==` is stored as `ab%2B%2Fcd%3D%3D`.
+- `'minimal'`: values made only of characters allowed in a cookie value are stored as-is, so `ab+/cd==` stays
+  `ab+/cd==`. Other values fall back to `encodeURIComponent`. Use it when a server reads cookies without URL-decoding
+  them, for example JWT or base64 values. Express encodes cookie values the same way.
+- A custom `{ encode(value, name), decode(value, name) }` object for any other scheme. If the encoded value contains
+  `;` or a control character, the cookie is not written and a warning is logged.
+
 # FAQ
 
 ## General tips

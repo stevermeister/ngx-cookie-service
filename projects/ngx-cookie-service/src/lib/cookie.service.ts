@@ -1,5 +1,6 @@
 import { isPlatformBrowser } from '@angular/common';
 import { DOCUMENT, inject, Injectable, PLATFORM_ID } from '@angular/core';
+import { COOKIE_ENCODING, COOKIE_OPTIONS, CookieCodec, CookieEncoding } from './cookie.config';
 
 export type SameSite = 'Lax' | 'None' | 'Strict';
 
@@ -27,6 +28,12 @@ type ValidCookieOptions = Omit<CookieOptions, 'expires'> & { expires?: Date };
  */
 const SAME_SITE_VALUES: readonly SameSite[] = ['Lax', 'Strict', 'None'];
 
+/**
+ * RFC 6265 cookie-octets except `%`: values made only of these are written as-is by the `'minimal'` encoding and still
+ * decode to themselves. Same pattern as the jshttp `cookie` package (2.x) used by Express.
+ */
+const COOKIE_OCTET_REGEXP = /^[!#$&'()*+\-./0-9:<=>?@A-Z[\]^_`a-z{|}~]*$/;
+
 @Injectable({
   providedIn: 'root',
 })
@@ -34,6 +41,8 @@ export class CookieService {
   private readonly documentIsAccessible: boolean;
   private readonly document = inject<Document>(DOCUMENT);
   private readonly platformId = inject<object>(PLATFORM_ID);
+  private readonly defaultOptions: CookieOptions = inject(COOKIE_OPTIONS, { optional: true }) ?? {};
+  private readonly codec: CookieCodec = CookieService.toCodec(inject(COOKIE_ENCODING, { optional: true }));
 
   constructor() {
     this.documentIsAccessible = isPlatformBrowser(this.platformId);
@@ -102,10 +111,9 @@ export class CookieService {
    */
   get(name: string): string {
     if (this.check(name)) {
-      name = encodeURIComponent(name);
-      const regExp: RegExp = CookieService.getCookieRegExp(name);
+      const regExp: RegExp = CookieService.getCookieRegExp(encodeURIComponent(name));
       const result = regExp.exec(this.document.cookie);
-      return result?.[1] ? CookieService.safeDecodeURIComponent(result[1]) : '';
+      return result?.[1] ? this.decodeValue(result[1], name) : '';
     } else {
       return '';
     }
@@ -146,7 +154,7 @@ export class CookieService {
         }
         // defineProperty stores names such as "__proto__" as normal entries instead of touching the object's prototype
         Object.defineProperty(cookies, cookieName, {
-          value: CookieService.safeDecodeURIComponent(trimmedCookie.substring(equalIndex + 1)),
+          value: this.decodeValue(trimmedCookie.substring(equalIndex + 1), cookieName),
           enumerable: true,
           writable: true,
           configurable: true,
@@ -225,7 +233,7 @@ export class CookieService {
         path,
         domain,
         secure,
-        sameSite: sameSite || 'Lax',
+        sameSite,
         partitioned,
       };
 
@@ -234,12 +242,17 @@ export class CookieService {
     }
 
     // validateOptions() returns a copy, so the defaults applied below don't leak back into the caller's object
-    const options = CookieService.validateOptions(name, expiresOrOptions);
+    const options = CookieService.validateOptions(name, CookieService.withDefaults(this.defaultOptions, expiresOrOptions));
     if (!options) {
       return;
     }
 
-    let cookieString: string = encodeURIComponent(name) + '=' + encodeURIComponent(value) + ';';
+    const encodedValue = this.encodeValue(name, value);
+    if (encodedValue === undefined) {
+      return;
+    }
+
+    let cookieString: string = encodeURIComponent(name) + '=' + encodedValue + ';';
 
     if (options.expires) {
       cookieString += 'Expires=' + options.expires.toUTCString() + ';';
@@ -318,7 +331,7 @@ export class CookieService {
     pathOrOptions?: CookieOptions['path'] | DeleteCookieOptions,
     domain?: CookieOptions['domain'],
     secure?: CookieOptions['secure'],
-    sameSite: SameSite = 'Lax'
+    sameSite?: SameSite
   ): void {
     if (!this.documentIsAccessible) {
       return;
@@ -358,7 +371,7 @@ export class CookieService {
     pathOrOptions?: CookieOptions['path'] | DeleteCookieOptions,
     domain?: CookieOptions['domain'],
     secure?: CookieOptions['secure'],
-    sameSite: SameSite = 'Lax'
+    sameSite?: SameSite
   ): void {
     if (!this.documentIsAccessible) {
       return;
@@ -373,6 +386,101 @@ export class CookieService {
         this.delete(cookieName, pathOrOptions, domain, secure, sameSite);
       }
     }
+  }
+
+  /**
+   * Built-in `'uri'` encoding: `encodeURIComponent`, decoded with {@link CookieService.safeDecodeURIComponent}.
+   */
+  private static readonly uriCodec: CookieCodec = {
+    encode: (value) => encodeURIComponent(value),
+    decode: (value) => CookieService.safeDecodeURIComponent(value),
+  };
+
+  /**
+   * Built-in `'minimal'` encoding: values made only of cookie-octets are written as-is, others use `encodeURIComponent`.
+   */
+  private static readonly minimalCodec: CookieCodec = {
+    encode: (value) => (COOKIE_OCTET_REGEXP.test(value) ? value : encodeURIComponent(value)),
+    decode: (value) => CookieService.safeDecodeURIComponent(value),
+  };
+
+  /**
+   * Resolves the encoding provided with {@link provideCookieEncoding} to a codec, defaulting to `'uri'`.
+   *
+   * @param encoding Provided encoding, or `null` when none was provided
+   * @returns The codec to use
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.2.0
+   */
+  private static toCodec(encoding: CookieEncoding | null): CookieCodec {
+    if (encoding === 'minimal') {
+      return CookieService.minimalCodec;
+    }
+    if (typeof encoding === 'object' && encoding !== null) {
+      return encoding;
+    }
+    return CookieService.uriCodec;
+  }
+
+  /**
+   * Encodes a cookie value with the configured encoding. Returns `undefined`, with a warning, when the result can't be
+   * written safely because it isn't a string or contains `;` or a control character.
+   *
+   * @param name  Cookie name
+   * @param value Cookie value
+   * @returns The encoded value, or `undefined` to skip the write
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.2.0
+   */
+  private encodeValue(name: string, value: string): string | undefined {
+    const encodedValue = this.codec.encode(value, name);
+    if (typeof encodedValue !== 'string' || CookieService.hasUnsafeCharacter(encodedValue)) {
+      console.warn(`[ngx-cookie-service] Cookie ${name} was skipped because its encoded value isn't a string without ";" or control characters.`);
+      return undefined;
+    }
+    return encodedValue;
+  }
+
+  /**
+   * Decodes a cookie value with the configured encoding. If a custom `decode` throws, the raw value is returned.
+   *
+   * @param value Raw cookie value
+   * @param name  Decoded cookie name
+   * @returns The decoded value
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.2.0
+   */
+  private decodeValue(value: string, name: string): string {
+    try {
+      return this.codec.decode(value, name);
+    } catch {
+      return value;
+    }
+  }
+
+  /**
+   * Merges the app-wide defaults from {@link provideCookieOptions} under the options of one call.
+   *
+   * Values passed to the call win, and `undefined` or `null` values don't override a default.
+   *
+   * @param defaults Default cookie options
+   * @param options  Options passed to the call
+   * @returns A new, merged CookieOptions object
+   *
+   * @author: Pavankumar Jadda
+   * @since: 22.2.0
+   */
+  private static withDefaults(defaults: CookieOptions, options: CookieOptions = {}): CookieOptions {
+    const merged: Record<string, unknown> = { ...defaults };
+    for (const [key, value] of Object.entries(options)) {
+      if (value !== undefined && value !== null) {
+        merged[key] = value;
+      }
+    }
+    return merged as CookieOptions;
   }
 
   /**
