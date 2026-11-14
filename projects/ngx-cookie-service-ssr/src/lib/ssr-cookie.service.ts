@@ -173,6 +173,10 @@ export class SsrCookieService {
           `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
       );
     }
+    if (options.partitioned && !options.secure) {
+      options.secure = true;
+      console.warn(`[ngx-cookie-service] Cookie ${name} was forced with secure flag because Partitioned cookies must be Secure.`);
+    }
 
     const cookieString = this.buildCookieString(name, value, options);
     this.document.cookie = cookieString;
@@ -276,8 +280,8 @@ export class SsrCookieService {
       return;
     }
 
-    // SameSite=None requires Secure
-    if (options.sameSite === 'None' && !options.secure) {
+    // SameSite=None and Partitioned cookies both require Secure
+    if ((options.sameSite === 'None' || options.partitioned) && !options.secure) {
       options.secure = true;
     }
 
@@ -307,8 +311,8 @@ export class SsrCookieService {
     sameSite?: SameSite,
     partitioned?: boolean
   ): CookieOptions {
-    // If it's an object but not a Date, treat it as CookieOptions
-    if (typeof expiresOrOptions === 'object' && !(expiresOrOptions instanceof Date)) {
+    // If it's an object but not null or a Date, treat it as CookieOptions
+    if (typeof expiresOrOptions === 'object' && expiresOrOptions !== null && !(expiresOrOptions instanceof Date)) {
       return { ...expiresOrOptions };
     }
 

@@ -76,6 +76,15 @@ describe('SsrCookieService', () => {
         cookieService.set('foo', 'bar');
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;SameSite=Lax;');
       });
+
+      it('should force secure flag for Partitioned cookies in browser', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('foo', 'bar', { partitioned: true });
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Secure;SameSite=Lax;Partitioned;');
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        warnSpy.mockRestore();
+      });
     });
   });
 
@@ -129,6 +138,19 @@ describe('SsrCookieService', () => {
           expect(headerValue).toContain('foo=bar');
           expect(headerValue).toContain('baz=qux');
         }
+      });
+
+      it('should force secure flag for Partitioned cookies on server', () => {
+        cookieService.set('foo', 'bar', { partitioned: true });
+
+        expect((responseInitMock.headers as Headers).getSetCookie()).toEqual(['foo=bar;Secure;SameSite=Lax;Partitioned;']);
+      });
+
+      it('should treat a null third argument as the positional form', () => {
+        const setPositional = cookieService.set as (...args: unknown[]) => void;
+        setPositional.call(cookieService, 'foo', 'bar', null, '/p', 'example.com');
+
+        expect((responseInitMock.headers as Headers).getSetCookie()).toEqual(['foo=bar;Path=/p;Domain=example.com;SameSite=Lax;']);
       });
     });
 

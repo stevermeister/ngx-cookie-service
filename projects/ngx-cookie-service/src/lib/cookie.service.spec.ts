@@ -257,6 +257,40 @@ describe('NgxCookieServiceService', () => {
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('baz=qux;Secure;SameSite=None;');
         warnSpy.mockRestore();
       });
+      it('should force secure flag for Partitioned cookies', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('foo', 'bar', { partitioned: true });
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Secure;SameSite=Lax;Partitioned;');
+        expect(warnSpy).toHaveBeenCalledTimes(1);
+        warnSpy.mockRestore();
+      });
+      it('should keep partitioned when it is the only positional option', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('foo', 'bar', undefined, undefined, undefined, undefined, undefined, true);
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Secure;SameSite=Lax;Partitioned;');
+        warnSpy.mockRestore();
+      });
+      it('should treat a null, false or empty expires as the positional form', () => {
+        cookieService.set('foo', 'bar', null as unknown as undefined, '/');
+        cookieService.set('baz', 'qux', null as unknown as undefined);
+        cookieService.set('a', 'b', false as unknown as undefined, '/p');
+        cookieService.set('c', 'd', '' as unknown as undefined, '/p');
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Path=/;SameSite=Lax;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('baz=qux;SameSite=Lax;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('a=b;Path=/p;SameSite=Lax;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('c=d;Path=/p;SameSite=Lax;');
+      });
+      it('should not warn for Partitioned cookies that are already secure', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('foo', 'bar', { partitioned: true, secure: true, sameSite: 'None' });
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Secure;SameSite=None;Partitioned;');
+        expect(warnSpy).not.toHaveBeenCalled();
+        warnSpy.mockRestore();
+      });
       it('should set cookie with SameSite option', () => {
         cookieService.set('foo', 'bar', undefined, undefined, undefined, false, 'Strict');
 

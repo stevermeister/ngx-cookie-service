@@ -194,7 +194,8 @@ export class CookieService {
       return;
     }
 
-    if (typeof expiresOrOptions === 'number' || expiresOrOptions instanceof Date || path || domain || secure || sameSite) {
+    // Anything but an options object means the positional form, so no positional argument (e.g. a lone `partitioned`) is dropped
+    if (typeof expiresOrOptions !== 'object' || expiresOrOptions === null || expiresOrOptions instanceof Date) {
       const optionsBody = {
         expires: expiresOrOptions as CookieOptions['expires'],
         path,
@@ -237,6 +238,10 @@ export class CookieService {
         `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +
           `More details : https://github.com/stevermeister/ngx-cookie-service/issues/86#issuecomment-597720130`
       );
+    }
+    if (options.partitioned && !options.secure) {
+      options.secure = true;
+      console.warn(`[ngx-cookie-service] Cookie ${name} was forced with secure flag because Partitioned cookies must be Secure.`);
     }
     if (options.secure) {
       cookieString += 'Secure;';
