@@ -230,7 +230,7 @@ export class CookieService {
       cookieString += 'Domain=' + options.domain + ';';
     }
 
-    if (options.secure === false && options.sameSite === 'None') {
+    if (options.sameSite === 'None' && !options.secure) {
       options.secure = true;
       console.warn(
         `[ngx-cookie-service] Cookie ${name} was forced with secure flag because sameSite=None.` +

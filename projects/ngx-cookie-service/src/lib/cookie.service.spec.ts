@@ -234,6 +234,16 @@ describe('NgxCookieServiceService', () => {
 
         expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Secure;SameSite=None;');
       });
+      it('should force secure flag when SameSite option is "None" and secure is omitted', () => {
+        const warnSpy = vi.spyOn(console, 'warn').mockImplementation(() => undefined);
+        cookieService.set('foo', 'bar', { sameSite: 'None' });
+        cookieService.set('baz', 'qux', undefined, '/', undefined, undefined, 'None');
+
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('foo=bar;Secure;SameSite=None;');
+        expect(documentCookieSetterSpy).toHaveBeenCalledWith('baz=qux;Path=/;Secure;SameSite=None;');
+        expect(warnSpy).toHaveBeenCalledTimes(2);
+        warnSpy.mockRestore();
+      });
       it('should set cookie with SameSite option', () => {
         cookieService.set('foo', 'bar', undefined, undefined, undefined, false, 'Strict');
 
