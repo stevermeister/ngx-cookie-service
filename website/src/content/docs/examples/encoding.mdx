@@ -1,0 +1,20 @@
+---
+title: Encoding
+description: Compare the 'uri' and 'minimal' encodings, and write a custom codec.
+sidebar:
+  order: 5
+---
+
+import Demo from '@components/Demo.astro';
+
+The same value written with `'uri'` and `'minimal'` encoding. The middle column is what the browser stores and what a server receives in the `Cookie` header. Try a value with spaces or `;` to see `'minimal'` fall back to URL encoding.
+
+<Demo example="encoding-example" />
+
+The demo creates a child injector for each encoding so both can run on one page. In an app, add `provideCookieEncoding()` once to `app.config.ts`. See [Value encoding](/getting-started/encoding/).
+
+## Custom codec
+
+A `CookieCodec` that stores values as URL-safe base64.
+
+<Demo example="custom-codec-example" />

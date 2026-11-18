@@ -1,0 +1,18 @@
+---
+title: Reading and writing
+description: Set, read, check and list cookies with CookieService, live.
+sidebar:
+  order: 0
+---
+
+import Demo from '@components/Demo.astro';
+
+Change the name or value, then call each method. The table underneath is the result of `getAll()`, so it lists every cookie this page can read. Click the **`</>`** button to see the component's source.
+
+<Demo example="read-write-example" />
+
+## Notes
+
+- `get()` returns `''` for a missing cookie. Use `check()` when an empty value and a missing cookie mean different things.
+- `getAll()` decodes names and values. When several cookies share a name (for example with different paths), it keeps the one the browser lists first, the same one `get()` returns.
+- Cookies are shared by every tab and every page on the same site and path, so cookies set by other examples on this site show up here too.

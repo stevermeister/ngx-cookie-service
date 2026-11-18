@@ -1,0 +1,46 @@
+<div class="docs-row">
+  <div class="docs-field">
+    <label for="read-write-name">Name</label>
+    <input id="read-write-name" type="text" autocomplete="off" [value]="name()" (input)="name.set($any($event.target).value)" />
+  </div>
+  <div class="docs-field">
+    <label for="read-write-value">Value</label>
+    <input id="read-write-value" type="text" autocomplete="off" [value]="value()" (input)="value.set($any($event.target).value)" />
+  </div>
+</div>
+<div class="docs-actions">
+  <button type="button" class="primary" (click)="set()">set()</button>
+  <button type="button" (click)="get()">get()</button>
+  <button type="button" (click)="check()">check()</button>
+  <button type="button" (click)="delete()">delete()</button>
+</div>
+
+@if (result()) {
+  <pre class="docs-output" aria-live="polite">{{ result() }}</pre>
+}
+
+<h4 class="docs-subheading">getAll()</h4>
+@if (entries().length) {
+  <table class="docs-table">
+    <thead>
+      <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (entry of entries(); track entry[0]) {
+        <tr>
+          <td>
+            <code>{{ entry[0] }}</code>
+          </td>
+          <td>
+            <code>{{ entry[1] }}</code>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+} @else {
+  <p class="docs-muted">No cookies are visible from this page yet. Click <strong>set()</strong>.</p>
+}

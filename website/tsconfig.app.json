@@ -1,0 +1,30 @@
+{
+  "extends": "./tsconfig.json",
+  "compileOnSave": false,
+  "compilerOptions": {
+    "outDir": "../dist/out-tsc/website",
+    "target": "es2022",
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "lib": ["es2022", "dom"],
+    "experimentalDecorators": true,
+    "useDefineForClassFields": false,
+    "importHelpers": true,
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "declaration": false,
+    "noEmit": false,
+    "isolatedModules": false,
+    "verbatimModuleSyntax": false,
+    "rootDir": ".."
+  },
+  "angularCompilerOptions": {
+    "enableI18nLegacyMessageIdFormat": false,
+    "strictInjectionParameters": true,
+    "strictInputAccessModifiers": true,
+    "strictTemplates": true
+  },
+  "files": [],
+  "include": ["src/angular/**/*.ts", "src/examples/**/*.ts", "../projects/ngx-cookie-service/src/**/*.ts"],
+  "exclude": ["../projects/**/*.spec.ts"]
+}

@@ -1,0 +1,17 @@
+<div class="docs-actions">
+  <button type="button" class="primary" (click)="addSamples()">Add sample cookies</button>
+  <button type="button" (click)="deleteAll()" [disabled]="!names().length">deleteAll({{ '{' }} path: '/' {{ '}' }})</button>
+</div>
+
+@if (names().length) {
+  <ul class="docs-list" aria-live="polite">
+    @for (name of names(); track name) {
+      <li>
+        <code>{{ name }}={{ cookies()[name] }}</code>
+        <button type="button" (click)="delete(name)" [attr.aria-label]="'Delete cookie ' + name">delete()</button>
+      </li>
+    }
+  </ul>
+} @else {
+  <p class="docs-muted" aria-live="polite">No cookies are visible from this page.</p>
+}

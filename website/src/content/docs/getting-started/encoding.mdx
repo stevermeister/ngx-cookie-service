@@ -1,0 +1,56 @@
+---
+title: Value encoding
+description: Choose how cookie values are encoded with provideCookieEncoding().
+sidebar:
+  order: 3
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+By default, values are encoded with `encodeURIComponent` when written and decoded when read. That's safe for any string, but some servers read cookies **without** URL-decoding them. For those, use `provideCookieEncoding()`:
+
+```ts title="app.config.ts" {2,5}
+import { ApplicationConfig } from '@angular/core';
+import { provideCookieEncoding } from 'ngx-cookie-service'; // or 'ngx-cookie-service-ssr'
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideCookieEncoding('minimal')],
+};
+```
+
+Cookie names always keep the default encoding.
+
+## Encodings
+
+| Encoding          | `ab+/cd==` is stored as | Use it when                                                                  |
+| ----------------- | ----------------------- | ---------------------------------------------------------------------------- |
+| `'uri'` (default) | `ab%2B%2Fcd%3D%3D`      | The server URL-decodes cookies, or only your Angular app reads them.         |
+| `'minimal'`       | `ab+/cd==`              | A server reads JWTs, base64 or other tokens as-is. Express encodes the same way. |
+| A `CookieCodec`   | Whatever you return     | You need another scheme, such as base64 or JSON.                             |
+
+`'minimal'` writes values made only of characters allowed in a cookie value (RFC 6265 cookie-octets, except `%`) unchanged, and falls back to `encodeURIComponent` for anything else.
+
+## Custom codec
+
+```ts title="app.config.ts"
+import { ApplicationConfig } from '@angular/core';
+import { CookieCodec, provideCookieEncoding } from 'ngx-cookie-service';
+
+/** Stores values as URL-safe base64, so any Unicode text survives. */
+const base64Codec: CookieCodec = {
+  encode: (value) => btoa(String.fromCodePoint(...new TextEncoder().encode(value))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''),
+  decode: (value) => new TextDecoder().decode(Uint8Array.from(atob(value.replace(/-/g, '+').replace(/_/g, '/')), (c) => c.codePointAt(0) ?? 0)),
+};
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideCookieEncoding(base64Codec)],
+};
+```
+
+`encode(value, name)` runs on every value written by `set()`. `decode(value, name)` runs on every value read by `get()` and `getAll()`.
+
+<Aside type="caution">
+  If `decode` throws, the raw stored value is returned instead. If `encode` returns a value containing `;` or a control character, the cookie is not written and a warning is logged.
+</Aside>
+
+Compare the encodings live in the [Encoding example](/examples/encoding/).

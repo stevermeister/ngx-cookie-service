@@ -1,0 +1,65 @@
+/* Site palette inspired by Angular's brand colors, kept subtle: one gradient
+   for small brand touches, a solid magenta accent everywhere else.
+   Starlight's own variables are layered, so these unlayered rules win. */
+:root {
+  --ngx-gradient: linear-gradient(90deg, #e40035 0%, #dc087d 50%, #9717e7 100%);
+
+  --sl-color-accent-low: #2a1530;
+  --sl-color-accent: #ec5fb4;
+  --sl-color-accent-high: #fbd3ea;
+  --sl-color-white: #ffffff;
+  --sl-color-gray-1: #ebeaf0;
+  --sl-color-gray-2: #c3c1cc;
+  --sl-color-gray-3: #8f8c9b;
+  --sl-color-gray-4: #595666;
+  --sl-color-gray-5: #383644;
+  --sl-color-gray-6: #23222c;
+  --sl-color-black: #17161d;
+}
+
+:root[data-theme='light'] {
+  --sl-color-accent-low: #fbe6f2;
+  --sl-color-accent: #b8146f;
+  --sl-color-accent-high: #5a0b37;
+  --sl-color-white: #17161d;
+  --sl-color-gray-1: #23222c;
+  --sl-color-gray-2: #383644;
+  --sl-color-gray-3: #5f5c6b;
+  --sl-color-gray-4: #8f8c9b;
+  --sl-color-gray-5: #dddbe3;
+  --sl-color-gray-6: #f3f2f6;
+  --sl-color-gray-7: #f9f8fb;
+  --sl-color-black: #ffffff;
+}
+
+/* A thin brand line under the top bar. */
+header.header::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0;
+  height: 2px;
+  background: var(--ngx-gradient);
+}
+
+/* Landing page hero */
+.hero h1 {
+  background: var(--ngx-gradient);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+.hero .tagline {
+  max-width: 36rem;
+}
+
+.hero img {
+  width: min(12rem, 40vw);
+}
+
+/* Long method signatures in reference headings wrap instead of overflowing. */
+.sl-markdown-content h2 code,
+.sl-markdown-content h3 code {
+  white-space: normal;
+  overflow-wrap: anywhere;
+}

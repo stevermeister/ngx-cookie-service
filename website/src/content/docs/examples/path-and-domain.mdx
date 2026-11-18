@@ -1,0 +1,32 @@
+---
+title: Path and domain
+description: How path and domain decide which pages can see and delete a cookie.
+sidebar:
+  order: 2
+---
+
+import { Aside } from '@astrojs/starlight/components';
+import Demo from '@components/Demo.astro';
+
+A cookie is only visible on pages under its `path`. The browser also treats cookies with the same name but a different `path` as **separate** cookies, so `delete()` must use the same path that `set()` used.
+
+Try it:
+
+1. Click **set()** on `path: '/somewhere-else'`. The cookie is written, but this page can't see it.
+2. Click **set()** on `path: '/'`, then **delete()** on the "no path" row. Nothing is deleted, because the paths don't match.
+3. Click **delete()** on `path: '/'`.
+
+<Demo example="path-example" />
+
+## Domain
+
+`domain` makes a cookie visible to subdomains. `{ domain: 'example.com' }` set from `app.example.com` is also sent to `api.example.com`. Without `domain`, the cookie belongs to the current host only.
+
+<Aside type="caution">
+  Browsers never let a page set or delete cookies for an unrelated domain, and they reject public suffixes such as `github.io`. On `localhost`, leave `domain` out.
+</Aside>
+
+## Notes
+
+- If `path` or `domain` contains `;` or a control character, the call is skipped with a console warning. That stops a value from injecting extra cookie attributes.
+- Set `path: '/'` once for the whole app with [`provideCookieOptions()`](/getting-started/default-options/).

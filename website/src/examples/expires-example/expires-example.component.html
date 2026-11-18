@@ -1,0 +1,34 @@
+<table class="docs-table">
+  <thead>
+    <tr>
+      <th scope="col">Call</th>
+      <th scope="col">check()</th>
+      <th scope="col"><span class="docs-visually-hidden">Actions</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (expiryCase of cases; track expiryCase.name) {
+      <tr>
+        <td>
+          <code>{{ expiryCase.call }}</code>
+        </td>
+        <td>
+          @if (exists(expiryCase.name)) {
+            <span class="docs-pill docs-pill--yes">true</span>
+          } @else {
+            <span class="docs-pill">false</span>
+          }
+        </td>
+        <td class="docs-cell-actions">
+          <button type="button" class="primary" (click)="setCookie(expiryCase)">Set</button>
+          <button type="button" (click)="selected.set(expiryCase.name)" [attr.aria-pressed]="selected() === expiryCase.name">Inspect</button>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+<h4 class="docs-subheading">
+  Stored attributes of <code>{{ selected() }}</code>
+</h4>
+<docs-cookie-inspector [name]="selected()" [refresh]="tick()" />

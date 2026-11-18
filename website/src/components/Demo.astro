@@ -1,0 +1,79 @@
+---
+/**
+ * Renders one live example from website/src/examples/<example>/: a bordered card with the running
+ * Angular component, and a "</>" toggle that reveals its TypeScript and HTML source in tabs.
+ * The source shown is the exact file that runs, imported with Vite's `?raw`.
+ * Usage in MDX: <Demo example="read-write-example" />
+ */
+import { Code, TabItem, Tabs } from '@astrojs/starlight/components';
+import { DemoHostComponent } from '../angular/demo-host.component.ts';
+
+interface Props {
+  example: string;
+  /** Show the source panel open on load. */
+  open?: boolean;
+}
+
+const { example, open = false } = Astro.props;
+
+const sources = import.meta.glob('../examples/*/*.component.{ts,html}', {
+  query: '?raw',
+  import: 'default',
+  eager: true,
+}) as Record<string, string>;
+
+const read = (ext: 'ts' | 'html'): string | undefined => sources[`../examples/${example}/${example}.component.${ext}`];
+
+const ts = read('ts');
+const html = read('html');
+if (!ts) {
+  throw new Error(`Demo "${example}" not found under website/src/examples`);
+}
+const sourceId = `docs-demo-source-${example}`;
+const label = open ? 'Hide code' : 'Show code';
+---
+
+<div class="docs-demo not-content" data-example={example}>
+  <div class="docs-demo__toolbar">
+    <span class="docs-demo__badge">Live demo</span>
+    <button type="button" class="docs-demo__toggle" aria-expanded={String(open)} aria-controls={sourceId} title={label} aria-label={label}>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="16 18 22 12 16 6"></polyline>
+        <polyline points="8 6 2 12 8 18"></polyline>
+      </svg>
+    </button>
+  </div>
+  <div class="docs-demo__preview">
+    <DemoHostComponent example={example} client:only="@analogjs/astro-angular" />
+  </div>
+  <div class="docs-demo__source" id={sourceId} hidden={!open} data-pagefind-ignore>
+    <Tabs>
+      <TabItem label="TypeScript">
+        <Code code={ts} lang="ts" />
+      </TabItem>
+      {
+        html && (
+          <TabItem label="HTML">
+            <Code code={html} lang="html" />
+          </TabItem>
+        )
+      }
+    </Tabs>
+  </div>
+</div>
+
+<script>
+  // One bundled script per page: wires every demo's "</>" toggle to its source panel.
+  document.querySelectorAll<HTMLButtonElement>('.docs-demo__toggle').forEach((button) => {
+    const panel = document.getElementById(button.getAttribute('aria-controls') ?? '');
+    if (!panel) return;
+    button.addEventListener('click', () => {
+      const open = panel.hasAttribute('hidden');
+      panel.toggleAttribute('hidden', !open);
+      button.setAttribute('aria-expanded', String(open));
+      const label = open ? 'Hide code' : 'Show code';
+      button.title = label;
+      button.setAttribute('aria-label', label);
+    });
+  });
+</script>

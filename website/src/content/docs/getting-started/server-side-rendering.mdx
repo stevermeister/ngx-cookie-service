@@ -1,0 +1,77 @@
+---
+title: Server-side rendering
+description: Read and write cookies during Angular SSR with ngx-cookie-service-ssr.
+sidebar:
+  order: 4
+---
+
+import { Aside, Steps, Tabs, TabItem } from '@astrojs/starlight/components';
+
+`document.cookie` doesn't exist on the server, so `CookieService` does nothing there. For apps that use Angular SSR, use **`ngx-cookie-service-ssr`** instead. It has the same API as `CookieService` and also works while Angular renders on the server.
+
+<Steps>
+
+1. Install `ngx-cookie-service-ssr` (instead of `ngx-cookie-service`):
+
+   <Tabs syncKey="package-manager">
+     <TabItem label="npm">
+       ```bash
+       npm install ngx-cookie-service-ssr
+       ```
+     </TabItem>
+     <TabItem label="pnpm">
+       ```bash
+       pnpm add ngx-cookie-service-ssr
+       ```
+     </TabItem>
+     <TabItem label="yarn">
+       ```bash
+       yarn add ngx-cookie-service-ssr
+       ```
+     </TabItem>
+   </Tabs>
+
+2. Inject `SsrCookieService`:
+
+   ```ts
+   import { inject } from '@angular/core';
+   import { SsrCookieService } from 'ngx-cookie-service-ssr';
+
+   const cookieService = inject(SsrCookieService);
+   const theme = cookieService.get('theme'); // works on the server and in the browser
+   ```
+
+3. Serve the app with Angular's `AngularNodeAppEngine` or `AngularAppEngine` (the default for apps created with `ng new --ssr`). They provide the `REQUEST` and `RESPONSE_INIT` tokens the service reads from, so there is nothing else to configure.
+
+</Steps>
+
+## What happens on the server
+
+- **Reading.** `get()`, `check()` and `getAll()` read the incoming request's `Cookie` header. They also see cookies set or deleted earlier while rendering the same request, whatever their `path` or `domain`.
+- **Writing.** `set()`, `delete()` and `deleteAll()` add `Set-Cookie` headers to the response.
+- **Extra options.** On the server you can also pass `httpOnly: true` and `maxAge` (in seconds).
+
+```ts
+// Runs on the server: sent to the browser as a Set-Cookie header the page's scripts can't read.
+cookieService.set('session', sessionId, { httpOnly: true, secure: true, sameSite: 'Strict', maxAge: 3600, path: '/' });
+```
+
+<Aside type="caution">
+  Browsers ignore `HttpOnly` on cookies written from JavaScript. In the browser, a `set()` call with `httpOnly: true` is skipped with a console warning.
+</Aside>
+
+## Custom server
+
+If your server doesn't render through Angular's app engine, provide the incoming request yourself so the service can read its cookies:
+
+```ts
+import { REQUEST } from '@angular/core';
+
+const providers = [{ provide: REQUEST, useValue: request }];
+```
+
+The service reads cookies from a Web `Request` (`headers.get('cookie')`) or from an Express request (`req.get('cookie')` or `req.headers.cookie`). Without `RESPONSE_INIT`, cookies set on the server are not sent to the browser.
+
+## Demo
+
+A small SSR app with login, guarded routes and cookies set on the server: [ngx-cookie-service-ssr-demo.netlify.app](https://ngx-cookie-service-ssr-demo.netlify.app/).

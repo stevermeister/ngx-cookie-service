@@ -8,6 +8,9 @@ Angular CLI workspace (ng-packagr libraries) that ships two published packages p
 - `projects/ngx-cookie-service` — main library (`CookieService`), built with ng-packagr.
 - `projects/ngx-cookie-service-ssr` — SSR library (`SsrCookieService`), built with ng-packagr.
 - `projects/ngx-cookie-service-ssr-demo` — standalone SSR demo application (`@angular/build:application`).
+- `website/` — documentation site (Astro + Starlight). Live demos are standalone Angular components in `website/src/examples/<name>/`,
+  rendered as Astro islands through `@analogjs/astro-angular` and registered in `website/src/angular/examples.registry.ts`.
+  They import `ngx-cookie-service` from the library source, not from npm. Deployed by Netlify (`website/netlify.toml`); `.github/workflows/docs.yml` builds it on PRs.
 - `dist/` — build output (generated; do not edit by hand).
 
 ## Toolchain
@@ -30,6 +33,7 @@ Angular CLI workspace (ng-packagr libraries) that ships two published packages p
 - Lint SSR library: `pnpm lint:ngx-cookie-service-ssr`
 - Format check / write: `pnpm format:check` / `pnpm format:write`
 - Serve demo: `pnpm start` or `pnpm start:ssr`
+- Docs site: `pnpm docs:dev` (http://localhost:4300/), `pnpm docs:build` (type-checks examples with `ngc`, outputs `dist/docs`), `pnpm lint:docs`
 
 ## Angular Conventions
 

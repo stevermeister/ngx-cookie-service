@@ -3,5 +3,11 @@
   "printWidth": 160,
   "singleQuote": true,
   "trailingComma": "es5",
-  "bracketSpacing": true
+  "bracketSpacing": true,
+  "overrides": [
+    {
+      "files": "website/src/examples/**/*.html",
+      "options": { "parser": "angular" }
+    }
+  ]
 }

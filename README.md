@@ -19,6 +19,8 @@
 Angular service to read, set and delete browser cookies. Originally based on
 the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library. This service is lightweight, and its bundle size is **1.3 Kb** to ensure fast loading times and optimal performance.
 
+**Documentation and live examples: [ngx-cookie-service.netlify.app](https://ngx-cookie-service.netlify.app/)**
+
 ## Installation
 
 ```bash
@@ -30,6 +32,8 @@ yarn add ngx-cookie-service
 ```
 
 ## Demo
+
+Documentation with live examples: https://ngx-cookie-service.netlify.app/
 
 Cooke Service Demo: https://stackblitz.com/~/github.com/pavankjadda/ngx-cookie-service-demo
 

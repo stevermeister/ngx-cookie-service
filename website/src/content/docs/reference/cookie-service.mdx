@@ -1,0 +1,112 @@
+---
+title: CookieService
+description: API reference for CookieService from ngx-cookie-service.
+sidebar:
+  order: 0
+---
+
+```ts
+import { CookieService } from 'ngx-cookie-service';
+```
+
+`@Injectable({ providedIn: 'root' })`. Works in the browser; every method does nothing (or returns empty results) on the server. For SSR, use [`SsrCookieService`](/reference/ssr-cookie-service/).
+
+## check()
+
+```ts
+check(name: string): boolean
+```
+
+Whether a cookie with the given `name` is visible to the current page.
+
+```ts
+const exists: boolean = cookieService.check('token');
+```
+
+## get()
+
+```ts
+get(name: string): string
+```
+
+The decoded value of the cookie, or `''` if it doesn't exist. Values are decoded with the [configured encoding](/getting-started/encoding/). If decoding fails, the raw value is returned.
+
+```ts
+const token: string = cookieService.get('token');
+```
+
+## getAll()
+
+```ts
+getAll(): Record<string, string>
+```
+
+Every cookie visible to the page, with decoded names and values. When several cookies share a name, the one the browser lists first (the most specific path) is kept, the same one `get()` returns.
+
+```ts
+const cookies: Record<string, string> = cookieService.getAll();
+```
+
+## set()
+
+```ts
+set(name: string, value: string, options?: CookieOptions): void
+set(name: string, value: string, expires?: number | Date, path?: string, domain?: string, secure?: boolean, sameSite?: SameSite, partitioned?: boolean): void
+```
+
+Writes a cookie. [Default options](/getting-started/default-options/) are applied first, then the call's options.
+
+```ts
+cookieService.set('token', 'abc123');
+cookieService.set('token', 'abc123', { expires: 2, path: '/', sameSite: 'Strict', secure: true });
+```
+
+- `sameSite` defaults to `'Lax'`.
+- `sameSite: 'None'` and `partitioned: true` force `secure: true`, with a console warning.
+- If `path` or `domain` contains `;` or a control character, nothing is written and a warning is logged.
+- An invalid `expires` or `sameSite` is ignored with a warning.
+
+## delete()
+
+```ts
+delete(name: string, options?: DeleteCookieOptions): void
+delete(name: string, path?: string, domain?: string, secure?: boolean, sameSite?: SameSite): void
+```
+
+Expires the cookie. The `path` and `domain` must match the ones it was set with, and `partitioned: true` is required for a partitioned cookie.
+
+```ts
+cookieService.delete('token', { path: '/' });
+```
+
+## deleteAll()
+
+```ts
+deleteAll(options?: DeleteCookieOptions): void
+deleteAll(path?: string, domain?: string, secure?: boolean, sameSite?: SameSite): void
+```
+
+Calls `delete()` for every cookie returned by `getAll()`, with the same options for each.
+
+```ts
+cookieService.deleteAll({ path: '/' });
+```
+
+## Types
+
+```ts
+type SameSite = 'Lax' | 'None' | 'Strict';
+
+interface CookieOptions {
+  /** Days until the cookie expires, or an exact Date. Omit for a session cookie. */
+  expires?: number | Date;
+  path?: string;
+  domain?: string;
+  secure?: boolean;
+  sameSite?: SameSite;
+  partitioned?: boolean;
+}
+
+/** Attributes that identify the cookie to delete. */
+type DeleteCookieOptions = Omit<CookieOptions, 'expires'>;
+```

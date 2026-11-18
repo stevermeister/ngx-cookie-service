@@ -1,0 +1,18 @@
+---
+title: Deleting cookies
+description: Delete one cookie or all of them.
+sidebar:
+  order: 4
+---
+
+import Demo from '@components/Demo.astro';
+
+`delete()` expires a single cookie. `deleteAll()` expires every cookie the page can see, using the same options for each one.
+
+<Demo example="delete-example" />
+
+## Notes
+
+- Both methods need the `path` (and `domain`) the cookie was set with. A cookie set with `path: '/'` isn't deleted by `delete(name)` called on `/docs/`.
+- `deleteAll()` can only delete cookies the page can see. `HttpOnly` cookies and cookies on other paths aren't touched.
+- Pass `partitioned: true` to delete partitioned cookies.

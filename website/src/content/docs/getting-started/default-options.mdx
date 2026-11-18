@@ -1,0 +1,41 @@
+---
+title: Default options
+description: Set app-wide defaults for every cookie with provideCookieOptions().
+sidebar:
+  order: 2
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+Instead of repeating `path`, `secure` and `sameSite` in every call, set them once in your application config:
+
+```ts title="app.config.ts" {2,5}
+import { ApplicationConfig } from '@angular/core';
+import { provideCookieOptions } from 'ngx-cookie-service'; // or 'ngx-cookie-service-ssr'
+
+export const appConfig: ApplicationConfig = {
+  providers: [provideCookieOptions({ path: '/', secure: true, sameSite: 'Strict' })],
+};
+```
+
+The defaults apply to every `set()`, `delete()` and `deleteAll()` call.
+
+## How defaults combine with call options
+
+- Options passed to a call **win** over the defaults.
+- `undefined` values in a call **don't** override a default.
+- A call that passes its own `expires` (or `maxAge` with `ngx-cookie-service-ssr`) **replaces** the default lifetime. That's why `delete()` still expires the cookie even when the defaults set a long `expires`.
+
+```ts
+// Defaults: { path: '/', expires: 30, sameSite: 'Strict' }
+cookieService.set('a', '1'); // path=/, expires in 30 days, SameSite=Strict
+cookieService.set('b', '2', { sameSite: 'Lax' }); // path=/, expires in 30 days, SameSite=Lax
+cookieService.set('c', '3', { path: undefined }); // path=/ (undefined doesn't override)
+cookieService.delete('a'); // path=/, expired now
+```
+
+<Aside type="tip">
+  `path: '/'` is the most useful default. Without a path, the browser picks the directory of the URL the page was loaded at, so the same code can read or delete different cookies depending on where the user landed.
+</Aside>
+
+See it running in the [Default options example](/examples/default-options/).

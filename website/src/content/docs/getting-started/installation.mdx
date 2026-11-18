@@ -1,0 +1,69 @@
+---
+title: Installation
+description: Install ngx-cookie-service and start reading and writing cookies in an Angular app.
+sidebar:
+  order: 0
+---
+
+import { Aside, LinkCard, Tabs, TabItem } from '@astrojs/starlight/components';
+
+ngx-cookie-service is an Angular service to read, set and delete browser cookies. Originally based on the [ng2-cookies](https://www.npmjs.com/package/ng2-cookies) library, it is about **1.3 kB** minified and gzipped.
+
+## Install
+
+<Tabs syncKey="package-manager">
+  <TabItem label="npm">
+    ```bash
+    npm install ngx-cookie-service
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add ngx-cookie-service
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add ngx-cookie-service
+    ```
+  </TabItem>
+</Tabs>
+
+<Aside type="tip" title="Server-side rendering?">
+  If your app uses Angular SSR, install [`ngx-cookie-service-ssr`](/getting-started/server-side-rendering/) **instead**. It has the same API and also works on the server.
+</Aside>
+
+## Inject the service
+
+`CookieService` is provided in the root injector, so there's nothing to register. Inject it wherever you need it:
+
+```ts title="theme-toggle.component.ts"
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
+
+@Component({
+  selector: 'app-theme-toggle',
+  template: `<button type="button" (click)="toggle()">Theme: {{ theme() }}</button>`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+})
+export class ThemeToggleComponent {
+  private readonly cookieService = inject(CookieService);
+
+  protected readonly theme = signal(this.cookieService.get('theme') || 'light');
+
+  protected toggle(): void {
+    const next = this.theme() === 'light' ? 'dark' : 'light';
+    this.cookieService.set('theme', next, { expires: 365, path: '/' });
+    this.theme.set(next);
+  }
+}
+```
+
+## Compatibility
+
+Each major version of ngx-cookie-service matches a major version of Angular. The current release supports **Angular 22**. See [Versions](/reference/versions/) for older releases.
+
+## Next steps
+
+<LinkCard title="Usage" description="Read, write, check and delete cookies, and choose the right options." href="/getting-started/usage/" />
+<LinkCard title="Live examples" description="Every feature running on the page, with its source code." href="/examples/reading-and-writing/" />
