@@ -71,7 +71,3 @@ const providers = [{ provide: REQUEST, useValue: request }];
 ```
 
 The service reads cookies from a Web `Request` (`headers.get('cookie')`) or from an Express request (`req.get('cookie')` or `req.headers.cookie`). Without `RESPONSE_INIT`, cookies set on the server are not sent to the browser.
-
-## Demo
-
-A small SSR app with login, guarded routes and cookies set on the server: [ngx-cookie-service-ssr-demo.netlify.app](https://ngx-cookie-service-ssr-demo.netlify.app/).

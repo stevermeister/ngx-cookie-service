@@ -1,13 +1,12 @@
 # Agent Instructions for ngx-cookie-service
 
 This is the workspace for the **ngx-cookie-service** Angular libraries. It is a pnpm-managed
-Angular CLI workspace (ng-packagr libraries) that ships two published packages plus an SSR demo app.
+Angular CLI workspace (ng-packagr libraries) that ships two published packages plus a documentation site.
 
 ## Workspace Layout
 
 - `projects/ngx-cookie-service` — main library (`CookieService`), built with ng-packagr.
 - `projects/ngx-cookie-service-ssr` — SSR library (`SsrCookieService`), built with ng-packagr.
-- `projects/ngx-cookie-service-ssr-demo` — standalone SSR demo application (`@angular/build:application`).
 - `website/` — documentation site (Astro + Starlight). Live demos are standalone Angular components in `website/src/examples/<name>/`,
   rendered as Astro islands through `@analogjs/astro-angular` and registered in `website/src/angular/examples.registry.ts`.
   They import `ngx-cookie-service` from the library source, not from npm. Deployed by Netlify (root `netlify.toml`); `.github/workflows/docs.yml` builds it on PRs.
@@ -26,13 +25,11 @@ Angular CLI workspace (ng-packagr libraries) that ships two published packages p
 - Install: `pnpm install`
 - Build main library: `pnpm build`
 - Build SSR library: `pnpm build:ngx-cookie-service-ssr`
-- Build SSR demo: `pnpm build:ssr-demo`
 - Run main library tests: `pnpm test` (i.e. `ng test ngx-cookie-service --watch=false`)
 - Run SSR library tests: `pnpm test:ngx-cookie-service-ssr`
 - Lint main library: `pnpm lint`
 - Lint SSR library: `pnpm lint:ngx-cookie-service-ssr`
 - Format check / write: `pnpm format:check` / `pnpm format:write`
-- Serve demo: `pnpm start` or `pnpm start:ssr`
 - Docs site: `pnpm docs:dev` (http://localhost:4300/), `pnpm docs:build` (type-checks examples with `ngc`, outputs `dist/docs`), `pnpm lint:docs`
 
 ## Angular Conventions

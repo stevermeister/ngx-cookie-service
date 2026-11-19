@@ -28,109 +28,68 @@ npm i ngx-cookie-service
 
 # or
 
-yarn add ngx-cookie-service
+pnpm add ngx-cookie-service
 ```
 
 ## Demo
 
-Documentation with live examples: https://ngx-cookie-service.netlify.app/
-
-Cooke Service Demo: https://stackblitz.com/~/github.com/pavankjadda/ngx-cookie-service-demo
-
-SSR Cookie Service Demo: [https://ngx-cookie-service-ssr-demo.netlify.app/](https://ngx-cookie-service-ssr-demo.netlify.app/)
-
+- Documentation with live examples: [ngx-cookie-service.netlify.app](https://ngx-cookie-service.netlify.app/)
+- StackBlitz demo: [ngx-cookie-service-demo](https://stackblitz.com/~/github.com/pavankjadda/ngx-cookie-service-demo)
 
 ## Usage
 
-1. In standalone components, import the CookieService directly into the component
+`CookieService` is provided in root, so inject it wherever you need it:
 
-   ```typescript
-   import { CookieService } from 'ngx-cookie-service';
-   import { Component } from '@angular/core';
+```typescript
+import { Component, inject } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 
-   @Component({
-     selector: 'my-component',
-     template: `<h1>Hello World</h1>`,
-     providers: [CookieService],
-   })
-   export class HelloComponent {
-     constructor(private cookieService: CookieService) {
-       this.cookieService.set('token', 'Hello World');
-       console.log(this.cookieService.get('token'));
-     }
-   }
-   ```
+@Component({
+  selector: 'my-component',
+  template: `<h1>Hello World</h1>`,
+})
+export class HelloComponent {
+  private readonly cookieService = inject(CookieService);
 
-2. You can also use `inject()` method in v14+ to inject the service into the component
+  constructor() {
+    this.cookieService.set('token', 'Hello World', { path: '/' });
+    console.log(this.cookieService.get('token'));
+  }
+}
+```
 
-   ```typescript
-   import { CookieService } from 'ngx-cookie-service';
-   import { Component, inject } from '@angular/core';
-
-   @Component({
-     selector: 'my-component',
-     template: `<h1>Hello World</h1>`,
-     providers: [CookieService],
-   })
-   export class HelloComponent {
-     cookieService = inject(CookieService);
-
-     constructor() {
-       this.cookieService.set('token', 'Hello World');
-       console.log(this.cookieService.get('token'));
-     }
-   }
-   ```
+See the [usage guide](https://ngx-cookie-service.netlify.app/getting-started/usage/) for options and common pitfalls.
 
 ## Server Side Rendering
 
-Ngx Cookie Service supports Server Side Rendering (SSR) via dedicated
+Ngx Cookie Service supports Server Side Rendering (SSR) via the dedicated
 library [ngx-cookie-service-ssr](https://www.npmjs.com/package/ngx-cookie-service-ssr).
-Only install `ngx-cookie-service-ssr` library (and skip `ngx-cookie-service`) for SSR
+Install `ngx-cookie-service-ssr` **instead of** `ngx-cookie-service` for SSR apps.
 
-1. Install the library using below command
+1. Install the library:
 
    ```shell
-       npm install ngx-cookie-service-ssr --save
-
-       # or
-
-       yarn add ngx-cookie-service-ssr
+   npm install ngx-cookie-service-ssr
    ```
 
-2. By default, browser cookies are not
-   available in SSR because `document` object is not available. To overcome this, navigate to `server.ts` file in your
-   SSR
-   project, and replace the following code
-   
+2. Inject `SsrCookieService`. It has the same API as `CookieService` and also works on the server:
+
    ```typescript
-   server.get('*', (req, res) => {
-     res.render(indexHtml, { req, providers: [{ provide: APP_BASE_HREF, useValue: req.baseUrl }] });
-   });
+   import { inject } from '@angular/core';
+   import { SsrCookieService } from 'ngx-cookie-service-ssr';
+
+   const cookieService = inject(SsrCookieService);
    ```
 
-with this
+3. Serve the app with Angular's `AngularNodeAppEngine` or `AngularAppEngine` (the default for apps created with
+   `ng new --ssr`). They provide the `REQUEST` and `RESPONSE_INIT` tokens the service reads from, so there is nothing
+   else to configure. On a custom server, provide `REQUEST` yourself.
 
-```typescript
-server.get('*', (req, res) => {
-  res.render(indexHtml, {
-    req,
-    providers: [
-      { provide: APP_BASE_HREF, useValue: req.baseUrl },
-      { provide: 'REQUEST', useValue: req },
-      { provide: 'RESPONSE', useValue: res },
-    ],
-  });
-});
-```
-
-3. This will make sure the cookies are available in `REQUEST` object, and the `ngx-cookie-service-ssr` can
-   use `REQUEST.cookies` to access the
-   cookies in SSR. Then proceed to use `ngx-cookie-service` as usual.
-4. See the [sample repo](https://github.com/pavankjadda/angular-ssr-docker) for more details.
-5. On the server, `get()`, `check()` and `getAll()` also see cookies set or deleted earlier while rendering the same
-   request, whatever their `path` or `domain`. Cookies with `httpOnly: true` can only be set on the server; in the
-   browser the call is skipped with a console warning.
+On the server, `get()`, `check()` and `getAll()` read the request's `Cookie` header and also see cookies set or deleted
+earlier while rendering the same request, whatever their `path` or `domain`. `set()`, `delete()` and `deleteAll()` add
+`Set-Cookie` headers to the response. Cookies with `httpOnly: true` can only be set on the server; in the browser the
+call is skipped with a console warning. See the [SSR guide](https://ngx-cookie-service.netlify.app/getting-started/server-side-rendering/)
+for details.
 
 ## Supported Versions
 We follow angular [LTS versions](https://angular.dev/reference/versions#actively-supported-versions). The latest version of the library supports Angular 22.x.x. Angular 14.x.x or below is not supported.
@@ -296,7 +255,7 @@ re-installation of your node modules might suffice:
 
 ```
 rm -rf node_modules
-yarn # or `npm install`
+npm install # or `pnpm install`
 ```
 
 ## I have a problem with framework X or library Y. What can I do?
@@ -304,12 +263,6 @@ yarn # or `npm install`
 Please be aware that we cannot help you with problems that are out of scope. For example, we cannot debug a Symfony or
 Springboot application for you. In that case, you are better off asking the nice folks over
 at [StackOverflow](https://stackoverflow.com/) for help.
-
-## Do you support Angular Universal?
-
-There is an [issue](https://github.com/7leads/ngx-cookie-service/issues/1) for that. Check
-out [this comment](https://github.com/7leads/ngx-cookie-service/issues/1#issuecomment-361150174) for more information
-about future support.
 
 # Opening issues
 
