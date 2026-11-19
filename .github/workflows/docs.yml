@@ -9,6 +9,7 @@ on:
       - 'package.json'
       - 'pnpm-lock.yaml'
       - '.github/workflows/docs.yml'
+      - 'netlify.toml'
   pull_request:
     branches: [master]
     paths:
@@ -17,9 +18,10 @@ on:
       - 'package.json'
       - 'pnpm-lock.yaml'
       - '.github/workflows/docs.yml'
+      - 'netlify.toml'
   workflow_dispatch:
 
-# Build check only. The site itself is deployed by Netlify (see website/netlify.toml).
+# Build check only. The site itself is deployed by Netlify (see netlify.toml).
 permissions:
   contents: read
 

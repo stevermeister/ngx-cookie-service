@@ -10,7 +10,7 @@ Angular CLI workspace (ng-packagr libraries) that ships two published packages p
 - `projects/ngx-cookie-service-ssr-demo` — standalone SSR demo application (`@angular/build:application`).
 - `website/` — documentation site (Astro + Starlight). Live demos are standalone Angular components in `website/src/examples/<name>/`,
   rendered as Astro islands through `@analogjs/astro-angular` and registered in `website/src/angular/examples.registry.ts`.
-  They import `ngx-cookie-service` from the library source, not from npm. Deployed by Netlify (`website/netlify.toml`); `.github/workflows/docs.yml` builds it on PRs.
+  They import `ngx-cookie-service` from the library source, not from npm. Deployed by Netlify (root `netlify.toml`); `.github/workflows/docs.yml` builds it on PRs.
 - `dist/` — build output (generated; do not edit by hand).
 
 ## Toolchain
