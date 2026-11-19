@@ -1,0 +1,12 @@
+{
+  "extends": "astro/tsconfigs/base",
+  "compilerOptions": {
+    "paths": {
+      "@components/*": ["./src/components/*"],
+      "@examples/*": ["./src/examples/*"],
+      "ngx-cookie-service": ["../projects/ngx-cookie-service/src/public-api.ts"]
+    }
+  },
+  "include": [".astro/types.d.ts", "src/**/*"],
+  "exclude": ["dist"]
+}

@@ -1,0 +1,28 @@
+---
+title: SameSite and security
+description: SameSite, Secure and Partitioned, and what the browser actually stores.
+sidebar:
+  order: 3
+---
+
+import Demo from '@components/Demo.astro';
+
+Pick the attributes, set the cookie, and check what the browser stored. Choosing `sameSite: 'None'` or `partitioned` with `secure` unchecked shows how `CookieService` turns `Secure` on for you (a warning appears in the browser console).
+
+<Demo example="same-site-example" />
+
+## Attributes
+
+| Option             | What it does                                                                                                   |
+| ------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `sameSite: 'Lax'`  | **Default.** Sent on same-site requests and on top-level navigations from other sites.                          |
+| `sameSite: 'Strict'` | Only sent on same-site requests. Following a link from another site arrives without it.                     |
+| `sameSite: 'None'` | Also sent on cross-site requests, such as iframes and `fetch` from another site. Requires `Secure`.            |
+| `secure: true`     | Only sent over HTTPS (browsers also allow it on `http://localhost`).                                          |
+| `partitioned: true` | Stores the cookie separately for each top-level site ([CHIPS](https://developer.mozilla.org/en-US/docs/Web/Privacy/Guides/Privacy_sandbox/Partitioned_cookies)). Requires `Secure`. |
+
+## Notes
+
+- The stored attributes are read with the browser's [Cookie Store API](https://developer.mozilla.org/en-US/docs/Web/API/Cookie_Store_API), because `document.cookie` only exposes names and values. That inspector is part of this site, not of the library.
+- To delete a partitioned cookie, pass `partitioned: true` to `delete()` as well.
+- `HttpOnly` cookies can only be set by a server. See [Server-side rendering](/getting-started/server-side-rendering/).

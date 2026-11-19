@@ -1,0 +1,14 @@
+---
+title: Default options
+description: provideCookieOptions() applied to calls with and without their own options.
+sidebar:
+  order: 6
+---
+
+import Demo from '@components/Demo.astro';
+
+This demo's `CookieService` was created with app-wide defaults. The first button passes no options, so every attribute comes from the defaults. The second overrides `sameSite` and `expires`, while `path` and `secure` still come from the defaults.
+
+<Demo example="default-options-example" />
+
+See [Default options](/getting-started/default-options/) for the rules.

@@ -1,0 +1,45 @@
+---
+title: FAQ
+description: Answers to common problems with ngx-cookie-service and cookies in general.
+sidebar:
+  order: 4
+---
+
+## My cookie isn't set, or get() returns an empty string
+
+Work through these in order:
+
+1. Look at `document.cookie` in the browser console. Does setting it by hand work?
+2. Set an explicit `path: '/'`. Without one, the cookie belongs to the directory of the URL the page was loaded at. See [Path and domain](/examples/path-and-domain/).
+3. Leave `domain` out on `localhost`. Browsers reject cookies whose domain doesn't match the page.
+4. `secure: true` (also forced by `sameSite: 'None'` and `partitioned: true`) needs HTTPS or `localhost`.
+5. Check the browser console for an `[ngx-cookie-service]` warning about a skipped or changed cookie.
+
+## delete() doesn't remove my cookie
+
+Pass the same `path` and `domain` the cookie was set with, plus `partitioned: true` for partitioned cookies. Cookies set by the server with `HttpOnly` can't be deleted from the browser at all.
+
+## Cookies are empty during server-side rendering
+
+`CookieService` only works in the browser. Use [`ngx-cookie-service-ssr`](/getting-started/server-side-rendering/), which reads the request's `Cookie` header on the server.
+
+## I get a "token missing" or "no provider" error
+
+Usually a broken install. Reinstall your dependencies:
+
+```bash
+rm -rf node_modules
+npm install
+```
+
+## My server can't read the values
+
+By default, values are URL-encoded, so `a+b` is stored as `a%2Bb`. If your server reads cookies without URL-decoding them, use [`provideCookieEncoding('minimal')`](/getting-started/encoding/).
+
+## Further reading
+
+- [Using HTTP cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies) on MDN
+- [Cookies on localhost with an explicit domain](https://stackoverflow.com/questions/1134290/cookies-on-localhost-with-explicit-domain)
+- [How do browser cookie domains work?](https://stackoverflow.com/questions/1062963/how-do-browser-cookie-domains-work)
+
+We can't help with problems in other frameworks or back ends. For those, [Stack Overflow](https://stackoverflow.com/questions/tagged/cookies) is a better place to ask.

@@ -1,0 +1,21 @@
+---
+title: Expiration
+description: Session cookies, expiry in days, and expiry at an exact Date.
+sidebar:
+  order: 1
+---
+
+import Demo from '@components/Demo.astro';
+
+`expires` takes either a number of **days** or a `Date`. Without it, the cookie is a **session cookie**, deleted when the browser closes.
+
+Set the 15-second cookie and watch `check()` turn `false` when it expires. The table below the demo reads the stored expiry date back from the browser.
+
+<Demo example="expires-example" />
+
+## Notes
+
+- Days can be fractional: `expires: 1 / 24` is one hour.
+- An invalid `Date` (such as `new Date('nope')`) is ignored with a console warning, so the cookie becomes a session cookie.
+- To delete a cookie, use `delete()` rather than setting a past date yourself. It also clears the value.
+- With `ngx-cookie-service-ssr` you can also pass `maxAge` in seconds. When both are present, browsers use `Max-Age`.

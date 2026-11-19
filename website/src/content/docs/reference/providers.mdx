@@ -1,0 +1,52 @@
+---
+title: Providers
+description: provideCookieOptions(), provideCookieEncoding() and their injection tokens.
+sidebar:
+  order: 2
+---
+
+Both functions are exported by `ngx-cookie-service` and by `ngx-cookie-service-ssr`. Import them from the package whose service you use.
+
+## provideCookieOptions()
+
+```ts
+provideCookieOptions(options: CookieOptions): EnvironmentProviders
+```
+
+Default options for every `set()`, `delete()` and `deleteAll()` call. Options passed to a call win, `undefined` values don't override a default, and a call's own `expires` (or `maxAge`) replaces the default lifetime. See [Default options](/getting-started/default-options/).
+
+```ts title="app.config.ts"
+export const appConfig: ApplicationConfig = {
+  providers: [provideCookieOptions({ path: '/', secure: true, sameSite: 'Strict' })],
+};
+```
+
+## provideCookieEncoding()
+
+```ts
+provideCookieEncoding(encoding: CookieEncoding): EnvironmentProviders
+
+type CookieEncoding = 'uri' | 'minimal' | CookieCodec;
+
+interface CookieCodec {
+  encode(value: string, name: string): string;
+  decode(value: string, name: string): string;
+}
+```
+
+How values are encoded when written and decoded when read. Names always use `encodeURIComponent`. See [Value encoding](/getting-started/encoding/).
+
+```ts title="app.config.ts"
+export const appConfig: ApplicationConfig = {
+  providers: [provideCookieEncoding('minimal')],
+};
+```
+
+## Injection tokens
+
+The providers set these tokens. You rarely need them directly, but they're exported for tests and advanced setups.
+
+| Token             | Type             | Set by                    |
+| ----------------- | ---------------- | ------------------------- |
+| `COOKIE_OPTIONS`  | `CookieOptions`  | `provideCookieOptions()`  |
+| `COOKIE_ENCODING` | `CookieEncoding` | `provideCookieEncoding()` |

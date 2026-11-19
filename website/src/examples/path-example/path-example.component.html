@@ -1,0 +1,33 @@
+<table class="docs-table">
+  <thead>
+    <tr>
+      <th scope="col">Path option</th>
+      <th scope="col"><span class="docs-visually-hidden">Actions</span></th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (pathCase of cases; track pathCase.label) {
+      <tr>
+        <td>
+          <code>{{ pathCase.label }}</code>
+        </td>
+        <td class="docs-cell-actions">
+          <button type="button" class="primary" (click)="set(pathCase)">set()</button>
+          <button type="button" (click)="delete(pathCase)">delete()</button>
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+
+<p aria-live="polite">
+  @if (visibleValue(); as value) {
+    <code>get('docs-path')</code> on this page returns <code>"{{ value }}"</code>.
+  } @else {
+    <code>check('docs-path')</code> on this page returns <code>false</code>.
+  }
+</p>
+
+@if (log().length) {
+  <pre class="docs-output">{{ log().join('\n') }}</pre>
+}

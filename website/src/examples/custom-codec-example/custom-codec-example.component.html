@@ -1,0 +1,20 @@
+<form class="docs-row" (submit)="$event.preventDefault(); save()">
+  <div class="docs-field docs-field--wide">
+    <label for="custom-codec-value">Value</label>
+    <input id="custom-codec-value" type="text" autocomplete="off" [value]="value()" (input)="value.set($any($event.target).value)" />
+  </div>
+  <button type="submit" class="primary">set()</button>
+</form>
+
+@if (stored()) {
+  <dl class="docs-pairs" aria-live="polite">
+    <dt>Stored in the browser</dt>
+    <dd>
+      <code>{{ stored() }}</code>
+    </dd>
+    <dt>get() returns</dt>
+    <dd>
+      <code>{{ read() }}</code>
+    </dd>
+  </dl>
+}

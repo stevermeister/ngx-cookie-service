@@ -1,0 +1,71 @@
+---
+title: Usage
+description: Read, write, check and delete cookies with CookieService.
+sidebar:
+  order: 1
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+`CookieService` has six methods. All of them are synchronous and work with plain strings.
+
+| Method                         | Returns                  | Does                                                    |
+| ------------------------------ | ------------------------ | ------------------------------------------------------- |
+| `check(name)`                  | `boolean`                | Whether a cookie with that name is visible to the page. |
+| `get(name)`                    | `string`                 | The decoded value, or `''` if there is no such cookie.  |
+| `getAll()`                     | `Record<string, string>` | Every visible cookie, by name.                          |
+| `set(name, value, options?)`   | `void`                   | Writes a cookie.                                        |
+| `delete(name, options?)`       | `void`                   | Expires a cookie.                                       |
+| `deleteAll(options?)`          | `void`                   | Expires every visible cookie.                           |
+
+## Write a cookie
+
+```ts
+cookieService.set('token', 'abc123');
+cookieService.set('token', 'abc123', { expires: 7, path: '/', secure: true, sameSite: 'Strict' });
+```
+
+The options are:
+
+| Option        | Type                         | Default                          |
+| ------------- | ---------------------------- | -------------------------------- |
+| `expires`     | `number` (days) or `Date`    | Session cookie                   |
+| `path`        | `string`                     | Directory of the page's URL      |
+| `domain`      | `string`                     | Current host only                |
+| `secure`      | `boolean`                    | `false`                          |
+| `sameSite`    | `'Lax' \| 'Strict' \| 'None'` | `'Lax'`                          |
+| `partitioned` | `boolean`                    | `false`                          |
+
+<Aside type="caution" title="Always set a path">
+  Without `path`, the browser uses the directory of the URL the page was **loaded** at, not the current router URL. In a single-page app the same code can then create or delete different cookies depending on where the user landed. Use `path: '/'` unless you have a reason not to, or set it once for the whole app with [`provideCookieOptions()`](/getting-started/default-options/).
+</Aside>
+
+A positional form, `set(name, value, expires?, path?, domain?, secure?, sameSite?, partitioned?)`, is still supported, but the options object is easier to read.
+
+## Read a cookie
+
+```ts
+if (cookieService.check('token')) {
+  const token: string = cookieService.get('token');
+}
+
+const all: Record<string, string> = cookieService.getAll();
+```
+
+`get()` returns an empty string, not `undefined`, when the cookie doesn't exist. Use `check()` to tell an empty cookie from a missing one.
+
+## Delete a cookie
+
+```ts
+cookieService.delete('token', { path: '/' });
+cookieService.deleteAll({ path: '/' });
+```
+
+A cookie is identified by its name **and** its `path` and `domain`, so pass the same `path` and `domain` it was set with. To delete a `Partitioned` cookie, also pass `partitioned: true`.
+
+## What the service guards against
+
+- **`SameSite=None` and `Partitioned` need `Secure`.** Browsers drop such cookies otherwise, so `CookieService` turns `secure` on and logs a warning.
+- **Header injection.** If `path` or `domain` contains `;` or a control character, the cookie is not written and a warning is logged.
+- **Invalid values.** An invalid `expires` date or unknown `sameSite` value is ignored with a warning.
+- **Other domains.** Browsers never let a page set or delete cookies for another site, and no library can change that.

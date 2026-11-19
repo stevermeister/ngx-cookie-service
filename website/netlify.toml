@@ -1,0 +1,21 @@
+# Netlify config for the documentation site (website/).
+#
+# Site setup in the Netlify UI: link this repository, leave "Base directory" empty
+# and set "Package directory" to `website`, so Netlify reads this file instead of
+# the root netlify.toml (which builds the SSR demo). Paths below are relative to
+# the repository root.
+
+[build]
+  command = "pnpm docs:build"
+  publish = "dist/docs"
+  # Skip deploys when nothing the site depends on has changed.
+  ignore = "git diff --quiet $CACHED_COMMIT_REF $COMMIT_REF -- website projects/ngx-cookie-service/src package.json pnpm-lock.yaml"
+
+[build.environment]
+  NODE_VERSION = "26"
+  PNPM_VERSION = "12.21.0"
+
+[[headers]]
+  for = "/_astro/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

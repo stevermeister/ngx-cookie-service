@@ -1,0 +1,54 @@
+name: Docs
+
+on:
+  push:
+    branches: [master]
+    paths:
+      - 'website/**'
+      - 'projects/ngx-cookie-service/src/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/docs.yml'
+  pull_request:
+    branches: [master]
+    paths:
+      - 'website/**'
+      - 'projects/ngx-cookie-service/src/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/docs.yml'
+  workflow_dispatch:
+
+# Build check only. The site itself is deployed by Netlify (see website/netlify.toml).
+permissions:
+  contents: read
+
+# A newer push cancels an older run on the same ref.
+concurrency:
+  group: docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v6
+        with:
+          version: latest
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 26
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm i --frozen-lockfile
+
+      - name: Lint docs
+        run: pnpm lint:docs
+
+      - name: Build docs
+        run: pnpm docs:build

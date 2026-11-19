@@ -1,0 +1,15 @@
+@if (name()) {
+  <p class="docs-greeting">
+    Welcome back, <strong>{{ name() }}</strong
+    >! This was read with <code>cookieService.get('docs-name')</code>. Reload the page and it's still here.
+  </p>
+  <button type="button" (click)="forget()">Forget me</button>
+} @else {
+  <form class="docs-row" (submit)="$event.preventDefault(); save(nameInput.value)">
+    <div class="docs-field">
+      <label for="quick-start-name">Your name</label>
+      <input #nameInput id="quick-start-name" type="text" autocomplete="off" placeholder="Ada" required />
+    </div>
+    <button type="submit" class="primary">Remember me for 7 days</button>
+  </form>
+}

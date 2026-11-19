@@ -1,0 +1,10 @@
+<pre class="docs-output">provideCookieOptions({{ '{' }} path: '/', expires: 1, sameSite: 'Strict', secure: true {{ '}' }})</pre>
+<div class="docs-actions">
+  <button type="button" class="primary" (click)="setWithDefaults()">set('docs-defaults', 'yes')</button>
+  <button type="button" (click)="setWithOverride()">set('docs-override', 'yes', {{ '{' }} sameSite: 'Lax', expires: 30 {{ '}' }})</button>
+</div>
+
+<h4 class="docs-subheading">
+  Stored attributes of <code>{{ cookieName() }}</code>
+</h4>
+<docs-cookie-inspector [name]="cookieName()" [refresh]="refresh()" />

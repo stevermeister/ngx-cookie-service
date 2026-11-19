@@ -1,0 +1,34 @@
+<form class="docs-row" (submit)="$event.preventDefault(); compare()">
+  <div class="docs-field docs-field--wide">
+    <label for="encoding-value">Value</label>
+    <input id="encoding-value" type="text" autocomplete="off" [value]="value()" (input)="value.set($any($event.target).value)" />
+  </div>
+  <button type="submit" class="primary">set() with both encodings</button>
+</form>
+
+@if (results().length) {
+  <table class="docs-table" aria-live="polite">
+    <thead>
+      <tr>
+        <th scope="col">Encoding</th>
+        <th scope="col">Stored in the browser</th>
+        <th scope="col">get() returns</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (result of results(); track result.encoding) {
+        <tr>
+          <td>
+            <code>{{ result.encoding }}</code>
+          </td>
+          <td>
+            <code>{{ result.stored }}</code>
+          </td>
+          <td>
+            <code>{{ result.read }}</code>
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+}

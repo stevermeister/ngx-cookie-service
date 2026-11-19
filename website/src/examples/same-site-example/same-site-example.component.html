@@ -1,0 +1,25 @@
+<div class="docs-row">
+  <div class="docs-field">
+    <label for="same-site-value">sameSite</label>
+    <select id="same-site-value" [value]="sameSite()" (change)="sameSite.set($any($event.target).value)">
+      @for (value of sameSiteValues; track value) {
+        <option [value]="value">{{ value }}</option>
+      }
+    </select>
+  </div>
+  <label class="docs-check">
+    <input type="checkbox" [checked]="secure()" (change)="secure.set($any($event.target).checked)" />
+    secure
+  </label>
+  <label class="docs-check">
+    <input type="checkbox" [checked]="partitioned()" (change)="partitioned.set($any($event.target).checked)" />
+    partitioned
+  </label>
+</div>
+<pre class="docs-output">{{ call() }}</pre>
+<div class="docs-actions">
+  <button type="button" class="primary" (click)="set()">Set cookie</button>
+</div>
+
+<h4 class="docs-subheading">What the browser stored</h4>
+<docs-cookie-inspector name="docs-same-site" [refresh]="refresh()" />

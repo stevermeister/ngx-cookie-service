@@ -1,0 +1,78 @@
+---
+title: ngx-cookie-service
+description: Angular service to read, set and delete browser cookies, with server-side rendering support.
+template: splash
+tableOfContents: false
+editUrl: false
+lastUpdated: false
+hero:
+  tagline: A tiny Angular service to read, set and delete cookies. Typed, tree-shakable, and ready for server-side rendering.
+  image:
+    file: ../../assets/logo.svg
+  actions:
+    - text: Get started
+      link: /getting-started/installation/
+      icon: right-arrow
+    - text: Try the examples
+      link: /examples/reading-and-writing/
+      variant: minimal
+    - text: View on GitHub
+      link: https://github.com/stevermeister/ngx-cookie-service
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/components';
+import Demo from '@components/Demo.astro';
+
+## Try it
+
+This is the real library running on this page. Type a name, then reload the page.
+
+<Demo example="quick-start-example" />
+
+<Tabs syncKey="package-manager">
+  <TabItem label="npm">
+    ```bash
+    npm install ngx-cookie-service
+    ```
+  </TabItem>
+  <TabItem label="pnpm">
+    ```bash
+    pnpm add ngx-cookie-service
+    ```
+  </TabItem>
+  <TabItem label="yarn">
+    ```bash
+    yarn add ngx-cookie-service
+    ```
+  </TabItem>
+</Tabs>
+
+```ts
+import { inject } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
+
+const cookieService = inject(CookieService);
+
+cookieService.set('theme', 'dark', { expires: 30, path: '/' });
+cookieService.get('theme'); // 'dark'
+cookieService.delete('theme', { path: '/' });
+```
+
+## Why ngx-cookie-service
+
+<CardGrid>
+  <Card title="Small and focused" icon="rocket">
+    One injectable service, about 1.3 kB minified and gzipped. No dependencies besides Angular.
+  </Card>
+  <Card title="Server-side rendering" icon="laptop">
+    `ngx-cookie-service-ssr` reads the request's cookies and writes `Set-Cookie` headers while Angular renders on the server.
+  </Card>
+  <Card title="Safe defaults" icon="approve-check">
+    `SameSite=Lax` by default, `Secure` forced where browsers require it, and unsafe paths or domains rejected with a warning.
+  </Card>
+  <Card title="App-wide configuration" icon="setting">
+    Set default options once with `provideCookieOptions()`, and choose how values are encoded with `provideCookieEncoding()`.
+  </Card>
+</CardGrid>

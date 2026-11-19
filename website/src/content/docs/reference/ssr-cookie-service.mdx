@@ -1,0 +1,49 @@
+---
+title: SsrCookieService
+description: API reference for SsrCookieService from ngx-cookie-service-ssr.
+sidebar:
+  order: 1
+---
+
+import { Aside } from '@astrojs/starlight/components';
+
+```ts
+import { SsrCookieService } from 'ngx-cookie-service-ssr';
+```
+
+`@Injectable({ providedIn: 'root' })`. Same methods as [`CookieService`](/reference/cookie-service/), and it also works while Angular renders on the server. See [Server-side rendering](/getting-started/server-side-rendering/) for setup.
+
+| Method                       | In the browser          | On the server                                                    |
+| ---------------------------- | ----------------------- | ---------------------------------------------------------------- |
+| `check()`, `get()`, `getAll()` | Read `document.cookie` | Read the request's `Cookie` header, plus cookies set or deleted while rendering this request |
+| `set()`                      | Writes `document.cookie` | Appends a `Set-Cookie` header to the response                   |
+| `delete()`, `deleteAll()`    | Expires the cookie      | Appends an expiring `Set-Cookie` header                          |
+
+## Options
+
+`SsrCookieService` accepts everything `CookieService` does, plus two server-side options:
+
+```ts
+interface CookieOptions {
+  expires?: number | Date;
+  path?: string;
+  domain?: string;
+  secure?: boolean;
+  sameSite?: 'Lax' | 'None' | 'Strict';
+  partitioned?: boolean;
+  /** Hide the cookie from scripts. Only takes effect when set on the server. */
+  httpOnly?: boolean;
+  /** Seconds until the cookie expires. 0 or less deletes it. */
+  maxAge?: number;
+}
+
+type DeleteCookieOptions = Omit<CookieOptions, 'expires' | 'maxAge' | 'httpOnly'>;
+```
+
+<Aside type="caution">
+  In the browser, a `set()` call with `httpOnly: true` is skipped with a console warning, because browsers ignore `HttpOnly` on cookies written from scripts.
+</Aside>
+
+## Configuration
+
+`ngx-cookie-service-ssr` exports its own [`provideCookieOptions()` and `provideCookieEncoding()`](/reference/providers/). Import them from `ngx-cookie-service-ssr`, not from `ngx-cookie-service`.
